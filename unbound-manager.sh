@@ -51,16 +51,15 @@ function installing-system-requirements() {
 installing-system-requirements
 
 # Global variables
-GLOBAL_VARIABLES="/config/file/path"
-
-if [ ! -f "$GLOBAL_VARIABLES" ]; then
-
+UNBOUND_MANAGER="/etc/unbound/unbound-manager"
 RESOLV_CONFIG="/etc/resolv.conf"
 RESOLV_CONFIG_OLD="/etc/resolv.conf.old"
 UNBOUND_CONFIG="/etc/unbound/unbound.conf"
 UNBOUND_ANCHOR="/var/lib/unbound/root.key"
 UNBOUND_ROOT_HINTS="/etc/unbound/root.hints"
 UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
+
+if [ ! -f "$UNBOUND_MANAGER" ]; then
 
   # comments for the first question
   function first-question() {
@@ -124,13 +123,9 @@ UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
     interface: 0.0.0.0
     interface: ::0
     max-udp-size: 3072
-    access-control: 0.0.0.0/0                 refuse
-    access-control: ::0                       refuse
-    access-control: $PRIVATE_SUBNET_V4               allow
-    access-control: $PRIVATE_SUBNET_V6          allow
+    access-control: 0.0.0.0/0                 allow
+    access-control: ::0                       allow
     access-control: 127.0.0.1                 allow
-    private-address: $PRIVATE_SUBNET_V4
-    private-address: $PRIVATE_SUBNET_V6
     hide-identity: yes
     hide-version: yes
     harden-glue: yes
