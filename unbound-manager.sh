@@ -53,10 +53,12 @@ installing-system-requirements
 UNBOUND_MANAGER="/etc/unbound/unbound-manager"
 RESOLV_CONFIG="/etc/resolv.conf"
 RESOLV_CONFIG_OLD="/etc/resolv.conf.old"
-UNBOUND_CONFIG="/etc/unbound/unbound.conf"
+UNBOUND_ROOT="/etc/unbound"
+UNBOUND_CONFIG="$UNBOUND_ROOT/unbound.conf"
+UNBOUND_ROOT_HINTS="$UNBOUND_ROOT/root.hints"
 UNBOUND_ANCHOR="/var/lib/unbound/root.key"
-UNBOUND_ROOT_HINTS="/etc/unbound/root.hints"
 UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
+UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/unbound-manager.sh"
 
 if [ ! -f "$UNBOUND_MANAGER" ]; then
 
@@ -143,29 +145,75 @@ else
   # take user input
   function take-user-input() {
     echo "What do you want to do?"
-    echo "   1) Option #1"
-    echo "   2) Option #2"
-    echo "   3) Option #3"
-    echo "   4) Option #4"
-    echo "   5) Option #5"
+    echo "   1) Start Unbound"
+    echo "   2) Stop Unbound"
+    echo "   3) Restart Unbound"
+    echo "   4) Uninstall Unbound"
+    echo "   5) Update Unbound Manager"
     until [[ "$USER_OPTIONS" =~ ^[0-9]+$ ]] && [ "$USER_OPTIONS" -ge 1 ] && [ "$USER_OPTIONS" -le 5 ]; do
       read -rp "Select an Option [1-5]: " -e -i 1 USER_OPTIONS
     done
     case $USER_OPTIONS in
     1)
-      echo "Hello, World!"
+      if pgrep systemd-journal; then
+        systemctl start unbound
+      else
+        service unbound start
+      fi
       ;;
     2)
-      echo "Hello, World!"
+      if pgrep systemd-journal; then
+        systemctl stop unbound
+      else
+        service unbound stop
+      fi
       ;;
     3)
-      echo "Hello, World!"
+      if pgrep systemd-journal; then
+        systemctl restart unbound
+      else
+        service unbound restart
+      fi
       ;;
     4)
-      echo "Hello, World!"
-      ;;
+        if [ -f "$UNBOUND_MANAGER" ]; then
+          if pgrep systemd-journal; then
+            systemctl disable unbound
+            systemctl stop unbound
+          else
+            service unbound disable
+            service unbound stop
+          fi
+          # Change to defualt dns
+          chattr -i $RESOLV_CONFIG
+          rm -f $RESOLV_CONFIG
+          mv $RESOLV_CONFIG_OLD $RESOLV_CONFIG
+          chattr +i $RESOLV_CONFIG
+          if { [ "$DISTRO" == "centos" ] || [ "$DISTRO" == "rhel" ]; }; then
+            yum remove unbound unbound-host -y
+          elif { [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "pop" ] || [ "$DISTRO" == "ubuntu" ] || [ "$DISTRO" == "raspbian" ] || [ "$DISTRO" == "kali" ] || [ "$DISTRO" == "linuxmint" ]; }; then
+            apt-get remove --purge unbound unbound-host -y
+          elif { [ "$DISTRO" == "arch" ] || [ "$DISTRO" == "manjaro" ]; }; then
+            pacman -Rs unbound unbound-host -y
+          elif [ "$DISTRO" == "fedora" ]; then
+            dnf remove unbound -y
+          elif [ "$DISTRO" == "alpine" ]; then
+            apk del unbound
+          elif [ "$DISTRO" == "freebsd" ]; then
+            pkg delete unbound
+          fi
+          rm -f $UNBOUND_MANAGER
+          rm -f $UNBOUND_CONFIG
+          rm -f $UNBOUND_ANCHOR
+          rm -f $UNBOUND_ROOT_HINTS
+          rm -f $UNBOUND_ROOT
+          ;;
     5)
-      echo "Hello, World!"
+      CURRENT_FILE_PATH="$(realpath "$0")"
+      if [ -f "$CURRENT_FILE_PATH" ]; then
+        curl -o "$CURRENT_FILE_PATH" $UNBOUND_MANAGER_UPDATE_URL
+        chmod +x "$CURRENT_FILE_PATH" || exit
+      fi
       ;;
     esac
   }
