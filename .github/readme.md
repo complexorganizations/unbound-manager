@@ -1,10 +1,23 @@
 ### unbound-manager
 
 ---
+### Installation
+Lets first use `curl` and save the file in `/usr/local/bin/`
+```
+curl https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/unbound-manager.sh --create-dirs -o /usr/local/bin/unbound-manager.sh
+```
+```
+chmod +x /usr/local/bin/unbound-manager.sh
+```
+It's finally time to execute the script
+```
+bash /usr/local/bin/unbound-manager.sh
+```
+---
 ### Features
 - Install, manage your own DNS
 - DNSSEC Validation
-- 
+- DNS Proxy
 - 
 
 ---
