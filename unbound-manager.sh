@@ -99,7 +99,6 @@ if [ ! -f "$UNBOUND_MANAGER" ]; then
     max-udp-size: 3072
     access-control: 0.0.0.0/0                 allow
     access-control: ::0                       allow
-    access-control: 127.0.0.1                 allow
     hide-identity: yes
     hide-version: yes
     harden-glue: yes
