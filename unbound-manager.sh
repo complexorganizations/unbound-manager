@@ -128,6 +128,7 @@ if [ ! -f "$UNBOUND_MANAGER" ]; then
             service unbound restart
           fi
         fi
+        fi
   }
 
   # Running Install Unbound
