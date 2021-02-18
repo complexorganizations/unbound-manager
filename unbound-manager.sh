@@ -50,10 +50,10 @@ function installing-system-requirements() {
 installing-system-requirements
 
 # Global variables
-UNBOUND_MANAGER="/etc/unbound/unbound-manager"
 RESOLV_CONFIG="/etc/resolv.conf"
 RESOLV_CONFIG_OLD="/etc/resolv.conf.old"
 UNBOUND_ROOT="/etc/unbound"
+UNBOUND_MANAGER="$UNBOUND_ROOT/unbound-manager"
 UNBOUND_CONFIG="$UNBOUND_ROOT/unbound.conf"
 UNBOUND_ROOT_HINTS="$UNBOUND_ROOT/root.hints"
 UNBOUND_ANCHOR="/var/lib/unbound/root.key"
@@ -176,38 +176,39 @@ else
       fi
       ;;
     4)
-        if [ -f "$UNBOUND_MANAGER" ]; then
-          if pgrep systemd-journal; then
-            systemctl disable unbound
-            systemctl stop unbound
-          else
-            service unbound disable
-            service unbound stop
-          fi
-          # Change to defualt dns
-          chattr -i $RESOLV_CONFIG
-          rm -f $RESOLV_CONFIG
-          mv $RESOLV_CONFIG_OLD $RESOLV_CONFIG
-          chattr +i $RESOLV_CONFIG
-          if { [ "$DISTRO" == "centos" ] || [ "$DISTRO" == "rhel" ]; }; then
-            yum remove unbound unbound-host -y
-          elif { [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "pop" ] || [ "$DISTRO" == "ubuntu" ] || [ "$DISTRO" == "raspbian" ] || [ "$DISTRO" == "kali" ] || [ "$DISTRO" == "linuxmint" ]; }; then
-            apt-get remove --purge unbound unbound-host -y
-          elif { [ "$DISTRO" == "arch" ] || [ "$DISTRO" == "manjaro" ]; }; then
-            pacman -Rs unbound unbound-host -y
-          elif [ "$DISTRO" == "fedora" ]; then
-            dnf remove unbound -y
-          elif [ "$DISTRO" == "alpine" ]; then
-            apk del unbound
-          elif [ "$DISTRO" == "freebsd" ]; then
-            pkg delete unbound
-          fi
-          rm -f $UNBOUND_MANAGER
-          rm -f $UNBOUND_CONFIG
-          rm -f $UNBOUND_ANCHOR
-          rm -f $UNBOUND_ROOT_HINTS
-          rm -f $UNBOUND_ROOT
-          ;;
+      if [ -f "$UNBOUND_MANAGER" ]; then
+        if pgrep systemd-journal; then
+          systemctl disable unbound
+          systemctl stop unbound
+        else
+          service unbound disable
+          service unbound stop
+        fi
+        # Change to defualt dns
+        chattr -i $RESOLV_CONFIG
+        rm -f $RESOLV_CONFIG
+        mv $RESOLV_CONFIG_OLD $RESOLV_CONFIG
+        chattr +i $RESOLV_CONFIG
+        if { [ "$DISTRO" == "centos" ] || [ "$DISTRO" == "rhel" ]; }; then
+          yum remove unbound unbound-host -y
+        elif { [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "pop" ] || [ "$DISTRO" == "ubuntu" ] || [ "$DISTRO" == "raspbian" ] || [ "$DISTRO" == "kali" ] || [ "$DISTRO" == "linuxmint" ]; }; then
+          apt-get remove --purge unbound unbound-host -y
+        elif { [ "$DISTRO" == "arch" ] || [ "$DISTRO" == "manjaro" ]; }; then
+          pacman -Rs unbound unbound-host -y
+        elif [ "$DISTRO" == "fedora" ]; then
+          dnf remove unbound -y
+        elif [ "$DISTRO" == "alpine" ]; then
+          apk del unbound
+        elif [ "$DISTRO" == "freebsd" ]; then
+          pkg delete unbound
+        fi
+        rm -f $UNBOUND_MANAGER
+        rm -f $UNBOUND_CONFIG
+        rm -f $UNBOUND_ANCHOR
+        rm -f $UNBOUND_ROOT_HINTS
+        rm -f $UNBOUND_ROOT
+      fi
+      ;;
     5)
       CURRENT_FILE_PATH="$(realpath "$0")"
       if [ -f "$CURRENT_FILE_PATH" ]; then
