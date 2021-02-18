@@ -1,5 +1,5 @@
 #!/bin/bash
-# https://github.com/complexorganizations/shell-script-boilerplate
+# https://github.com/complexorganizations/unbound-manager
 
 # Require script to be run as root
 function super-user-check() {
@@ -18,7 +18,6 @@ function dist-check() {
     # shellcheck disable=SC1091
     source /etc/os-release
     DISTRO=$ID
-    DISTRO_VERSION=$VERSION_ID
   fi
 }
 
@@ -28,17 +27,17 @@ dist-check
 # Pre-Checks system requirements
 function installing-system-requirements() {
   if { [ "$DISTRO" == "ubuntu" ] || [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "raspbian" ] || [ "$DISTRO" == "pop" ] || [ "$DISTRO" == "kali" ] || [ "$DISTRO" == "linuxmint" ] || [ "$DISTRO" == "fedora" ] || [ "$DISTRO" == "centos" ] || [ "$DISTRO" == "rhel" ] || [ "$DISTRO" == "arch" ] || [ "$DISTRO" == "manjaro" ] || [ "$DISTRO" == "alpine" ] || [ "$DISTRO" == "freebsd" ]; }; then
-    if { [ ! -x "$(command -v curl)" ] || [ ! -x "$(command -v iptables)" ]; }; then
+    if [ ! -x "$(command -v curl)" ]; then
       if { [ "$DISTRO" == "ubuntu" ] || [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "raspbian" ] || [ "$DISTRO" == "pop" ] || [ "$DISTRO" == "kali" ] || [ "$DISTRO" == "linuxmint" ]; }; then
-        apt-get update
+        apt-get update && apt-get install curl -y
       elif { [ "$DISTRO" == "fedora" ] || [ "$DISTRO" == "centos" ] || [ "$DISTRO" == "rhel" ]; }; then
-        yum update -y
+        yum update -y && yum install curl -y
       elif { [ "$DISTRO" == "arch" ] || [ "$DISTRO" == "manjaro" ]; }; then
-        pacman -Syu
+        pacman -Syu && pacman -Syu --noconfirm curl
       elif [ "$DISTRO" == "alpine" ]; then
-        apk update
+        apk update && apk add curl
       elif [ "$DISTRO" == "freebsd" ]; then
-        pkg update
+        pkg update && pkg install curl
       fi
     fi
   else
@@ -60,31 +59,6 @@ UNBOUND_ROOT_HINTS="/etc/unbound/root.hints"
 UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
 
 if [ ! -f "$UNBOUND_MANAGER" ]; then
-
-  # comments for the first question
-  function first-question() {
-    echo "What is the first question that u want to ask the user?"
-    echo "  1) Ansewer #1 (Recommended)"
-    echo "  2) Ansewer #2"
-    echo "  3) Custom (Advanced)"
-    until [[ "$FIRST_QUESTION_SETTINGS" =~ ^[1-3]$ ]]; do
-      read -rp "Subnetwork choice [1-3]: " -e -i 1 FIRST_QUESTION_SETTINGS
-    done
-    case $FIRST_QUESTION_SETTINGS in
-    1)
-      FIRST_QUESTION="Ansewer #1"
-      ;;
-    2)
-      FIRST_QUESTION="Ansewer #2"
-      ;;
-    3)
-      read -rp "User text: " -e -i "Ansewer #3" FIRST_QUESTION
-      ;;
-    esac
-  }
-
-  # comments for the first question
-  first-question
 
   # Function to install unbound
   function install-unbound() {
@@ -158,32 +132,6 @@ if [ ! -f "$UNBOUND_MANAGER" ]; then
 
   # Running Install Unbound
   install-unbound
-
-  # configure service here
-  function config-service() {
-    if { [ "$DISTRO" == "ubuntu" ] || [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "raspbian" ] || [ "$DISTRO" == "pop" ] || [ "$DISTRO" == "kali" ] || [ "$DISTRO" == "linuxmint" ] || [ "$DISTRO" == "fedora" ] || [ "$DISTRO" == "centos" ] || [ "$DISTRO" == "rhel" ] || [ "$DISTRO" == "arch" ] || [ "$DISTRO" == "manjaro" ] || [ "$DISTRO" == "alpine" ] || [ "$DISTRO" == "freebsd" ]; }; then
-      echo $GLOBAL_VARIABLES
-      echo "$FIRST_QUESTION"
-      echo "$DISTRO"
-      echo "$DISTRO_VERSION"
-    fi
-  }
-
-  # run the function
-  config-service
-
-  function service-manager() {
-    if pgrep systemd-journal; then
-      systemctl disable SERVICE
-      systemctl stop SERVICE
-    else
-      service SERVICE disable
-      service SERVICE stop
-    fi
-  }
-
-  # restart the chrome service
-  service-manager
 
 else
 
