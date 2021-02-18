@@ -64,33 +64,33 @@ if [ ! -f "$UNBOUND_MANAGER" ]; then
 
   # Function to install unbound
   function install-unbound() {
-      if [ "$DISTRO" == "ubuntu" ]; then
-        apt-get install unbound unbound-host e2fsprogs -y
-        if pgrep systemd-journal; then
-          systemctl stop systemd-resolved
-          systemctl disable systemd-resolved
-        else
-          service systemd-resolved stop
-          service systemd-resolved disable
-        fi
-      elif { [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "raspbian" ] || [ "$DISTRO" == "pop" ] || [ "$DISTRO" == "kali" ] || [ "$DISTRO" == "linuxmint" ]; }; then
-        apt-get install unbound unbound-host e2fsprogs -y
-      elif { [ "$DISTRO" == "centos" ] || [ "$DISTRO" == "rhel" ]; }; then
-        yum install unbound unbound-libs -y
-      elif [ "$DISTRO" == "fedora" ]; then
-        dnf install unbound -y
-      elif { [ "$DISTRO" == "arch" ] || [ "$DISTRO" == "manjaro" ]; }; then
-        pacman -Syu --noconfirm unbound
-      elif [ "$DISTRO" == "alpine" ]; then
-        apk add unbound
-      elif [ "$DISTRO" == "freebsd" ]; then
-        pkg install unbound
+    if [ "$DISTRO" == "ubuntu" ]; then
+      apt-get install unbound unbound-host e2fsprogs -y
+      if pgrep systemd-journal; then
+        systemctl stop systemd-resolved
+        systemctl disable systemd-resolved
+      else
+        service systemd-resolved stop
+        service systemd-resolved disable
       fi
-      rm -f $UNBOUND_ANCHOR
-      rm -f $UNBOUND_CONFIG
-      unbound-anchor -a $UNBOUND_ANCHOR
-      NPROC=$(nproc)
-      echo "server:
+    elif { [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "raspbian" ] || [ "$DISTRO" == "pop" ] || [ "$DISTRO" == "kali" ] || [ "$DISTRO" == "linuxmint" ]; }; then
+      apt-get install unbound unbound-host e2fsprogs -y
+    elif { [ "$DISTRO" == "centos" ] || [ "$DISTRO" == "rhel" ]; }; then
+      yum install unbound unbound-libs -y
+    elif [ "$DISTRO" == "fedora" ]; then
+      dnf install unbound -y
+    elif { [ "$DISTRO" == "arch" ] || [ "$DISTRO" == "manjaro" ]; }; then
+      pacman -Syu --noconfirm unbound
+    elif [ "$DISTRO" == "alpine" ]; then
+      apk add unbound
+    elif [ "$DISTRO" == "freebsd" ]; then
+      pkg install unbound
+    fi
+    rm -f $UNBOUND_ANCHOR
+    rm -f $UNBOUND_CONFIG
+    unbound-anchor -a $UNBOUND_ANCHOR
+    NPROC=$(nproc)
+    echo "server:
     num-threads: $NPROC
     verbosity: 1
     root-hints: $UNBOUND_ROOT_HINTS
@@ -118,21 +118,21 @@ forward-zone:
   forward-addr: 8.8.4.4
   forward-addr: 2001:4860:4860::8888
   forward-addr: 2001:4860:4860::8844" >>$UNBOUND_CONFIG
-      # Set DNS Root Servers
-      curl $UNBOUND_ROOT_SERVER_CONFIG_URL --create-dirs -o $UNBOUND_ROOT_HINTS
-      chattr -i $RESOLV_CONFIG
-      mv $RESOLV_CONFIG $RESOLV_CONFIG_OLD
-      echo "nameserver 127.0.0.1" >>$RESOLV_CONFIG
-      echo "nameserver ::1" >>$RESOLV_CONFIG
-      chattr +i $RESOLV_CONFIG
-      # restart unbound
-      if pgrep systemd-journal; then
-        systemctl enable unbound
-        systemctl restart unbound
-      else
-        service unbound enable
-        service unbound restart
-      fi
+    # Set DNS Root Servers
+    curl $UNBOUND_ROOT_SERVER_CONFIG_URL --create-dirs -o $UNBOUND_ROOT_HINTS
+    chattr -i $RESOLV_CONFIG
+    mv $RESOLV_CONFIG $RESOLV_CONFIG_OLD
+    echo "nameserver 127.0.0.1" >>$RESOLV_CONFIG
+    echo "nameserver ::1" >>$RESOLV_CONFIG
+    chattr +i $RESOLV_CONFIG
+    # restart unbound
+    if pgrep systemd-journal; then
+      systemctl enable unbound
+      systemctl restart unbound
+    else
+      service unbound enable
+      service unbound restart
+    fi
   }
 
   # Running Install Unbound
