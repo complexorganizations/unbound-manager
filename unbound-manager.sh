@@ -88,6 +88,7 @@ if [ ! -f "$UNBOUND_MANAGER" ]; then
     fi
     rm -f $UNBOUND_ANCHOR
     rm -f $UNBOUND_CONFIG
+    rm -f $UNBOUND_ROOT_HINTS
     unbound-anchor -a $UNBOUND_ANCHOR
     NPROC=$(nproc)
     echo "server:
