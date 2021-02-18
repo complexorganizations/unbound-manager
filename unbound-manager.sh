@@ -90,6 +90,7 @@ if [ ! -f "$UNBOUND_MANAGER" ]; then
     rm -f $UNBOUND_CONFIG
     rm -f $UNBOUND_ROOT_HINTS
     unbound-anchor -a $UNBOUND_ANCHOR
+    curl $UNBOUND_ROOT_SERVER_CONFIG_URL --create-dirs -o $UNBOUND_ROOT_HINTS
     NPROC=$(nproc)
     echo "server:
     num-threads: $NPROC
@@ -120,7 +121,6 @@ forward-zone:
   forward-addr: 2001:4860:4860::8888
   forward-addr: 2001:4860:4860::8844" >>$UNBOUND_CONFIG
     # Set DNS Root Servers
-    curl $UNBOUND_ROOT_SERVER_CONFIG_URL --create-dirs -o $UNBOUND_ROOT_HINTS
     chattr -i $RESOLV_CONFIG
     mv $RESOLV_CONFIG $RESOLV_CONFIG_OLD
     echo "nameserver 127.0.0.1" >>$RESOLV_CONFIG
@@ -138,6 +138,18 @@ forward-zone:
 
   # Running Install Unbound
   install-unbound
+  
+  # Install unbound manager
+  function install-unbound-manager-file() {
+    if [ -d "$UNBOUND_ROOT" ]; then
+      if [ ! -f "$UNBOUND_MANAGER" ]; then
+        echo "Unbound Manager: true" >>$UNBOUND_MANAGER
+      fi
+    fi
+  }
+
+  # wireguard unbound
+  install-unbound-manager-file
 
 else
 
