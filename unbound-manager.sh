@@ -64,7 +64,6 @@ if [ ! -f "$UNBOUND_MANAGER" ]; then
 
   # Function to install unbound
   function install-unbound() {
-    if [ ! -x "$(command -v unbound)" ]; then
       if [ "$DISTRO" == "ubuntu" ]; then
         apt-get install unbound unbound-host e2fsprogs -y
         if pgrep systemd-journal; then
@@ -114,7 +113,7 @@ if [ ! -f "$UNBOUND_MANAGER" ]; then
     qname-minimisation: yes
     prefetch-key: yes
 forward-zone:
-  name: "."
+  name: .
   forward-addr: 8.8.8.8
   forward-addr: 8.8.4.4
   forward-addr: 2001:4860:4860::8888
@@ -134,7 +133,6 @@ forward-zone:
         service unbound enable
         service unbound restart
       fi
-    fi
   }
 
   # Running Install Unbound
