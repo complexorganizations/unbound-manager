@@ -55,6 +55,13 @@ GLOBAL_VARIABLES="/config/file/path"
 
 if [ ! -f "$GLOBAL_VARIABLES" ]; then
 
+RESOLV_CONFIG="/etc/resolv.conf"
+RESOLV_CONFIG_OLD="/etc/resolv.conf.old"
+UNBOUND_CONFIG="/etc/unbound/unbound.conf"
+UNBOUND_ANCHOR="/var/lib/unbound/root.key"
+UNBOUND_ROOT_HINTS="/etc/unbound/root.hints"
+UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
+
   # comments for the first question
   function first-question() {
     echo "What is the first question that u want to ask the user?"
@@ -80,23 +87,82 @@ if [ ! -f "$GLOBAL_VARIABLES" ]; then
   # comments for the first question
   first-question
 
-  ### use the code above to ask any questions as u want.
-  function install-the-app() {
-    if { [ "$DISTRO" == "ubuntu" ] || [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "raspbian" ] || [ "$DISTRO" == "pop" ] || [ "$DISTRO" == "kali" ] || [ "$DISTRO" == "linuxmint" ]; }; then
-      apt-get update
-    elif { [ "$DISTRO" == "fedora" ] || [ "$DISTRO" == "centos" ] || [ "$DISTRO" == "rhel" ]; }; then
-      yum update -y
-    elif { [ "$DISTRO" == "arch" ] || [ "$DISTRO" == "manjaro" ]; }; then
-      pacman -Syu
-    elif [ "$DISTRO" == "alpine" ]; then
-      apk update
-    elif [ "$DISTRO" == "freebsd" ]; then
-      pkg update
-    fi
+  # Function to install unbound
+  function install-unbound() {
+        if [ ! -x "$(command -v unbound)" ]; then
+          if [ "$DISTRO" == "ubuntu" ]; then
+            apt-get install unbound unbound-host e2fsprogs -y
+            if pgrep systemd-journal; then
+              systemctl stop systemd-resolved
+              systemctl disable systemd-resolved
+            else
+              service systemd-resolved stop
+              service systemd-resolved disable
+            fi
+          elif { [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "raspbian" ] || [ "$DISTRO" == "pop" ] || [ "$DISTRO" == "kali" ] || [ "$DISTRO" == "linuxmint" ]; }; then
+            apt-get install unbound unbound-host e2fsprogs -y
+          elif { [ "$DISTRO" == "centos" ] || [ "$DISTRO" == "rhel" ]; }; then
+            yum install unbound unbound-libs -y
+          elif [ "$DISTRO" == "fedora" ]; then
+            dnf install unbound -y
+          elif { [ "$DISTRO" == "arch" ] || [ "$DISTRO" == "manjaro" ]; }; then
+            pacman -Syu --noconfirm unbound
+          elif [ "$DISTRO" == "alpine" ]; then
+            apk add unbound
+          elif [ "$DISTRO" == "freebsd" ]; then
+            pkg install unbound
+          fi
+          rm -f $UNBOUND_ANCHOR
+          rm -f $UNBOUND_CONFIG
+          unbound-anchor -a $UNBOUND_ANCHOR
+          NPROC=$(nproc)
+          echo "server:
+    num-threads: $NPROC
+    verbosity: 1
+    root-hints: $UNBOUND_ROOT_HINTS
+    auto-trust-anchor-file: $UNBOUND_ANCHOR
+    interface: 0.0.0.0
+    interface: ::0
+    max-udp-size: 3072
+    access-control: 0.0.0.0/0                 refuse
+    access-control: ::0                       refuse
+    access-control: $PRIVATE_SUBNET_V4               allow
+    access-control: $PRIVATE_SUBNET_V6          allow
+    access-control: 127.0.0.1                 allow
+    private-address: $PRIVATE_SUBNET_V4
+    private-address: $PRIVATE_SUBNET_V6
+    hide-identity: yes
+    hide-version: yes
+    harden-glue: yes
+    harden-dnssec-stripped: yes
+    harden-referral-path: yes
+    unwanted-reply-threshold: 10000000
+    val-log-level: 1
+    cache-min-ttl: 1800
+    cache-max-ttl: 14400
+    prefetch: yes
+    qname-minimisation: yes
+    prefetch-key: yes" >>$UNBOUND_CONFIG
+          # Set DNS Root Servers
+          curl $UNBOUND_ROOT_SERVER_CONFIG_URL --create-dirs -o $UNBOUND_ROOT_HINTS
+          chattr -i $RESOLV_CONFIG
+          mv $RESOLV_CONFIG $RESOLV_CONFIG_OLD
+          echo "nameserver 127.0.0.1" >>$RESOLV_CONFIG
+          echo "nameserver ::1" >>$RESOLV_CONFIG
+          chattr +i $RESOLV_CONFIG
+          # restart unbound
+          if pgrep systemd-journal; then
+            systemctl enable unbound
+            systemctl restart unbound
+          else
+            service unbound enable
+            service unbound restart
+          fi
+        fi
   }
 
-  # run the function
-  install-the-app
+  # Running Install Unbound
+  install-unbound
 
   # configure service here
   function config-service() {
