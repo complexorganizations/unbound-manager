@@ -111,7 +111,13 @@ if [ ! -f "$UNBOUND_MANAGER" ]; then
     cache-max-ttl: 14400
     prefetch: yes
     qname-minimisation: yes
-    prefetch-key: yes" >>$UNBOUND_CONFIG
+    prefetch-key: yes
+forward-zone:
+  name: "."
+  forward-addr: 8.8.8.8
+  forward-addr: 8.8.4.4
+  forward-addr: 2001:4860:4860::8888
+  forward-addr: 2001:4860:4860::8844" >>$UNBOUND_CONFIG
       # Set DNS Root Servers
       curl $UNBOUND_ROOT_SERVER_CONFIG_URL --create-dirs -o $UNBOUND_ROOT_HINTS
       chattr -i $RESOLV_CONFIG
