@@ -138,7 +138,7 @@ forward-zone:
 
   # Running Install Unbound
   install-unbound
-  
+
   # Install unbound manager
   function install-unbound-manager-file() {
     if [ -d "${UNBOUND_ROOT}" ]; then
@@ -202,42 +202,42 @@ else
             service unbound disable
             service unbound stop
           fi
-      if [ -f "${RESOLV_CONFIG}" ]; then
-        # Change to defualt dns
-        chattr -i ${RESOLV_CONFIG}
-        rm -f ${RESOLV_CONFIG}
-        mv ${RESOLV_CONFIG_OLD} ${RESOLV_CONFIG}
-        chattr +i ${RESOLV_CONFIG}
+          if [ -f "${RESOLV_CONFIG}" ]; then
+            # Change to defualt dns
+            chattr -i ${RESOLV_CONFIG}
+            rm -f ${RESOLV_CONFIG}
+            mv ${RESOLV_CONFIG_OLD} ${RESOLV_CONFIG}
+            chattr +i ${RESOLV_CONFIG}
+          fi
+          if { [ "${DISTRO}" == "centos" ] || [ "${DISTRO}" == "rhel" ]; }; then
+            yum remove unbound unbound-host -y
+          elif { [ "${DISTRO}" == "debian" ] || [ "${DISTRO}" == "pop" ] || [ "${DISTRO}" == "ubuntu" ] || [ "${DISTRO}" == "raspbian" ] || [ "${DISTRO}" == "kali" ] || [ "${DISTRO}" == "linuxmint" ]; }; then
+            apt-get remove --purge unbound unbound-host -y
+          elif { [ "${DISTRO}" == "arch" ] || [ "${DISTRO}" == "manjaro" ]; }; then
+            pacman -Rs unbound unbound-host -y
+          elif [ "${DISTRO}" == "fedora" ]; then
+            dnf remove unbound -y
+          elif [ "${DISTRO}" == "alpine" ]; then
+            apk del unbound
+          elif [ "${DISTRO}" == "freebsd" ]; then
+            pkg delete unbound
+          fi
+          if [ -f "${UNBOUND_MANAGER}" ]; then
+            rm -f ${UNBOUND_MANAGER}
+          fi
+          if [ -f "${UNBOUND_CONFIG}" ]; then
+            rm -f ${UNBOUND_CONFIG}
+          fi
+          if [ -f "${UNBOUND_ANCHOR}" ]; then
+            rm -f ${UNBOUND_ANCHOR}
+          fi
+          if [ -f "${UNBOUND_ROOT_HINTS}" ]; then
+            rm -f ${UNBOUND_ROOT_HINTS}
+          fi
+          if [ -f "${UNBOUND_ROOT}" ]; then
+            rm -f ${UNBOUND_ROOT}
+          fi
         fi
-        if { [ "${DISTRO}" == "centos" ] || [ "${DISTRO}" == "rhel" ]; }; then
-          yum remove unbound unbound-host -y
-        elif { [ "${DISTRO}" == "debian" ] || [ "${DISTRO}" == "pop" ] || [ "${DISTRO}" == "ubuntu" ] || [ "${DISTRO}" == "raspbian" ] || [ "${DISTRO}" == "kali" ] || [ "${DISTRO}" == "linuxmint" ]; }; then
-          apt-get remove --purge unbound unbound-host -y
-        elif { [ "${DISTRO}" == "arch" ] || [ "${DISTRO}" == "manjaro" ]; }; then
-          pacman -Rs unbound unbound-host -y
-        elif [ "${DISTRO}" == "fedora" ]; then
-          dnf remove unbound -y
-        elif [ "${DISTRO}" == "alpine" ]; then
-          apk del unbound
-        elif [ "${DISTRO}" == "freebsd" ]; then
-          pkg delete unbound
-        fi
-      if [ -f "${UNBOUND_MANAGER}" ]; then
-        rm -f ${UNBOUND_MANAGER}
-      fi
-      if [ -f "${UNBOUND_CONFIG}" ]; then
-        rm -f ${UNBOUND_CONFIG}
-      fi
-      if [ -f "${UNBOUND_ANCHOR}" ]; then
-        rm -f ${UNBOUND_ANCHOR}
-      fi
-      if [ -f "${UNBOUND_ROOT_HINTS}" ]; then
-        rm -f ${UNBOUND_ROOT_HINTS}
-      fi
-      if [ -f "${UNBOUND_ROOT}" ]; then
-        rm -f ${UNBOUND_ROOT}
-      fi
-      fi
       fi
       ;;
     5)
