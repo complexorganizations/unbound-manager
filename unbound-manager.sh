@@ -166,40 +166,49 @@ else
     done
     case $USER_OPTIONS in
     1)
-      if pgrep systemd-journal; then
-        systemctl start unbound
-      else
-        service unbound start
+      if [ -x "$(command -v unbound)" ]; then
+        if pgrep systemd-journal; then
+          systemctl start unbound
+        else
+          service unbound start
+        fi
       fi
       ;;
     2)
-      if pgrep systemd-journal; then
-        systemctl stop unbound
-      else
-        service unbound stop
+      if [ -x "$(command -v unbound)" ]; then
+        if pgrep systemd-journal; then
+          systemctl stop unbound
+        else
+          service unbound stop
+        fi
       fi
       ;;
     3)
-      if pgrep systemd-journal; then
-        systemctl restart unbound
-      else
-        service unbound restart
+      if [ -x "$(command -v unbound)" ]; then
+        if pgrep systemd-journal; then
+          systemctl restart unbound
+        else
+          service unbound restart
+        fi
       fi
       ;;
     4)
-      if [ -f "${UNBOUND_MANAGER}" ]; then
-        if pgrep systemd-journal; then
-          systemctl disable unbound
-          systemctl stop unbound
-        else
-          service unbound disable
-          service unbound stop
-        fi
+      if [ -x "$(command -v unbound)" ]; then
+        if [ -f "${UNBOUND_MANAGER}" ]; then
+          if pgrep systemd-journal; then
+            systemctl disable unbound
+            systemctl stop unbound
+          else
+            service unbound disable
+            service unbound stop
+          fi
+      if [ -f "${RESOLV_CONFIG}" ]; then
         # Change to defualt dns
         chattr -i ${RESOLV_CONFIG}
         rm -f ${RESOLV_CONFIG}
         mv ${RESOLV_CONFIG_OLD} ${RESOLV_CONFIG}
         chattr +i ${RESOLV_CONFIG}
+        fi
         if { [ "${DISTRO}" == "centos" ] || [ "${DISTRO}" == "rhel" ]; }; then
           yum remove unbound unbound-host -y
         elif { [ "${DISTRO}" == "debian" ] || [ "${DISTRO}" == "pop" ] || [ "${DISTRO}" == "ubuntu" ] || [ "${DISTRO}" == "raspbian" ] || [ "${DISTRO}" == "kali" ] || [ "${DISTRO}" == "linuxmint" ]; }; then
@@ -213,11 +222,22 @@ else
         elif [ "${DISTRO}" == "freebsd" ]; then
           pkg delete unbound
         fi
+      if [ -f "${UNBOUND_MANAGER}" ]; then
         rm -f ${UNBOUND_MANAGER}
+      fi
+      if [ -f "${UNBOUND_CONFIG}" ]; then
         rm -f ${UNBOUND_CONFIG}
+      fi
+      if [ -f "${UNBOUND_ANCHOR}" ]; then
         rm -f ${UNBOUND_ANCHOR}
+      fi
+      if [ -f "${UNBOUND_ROOT_HINTS}" ]; then
         rm -f ${UNBOUND_ROOT_HINTS}
+      fi
+      if [ -f "${UNBOUND_ROOT}" ]; then
         rm -f ${UNBOUND_ROOT}
+      fi
+      fi
       fi
       ;;
     5)
