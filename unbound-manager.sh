@@ -65,54 +65,88 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
   # Choose upstream DNS
   function upstream-dns() {
     echo "What upstream DNS would you like to use?"
-    echo "  1) Google (Recommended)"
-    echo "  2) AdGuard"
-    echo "  3) NextDNS"
-    echo "  4) OpenDNS"
-    echo "  5) Cloudflare"
-    echo "  6) Verisign"
-    echo "  7) Quad9"
-    echo "  8) FDN"
-    echo "  9) Custom (Advanced)"
-    until [[ "${UPSTREAM_DNS_SETTINGS}" =~ ^[1-3]$ ]]; do
-      read -rp "Subnetwork choice [1-3]: " -e -i 1 UPSTREAM_DNS_SETTINGS
+    echo "  1) No (Recommended)"
+    echo "  2) Google"
+    echo "  3) AdGuard"
+    echo "  4) NextDNS"
+    echo "  5) OpenDNS"
+    echo "  6) Cloudflare"
+    echo "  7) Verisign"
+    echo "  8) Quad9"
+    echo "  9) FDN"
+    until [[ "${UPSTREAM_DNS_SETTINGS}" =~ ^[0-9]+$ ]] && [ "${UPSTREAM_DNS_SETTINGS}" -ge 1 ] && [ "${UPSTREAM_DNS_SETTINGS}" -le 9 ]; do
+      read -rp "DNS Choice [1-3]: " -e -i 1 UPSTREAM_DNS_SETTINGS
     done
     case ${UPSTREAM_DNS_SETTINGS} in
     1)
-      UPSTREAM_DNS="8.8.8.8,8.8.4.4,2001:4860:4860::8888,2001:4860:4860::8844"
+      echo ""
       ;;
     2)
-      UPSTREAM_DNS="176.103.130.130,176.103.130.131,2a00:5a60::ad1:0ff,2a00:5a60::ad2:0ff"
+      echo "forward-zone:
+  name: .
+  forward-addr: 8.8.8.8
+  forward-addr: 8.8.4.4
+  forward-addr: 2001:4860:4860::8888
+  forward-addr: 2001:4860:4860::8844" >>${UNBOUND_CONFIG}
       ;;
     3)
-      UPSTREAM_DNS="45.90.28.167,45.90.30.167,2a07:a8c0::12:cf53,2a07:a8c1::12:cf53"
+      echo "forward-zone:
+  name: .
+  forward-addr: 176.103.130.130
+  forward-addr: 176.103.130.131
+  forward-addr: 2a10:50c0::ad2:ff
+  forward-addr: 2a10:50c0::ad1:ff" >>${UNBOUND_CONFIG}
       ;;
     4)
-      UPSTREAM_DNS="208.67.222.222,208.67.220.220,2620:119:35::35,2620:119:53::53"
+      echo "forward-zone:
+  name: .
+  forward-addr: 45.90.28.167
+  forward-addr: 45.90.30.167
+  forward-addr: 2a07:a8c0::12:cf53
+  forward-addr: 2a07:a8c1::12:cf53" >>${UNBOUND_CONFIG}
       ;;
     5)
-      UPSTREAM_DNS="1.1.1.1,1.0.0.1,2606:4700:4700::1111,2606:4700:4700::1001"
+      echo "forward-zone:
+  name: .
+  forward-addr: 208.67.222.222
+  forward-addr: 208.67.220.220
+  forward-addr: 2620:119:35::35
+  forward-addr: 2620:119:53::53" >>${UNBOUND_CONFIG}
       ;;
     6)
-      UPSTREAM_DNS="64.6.64.6,64.6.65.6,2620:74:1b::1:1,2620:74:1c::2:2"
+      echo "forward-zone:
+  name: .
+  forward-addr: 1.1.1.1
+  forward-addr: 1.0.0.1
+  forward-addr: 2606:4700:4700::1111
+  forward-addr: 2606:4700:4700::1001" >>${UNBOUND_CONFIG}
       ;;
     7)
-      UPSTREAM_DNS="9.9.9.9,149.112.112.112,2620:fe::fe,2620:fe::9"
+      echo "forward-zone:
+  name: .
+  forward-addr: 64.6.64.6
+  forward-addr: 64.6.65.6
+  forward-addr: 2620:74:1b::1:1
+  forward-addr: 2620:74:1c::2:2" >>${UNBOUND_CONFIG}
       ;;
     8)
-      UPSTREAM_DNS="80.67.169.40,80.67.169.12,2001:910:800::40,2001:910:800::12"
+      echo "forward-zone:
+  name: .
+  forward-addr: 9.9.9.9
+  forward-addr: 149.112.112.112
+  forward-addr: 2620:fe::fe
+  forward-addr: 2620:fe::9" >>${UNBOUND_CONFIG}
       ;;
     9)
-      read -rp "Custom DNS (IPv4 IPv6):" -e -i "8.8.8.8,8.8.4.4,2001:4860:4860::8888,2001:4860:4860::8844" UPSTREAM_DNS
-      if [ -z "${UPSTREAM_DNS}" ]; then
-        UPSTREAM_DNS="8.8.8.8,8.8.4.4,2001:4860:4860::8888,2001:4860:4860::8844"
-      fi
+      echo "forward-zone:
+  name: .
+  forward-addr: 80.67.169.40
+  forward-addr: 80.67.169.12
+  forward-addr: 2001:910:800::40
+  forward-addr: 2001:910:800::12" >>${UNBOUND_CONFIG}
       ;;
     esac
   }
-
-  # Choose upstream DNS
-  upstream-dns
 
   # Function to install unbound
   function install-unbound() {
@@ -165,13 +199,7 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
     cache-max-ttl: 14400
     prefetch: yes
     qname-minimisation: yes
-    prefetch-key: yes
-forward-zone:
-  name: .
-  forward-addr: 8.8.8.8
-  forward-addr: 8.8.4.4
-  forward-addr: 2001:4860:4860::8888
-  forward-addr: 2001:4860:4860::8844" >>${UNBOUND_CONFIG}
+    prefetch-key: yes" >>${UNBOUND_CONFIG}
     # Set DNS Root Servers
     chattr -i ${RESOLV_CONFIG}
     mv ${RESOLV_CONFIG} ${RESOLV_CONFIG_OLD}
@@ -190,6 +218,9 @@ forward-zone:
 
   # Running Install Unbound
   install-unbound
+
+  # Choose upstream DNS
+  upstream-dns
 
   # Install unbound manager
   function install-unbound-manager-file() {
