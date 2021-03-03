@@ -65,27 +65,48 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
   # Choose upstream DNS
   function upstream-dns() {
     echo "What upstream DNS would you like to use?"
-        echo "  1) Google (Recommended)"
-        echo "  2) AdGuard"
-        echo "  3) NextDNS"
-        echo "  4) OpenDNS"
-        echo "  5) Cloudflare"
-        echo "  6) Verisign"
-        echo "  7) Quad9"
-        echo "  8) FDN"
-        echo "  9) Custom (Advanced)"
+    echo "  1) Google (Recommended)"
+    echo "  2) AdGuard"
+    echo "  3) NextDNS"
+    echo "  4) OpenDNS"
+    echo "  5) Cloudflare"
+    echo "  6) Verisign"
+    echo "  7) Quad9"
+    echo "  8) FDN"
+    echo "  9) Custom (Advanced)"
     until [[ "${UPSTREAM_DNS_SETTINGS}" =~ ^[1-3]$ ]]; do
       read -rp "Subnetwork choice [1-3]: " -e -i 1 UPSTREAM_DNS_SETTINGS
     done
     case ${UPSTREAM_DNS_SETTINGS} in
     1)
-      UPSTREAM_DNS="Ansewer #1"
+      UPSTREAM_DNS="8.8.8.8,8.8.4.4,2001:4860:4860::8888,2001:4860:4860::8844"
       ;;
     2)
-      UPSTREAM_DNS="Ansewer #2"
+      UPSTREAM_DNS="176.103.130.130,176.103.130.131,2a00:5a60::ad1:0ff,2a00:5a60::ad2:0ff"
       ;;
     3)
-      read -rp "User text: " -e -i "Ansewer #3" UPSTREAM_DNS
+      UPSTREAM_DNS="45.90.28.167,45.90.30.167,2a07:a8c0::12:cf53,2a07:a8c1::12:cf53"
+      ;;
+    4)
+      UPSTREAM_DNS="208.67.222.222,208.67.220.220,2620:119:35::35,2620:119:53::53"
+      ;;
+    5)
+      UPSTREAM_DNS="1.1.1.1,1.0.0.1,2606:4700:4700::1111,2606:4700:4700::1001"
+      ;;
+    6)
+      UPSTREAM_DNS="64.6.64.6,64.6.65.6,2620:74:1b::1:1,2620:74:1c::2:2"
+      ;;
+    7)
+      UPSTREAM_DNS="9.9.9.9,149.112.112.112,2620:fe::fe,2620:fe::9"
+      ;;
+    8)
+      UPSTREAM_DNS="80.67.169.40,80.67.169.12,2001:910:800::40,2001:910:800::12"
+      ;;
+    9)
+      read -rp "Custom DNS (IPv4 IPv6):" -e -i "8.8.8.8,8.8.4.4,2001:4860:4860::8888,2001:4860:4860::8844" UPSTREAM_DNS
+      if [ -z "${UPSTREAM_DNS}" ]; then
+        UPSTREAM_DNS="8.8.8.8,8.8.4.4,2001:4860:4860::8888,2001:4860:4860::8844"
+      fi
       ;;
     esac
   }
