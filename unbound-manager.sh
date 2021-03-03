@@ -62,6 +62,37 @@ UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizatio
 
 if [ ! -f "${UNBOUND_MANAGER}" ]; then
 
+  # Choose upstream DNS
+  function upstream-dns() {
+    echo "What upstream DNS would you like to use?"
+        echo "  1) Google (Recommended)"
+        echo "  2) AdGuard"
+        echo "  3) NextDNS"
+        echo "  4) OpenDNS"
+        echo "  5) Cloudflare"
+        echo "  6) Verisign"
+        echo "  7) Quad9"
+        echo "  8) FDN"
+        echo "  9) Custom (Advanced)"
+    until [[ "${UPSTREAM_DNS_SETTINGS}" =~ ^[1-3]$ ]]; do
+      read -rp "Subnetwork choice [1-3]: " -e -i 1 UPSTREAM_DNS_SETTINGS
+    done
+    case ${UPSTREAM_DNS_SETTINGS} in
+    1)
+      UPSTREAM_DNS="Ansewer #1"
+      ;;
+    2)
+      UPSTREAM_DNS="Ansewer #2"
+      ;;
+    3)
+      read -rp "User text: " -e -i "Ansewer #3" UPSTREAM_DNS
+      ;;
+    esac
+  }
+
+  # Choose upstream DNS
+  upstream-dns
+
   # Function to install unbound
   function install-unbound() {
     if [ "${DISTRO}" == "ubuntu" ]; then
