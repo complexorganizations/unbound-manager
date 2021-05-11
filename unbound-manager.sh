@@ -97,7 +97,7 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
     fi
     if [ -d "${UNBOUND_ROOT}" ]; then
       unbound-anchor -a ${UNBOUND_ANCHOR}
-      curl ${UNBOUND_ROOT_SERVER_CONFIG_URL} --create-dirs -o ${UNBOUND_ROOT_HINTS}
+      curl ${UNBOUND_ROOT_SERVER_CONFIG_URL} -o ${UNBOUND_ROOT_HINTS}
       NPROC=$(nproc)
       echo "server:
     num-threads: ${NPROC}
@@ -135,7 +135,9 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
       echo "nameserver 127.0.0.1" >>${RESOLV_CONFIG}
       echo "nameserver ::1" >>${RESOLV_CONFIG}
     fi
-    echo "Unbound: true" >>${UNBOUND_MANAGER}
+    if [ ! -f "${UNBOUND_MANAGER}" ]; then
+      echo "Unbound: true" >>${UNBOUND_MANAGER}
+    fi
     # restart unbound
     if pgrep systemd-journal; then
       systemctl reenable unbound
