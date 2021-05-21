@@ -127,8 +127,8 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
       mv ${RESOLV_CONFIG} ${RESOLV_CONFIG_OLD}
     fi
     # Use unbound as a nameserver
-      echo "nameserver 127.0.0.1" >>${RESOLV_CONFIG}
-      echo "nameserver ::1" >>${RESOLV_CONFIG}
+    echo "nameserver 127.0.0.1" >>${RESOLV_CONFIG}
+    echo "nameserver ::1" >>${RESOLV_CONFIG}
     if [ ! -f "${UNBOUND_MANAGER}" ]; then
       echo "Unbound: true" >>${UNBOUND_MANAGER}
     fi
