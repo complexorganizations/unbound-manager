@@ -126,12 +126,9 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
       rm -f ${RESOLV_CONFIG_OLD}
     fi
     if [ -f "${RESOLV_CONFIG}" ]; then
-      chattr -i ${RESOLV_CONFIG}
       mv ${RESOLV_CONFIG} ${RESOLV_CONFIG_OLD}
-      echo "nameserver 127.0.0.1" >>${RESOLV_CONFIG}
-      echo "nameserver ::1" >>${RESOLV_CONFIG}
-      chattr +i ${RESOLV_CONFIG}
-    else
+    fi
+    if [ -f "${RESOLV_CONFIG_OLD}" ]; then 
       echo "nameserver 127.0.0.1" >>${RESOLV_CONFIG}
       echo "nameserver ::1" >>${RESOLV_CONFIG}
     fi
