@@ -122,16 +122,13 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
     qname-minimisation: yes
     prefetch-key: yes" >>${UNBOUND_CONFIG}
     fi
-    if [ -f "${RESOLV_CONFIG_OLD}" ]; then
-      rm -f ${RESOLV_CONFIG_OLD}
-    fi
+    # Move the resolve file to the old file
     if [ -f "${RESOLV_CONFIG}" ]; then
       mv ${RESOLV_CONFIG} ${RESOLV_CONFIG_OLD}
     fi
-    if [ -f "${RESOLV_CONFIG_OLD}" ]; then 
+    # Use unbound as a nameserver
       echo "nameserver 127.0.0.1" >>${RESOLV_CONFIG}
       echo "nameserver ::1" >>${RESOLV_CONFIG}
-    fi
     if [ ! -f "${UNBOUND_MANAGER}" ]; then
       echo "Unbound: true" >>${UNBOUND_MANAGER}
     fi
