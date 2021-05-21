@@ -60,6 +60,75 @@ UNBOUND_ANCHOR="/var/lib/unbound/root.key"
 UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
 UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/unbound-manager.sh"
 
+function usage-help() {
+  echo "usage: ./$(basename "$0") <command>"
+  echo "  --install     Install Unbound"
+  echo "  --start       Start Unbound"
+  echo "  --stop        Stop Unbound"
+  echo "  --restart     Restart Unbound"
+  echo "  --reinstall   Reinstall Unbound"
+  echo "  --uninstall   Uninstall Unbound"
+  echo "  --update      Update Unbound Manager"
+  echo "  --backup      Backup Unbound Config"
+  echo "  --restore     Restore Unbound Config"
+  echo "  --help        Show Usage Guide"
+}
+
+# The usage of the script
+function usage() {
+  while [ $# -ne 0 ]; do
+    case ${1} in
+    --install)
+      shift
+      HEADLESS_INSTALL=${HEADLESS_INSTALL:-y}
+      ;;
+    --start)
+      shift
+      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-2}
+      ;;
+    --stop)
+      shift
+      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-3}
+      ;;
+    --restart)
+      shift
+      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-4}
+      ;;
+    --reinstall)
+      shift
+      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-7}
+      ;;
+    --uninstall)
+      shift
+      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-8}
+      ;;
+    --update)
+      shift
+      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-9}
+      ;;
+    --backup)
+      shift
+      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-10}
+      ;;
+    --restore)
+      shift
+      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-11}
+      ;;
+    --help)
+      shift
+      usage-help
+      ;;
+    *)
+      echo "Invalid argument: ${1}"
+      usage-help
+      exit
+      ;;
+    esac
+  done
+}
+
+usage "$@"
+
 if [ ! -f "${UNBOUND_MANAGER}" ]; then
 
   # Function to install unbound
@@ -154,7 +223,7 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
     fi
   }
 
-  # wireguard unbound
+  # Unbound unbound
   install-unbound-manager-file
 
 else
