@@ -208,12 +208,9 @@ else
             service unbound disable
             service unbound stop
           fi
-          if [ -f "${RESOLV_CONFIG}" ]; then
-            # Change to defualt dns
-            chattr -i ${RESOLV_CONFIG}
+          if [ -f "${RESOLV_CONFIG_OLD}" ]; then
             rm -f ${RESOLV_CONFIG}
             mv ${RESOLV_CONFIG_OLD} ${RESOLV_CONFIG}
-            chattr +i ${RESOLV_CONFIG}
           fi
           if { [ "${DISTRO}" == "centos" ] || [ "${DISTRO}" == "rhel" ]; }; then
             yum remove unbound unbound-host -y
