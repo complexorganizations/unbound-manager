@@ -60,6 +60,37 @@ UNBOUND_ANCHOR="/var/lib/unbound/root.key"
 UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
 UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/unbound-manager.sh"
 
+  # real-time updates
+  function enable-automatic-updates() {
+      echo "Would you like to setup real-time updates?"
+      echo "  1) Yes (Recommended)"
+      echo "  2) No (Advanced)"
+      until [[ "${AUTOMATIC_UPDATES_SETTINGS}" =~ ^[1-3]$ ]]; do
+        read -rp "Automatic Updates [1-2]: " -e -i 1 AUTOMATIC_UPDATES_SETTINGS
+      done
+      case ${AUTOMATIC_UPDATES_SETTINGS} in
+      1)
+        crontab -l | {
+          cat
+          echo "0 0 * * * $(realpath "$0") --update"
+        } | crontab -
+        if pgrep systemd-journal; then
+          systemctl enable cron
+          systemctl start cron
+        else
+          service cron enable
+          service cron start
+        fi
+        ;;
+      2)
+        echo "Real-time Updates Disabled"
+        ;;
+      esac
+  }
+
+  # real-time updates
+  enable-automatic-updates
+
 if [ ! -f "${UNBOUND_MANAGER}" ]; then
 
   # Function to install unbound
