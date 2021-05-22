@@ -62,6 +62,34 @@ UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizatio
 
 if [ ! -f "${UNBOUND_MANAGER}" ]; then
 
+  function choose-your-list() {
+      echo "Which list do you want to use?"
+      echo "  1) All (Recommended)"
+      echo "  2) fd86:ea04:1115::0/64"
+      echo "  3) Custom (Advanced)"
+      until [[ "${IPV6_SUBNET_SETTINGS}" =~ ^[1-3]$ ]]; do
+        read -rp "Subnet Choice [1-3]: " -e -i 1 IPV6_SUBNET_SETTINGS
+      done
+      case ${IPV6_SUBNET_SETTINGS} in
+      1)
+        echo "include: /etc/unbound/unbound.conf.d/block-list.conf" >>/etc/unbound/unbound.conf
+        ;;
+      2)
+        IPV6_SUBNET="fd86:ea04:1115::0/64"
+        ;;
+      3)
+        read -rp "Custom Subnet: " -e -i "fd42:42:42::0/64" IPV6_SUBNET
+        if [ -z "${IPV6_SUBNET}" ]; then
+          IPV6_SUBNET="fd42:42:42::0/64"
+        fi
+        ;;
+      esac
+    fi
+  }
+
+  # Custom IPv6 Subnet
+  set-ipv6-subnet
+
   # Function to install unbound
   function install-unbound() {
     if [ "${DISTRO}" == "ubuntu" ]; then
