@@ -59,52 +59,18 @@ UNBOUND_ROOT_HINTS="${UNBOUND_ROOT}/root.hints"
 UNBOUND_ANCHOR="/var/lib/unbound/root.key"
 UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
 UNBOUND_CONFIG_ADWARE="/etc/unbound/unbound.conf.d/adware.conf"
+UNBOUND_CONFIG_ADWARE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/adware.conf"
 UNBOUND_CONFIG_MALWARE="/etc/unbound/unbound.conf.d/malware.conf"
+UNBOUND_CONFIG_MALWARE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/malware.conf"
 UNBOUND_CONFIG_PRIVACY="/etc/unbound/unbound.conf.d/privacy.conf"
+UNBOUND_CONFIG_PRIVACY_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/privacy.conf"
 UNBOUND_CONFIG_SEXUAL="/etc/unbound/unbound.conf.d/sexual.conf"
+UNBOUND_CONFIG_SEXUAL_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/sexual.conf"
 UNBOUND_CONFIG_SOCIAL="/etc/unbound/unbound.conf.d/social.conf"
+UNBOUND_CONFIG_SOCIAL_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/social.conf"
 UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/unbound-manager.sh"
 
 if [ ! -f "${UNBOUND_MANAGER}" ]; then
-
-  function choose-your-list() {
-    echo "Which list do you want to use?"
-    echo "  1) All (Recommended)"
-    echo "  2) Adware"
-    echo "  3) Malware"
-    echo "  4) Privacy"
-    echo "  5) Sexual"
-    echo "  6) Social"
-    until [[ "${LIST_CHOICE_SETTINGS}" =~ ^[1-6]$ ]]; do
-      read -rp "List Choice [1-6]: " -e -i 1 LIST_CHOICE_SETTINGS
-    done
-    case ${LIST_CHOICE_SETTINGS} in
-    1)
-      echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
-      echo "include: ${UNBOUND_CONFIG_MALWARE}" >>${UNBOUND_CONFIG}
-      echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
-      echo "include: ${UNBOUND_CONFIG_SEXUAL}" >>${UNBOUND_CONFIG}
-      echo "include: ${UNBOUND_CONFIG_SOCIAL}" >>${UNBOUND_CONFIG}
-      ;;
-    2)
-      echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
-      ;;
-    3)
-      echo "include: ${UNBOUND_CONFIG_MALWARE}" >>${UNBOUND_CONFIG}
-      ;;
-    4)
-      echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
-      ;;
-    5)
-      echo "include: ${UNBOUND_CONFIG_SEXUAL}" >>${UNBOUND_CONFIG}
-      ;;
-    6)
-      echo "include: ${UNBOUND_CONFIG_SOCIAL}" >>${UNBOUND_CONFIG}
-      ;;
-    esac
-  }
-
-  choose-your-list
 
   # Function to install unbound
   function install-unbound() {
@@ -188,6 +154,60 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
 
   # Running Install Unbound
   install-unbound
+
+  function choose-your-list() {
+    echo "Which list do you want to use?"
+    echo "  1) All (Recommended)"
+    echo "  2) Adware"
+    echo "  3) Malware"
+    echo "  4) Privacy"
+    echo "  5) Sexual"
+    echo "  6) Social"
+    until [[ "${LIST_CHOICE_SETTINGS}" =~ ^[1-6]$ ]]; do
+      read -rp "List Choice [1-6]: " -e -i 1 LIST_CHOICE_SETTINGS
+    done
+    case ${LIST_CHOICE_SETTINGS} in
+    1)
+      # Adware
+      echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
+      curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${UNBOUND_CONFIG_ADWARE}
+      # Malware
+      echo "include: ${UNBOUND_CONFIG_MALWARE}" >>${UNBOUND_CONFIG}
+      curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${UNBOUND_CONFIG_MALWARE}
+      # Privacy
+      echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
+      curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" ${UNBOUND_CONFIG_PRIVACY}
+      # Sexual
+      echo "include: ${UNBOUND_CONFIG_SEXUAL}" >>${UNBOUND_CONFIG}
+      curl -o "${UNBOUND_CONFIG_SEXUAL_URL}" ${UNBOUND_CONFIG_SEXUAL}
+      # Social
+      echo "include: ${UNBOUND_CONFIG_SOCIAL}" >>${UNBOUND_CONFIG}
+      curl -o "${UNBOUND_CONFIG_SOCIAL_URL}" ${UNBOUND_CONFIG_SOCIAL}
+      ;;
+    2)
+      echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
+      curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${UNBOUND_CONFIG_ADWARE}
+      ;;
+    3)
+      echo "include: ${UNBOUND_CONFIG_MALWARE}" >>${UNBOUND_CONFIG}
+      curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${UNBOUND_CONFIG_MALWARE}
+      ;;
+    4)
+      echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
+      curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" ${UNBOUND_CONFIG_PRIVACY}
+      ;;
+    5)
+      echo "include: ${UNBOUND_CONFIG_SEXUAL}" >>${UNBOUND_CONFIG}
+      curl -o "${UNBOUND_CONFIG_SEXUAL_URL}" ${UNBOUND_CONFIG_SEXUAL}
+      ;;
+    6)
+      echo "include: ${UNBOUND_CONFIG_SOCIAL}" >>${UNBOUND_CONFIG}
+      curl -o "${UNBOUND_CONFIG_SOCIAL_URL}" ${UNBOUND_CONFIG_SOCIAL}
+      ;;
+    esac
+  }
+
+  choose-your-list
 
   # Install unbound manager
   function install-unbound-manager-file() {
