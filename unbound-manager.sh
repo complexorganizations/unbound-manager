@@ -63,43 +63,42 @@ UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizatio
 if [ ! -f "${UNBOUND_MANAGER}" ]; then
 
   function choose-your-list() {
-      echo "Which list do you want to use?"
-      echo "  1) All (Recommended)"
-      echo "  2) Adware"
-      echo "  3) Malware"
-      echo "  4) Privacy"
-      echo "  5) Sexual"
-      echo "  6) Social"
-      until [[ "${LIST_CHOICE_SETTINGS}" =~ ^[1-6]$ ]]; do
-        read -rp "List Choice [1-6]: " -e -i 1 LIST_CHOICE_SETTINGS
-      done
-      case ${LIST_CHOICE_SETTINGS} in
-      1)
-        echo "include: /etc/unbound/unbound.conf.d/adware.conf" >>${UNBOUND_CONFIG}
-        echo "include: /etc/unbound/unbound.conf.d/malware.conf" >>${UNBOUND_CONFIG}
-        echo "include: /etc/unbound/unbound.conf.d/privacy.conf" >>${UNBOUND_CONFIG}
-        echo "include: /etc/unbound/unbound.conf.d/sexual.conf" >>${UNBOUND_CONFIG}
-        echo "include: /etc/unbound/unbound.conf.d/social.conf" >>${UNBOUND_CONFIG}
-        ;;
-      2)
-        echo "include: /etc/unbound/unbound.conf.d/adware.conf" >>${UNBOUND_CONFIG}
-        ;;
-      3)
-        echo "include: /etc/unbound/unbound.conf.d/malware.conf" >>${UNBOUND_CONFIG}
-        ;;
-      4)
-        echo "include: /etc/unbound/unbound.conf.d/privacy.conf" >>${UNBOUND_CONFIG}
-        ;;
-      5)
-        echo "include: /etc/unbound/unbound.conf.d/sexual.conf" >>${UNBOUND_CONFIG}
-        ;;
-      6)
-        echo "include: /etc/unbound/unbound.conf.d/social.conf" >>${UNBOUND_CONFIG}
-        ;;
-      esac
+    echo "Which list do you want to use?"
+    echo "  1) All (Recommended)"
+    echo "  2) Adware"
+    echo "  3) Malware"
+    echo "  4) Privacy"
+    echo "  5) Sexual"
+    echo "  6) Social"
+    until [[ "${LIST_CHOICE_SETTINGS}" =~ ^[1-6]$ ]]; do
+      read -rp "List Choice [1-6]: " -e -i 1 LIST_CHOICE_SETTINGS
+    done
+    case ${LIST_CHOICE_SETTINGS} in
+    1)
+      echo "include: /etc/unbound/unbound.conf.d/adware.conf" >>${UNBOUND_CONFIG}
+      echo "include: /etc/unbound/unbound.conf.d/malware.conf" >>${UNBOUND_CONFIG}
+      echo "include: /etc/unbound/unbound.conf.d/privacy.conf" >>${UNBOUND_CONFIG}
+      echo "include: /etc/unbound/unbound.conf.d/sexual.conf" >>${UNBOUND_CONFIG}
+      echo "include: /etc/unbound/unbound.conf.d/social.conf" >>${UNBOUND_CONFIG}
+      ;;
+    2)
+      echo "include: /etc/unbound/unbound.conf.d/adware.conf" >>${UNBOUND_CONFIG}
+      ;;
+    3)
+      echo "include: /etc/unbound/unbound.conf.d/malware.conf" >>${UNBOUND_CONFIG}
+      ;;
+    4)
+      echo "include: /etc/unbound/unbound.conf.d/privacy.conf" >>${UNBOUND_CONFIG}
+      ;;
+    5)
+      echo "include: /etc/unbound/unbound.conf.d/sexual.conf" >>${UNBOUND_CONFIG}
+      ;;
+    6)
+      echo "include: /etc/unbound/unbound.conf.d/social.conf" >>${UNBOUND_CONFIG}
+      ;;
+    esac
   }
 
-  # Custom IPv6 Subnet
   choose-your-list
 
   # Function to install unbound
