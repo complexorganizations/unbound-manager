@@ -84,35 +84,35 @@ function usage() {
       ;;
     --start)
       shift
-      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-2}
+      USER_OPTIONS=${USER_OPTIONS:-2}
       ;;
     --stop)
       shift
-      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-3}
+      USER_OPTIONS=${USER_OPTIONS:-3}
       ;;
     --restart)
       shift
-      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-4}
+      USER_OPTIONS=${USER_OPTIONS:-4}
       ;;
     --reinstall)
       shift
-      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-7}
+      USER_OPTIONS=${USER_OPTIONS:-7}
       ;;
     --uninstall)
       shift
-      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-8}
+      USER_OPTIONS=${USER_OPTIONS:-8}
       ;;
     --update)
       shift
-      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-9}
+      USER_OPTIONS=${USER_OPTIONS:-5}
       ;;
     --backup)
       shift
-      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-10}
+      USER_OPTIONS=${USER_OPTIONS:-10}
       ;;
     --restore)
       shift
-      WIREGUARD_OPTIONS=${WIREGUARD_OPTIONS:-11}
+      USER_OPTIONS=${USER_OPTIONS:-11}
       ;;
     --help)
       shift
