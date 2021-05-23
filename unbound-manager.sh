@@ -65,30 +65,42 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
   function choose-your-list() {
       echo "Which list do you want to use?"
       echo "  1) All (Recommended)"
-      echo "  2) fd86:ea04:1115::0/64"
-      echo "  3) Custom (Advanced)"
-      until [[ "${IPV6_SUBNET_SETTINGS}" =~ ^[1-3]$ ]]; do
-        read -rp "Subnet Choice [1-3]: " -e -i 1 IPV6_SUBNET_SETTINGS
+      echo "  2) Adware"
+      echo "  3) Malware"
+      echo "  4) Privacy"
+      echo "  5) Sexual"
+      echo "  6) Social"
+      until [[ "${LIST_CHOICE_SETTINGS}" =~ ^[1-6]$ ]]; do
+        read -rp "List Choice [1-6]: " -e -i 1 LIST_CHOICE_SETTINGS
       done
-      case ${IPV6_SUBNET_SETTINGS} in
+      case ${LIST_CHOICE_SETTINGS} in
       1)
-        echo "include: /etc/unbound/unbound.conf.d/block-list.conf" >>/etc/unbound/unbound.conf
+        echo "include: /etc/unbound/unbound.conf.d/adware.conf" >>${UNBOUND_CONFIG}
+        echo "include: /etc/unbound/unbound.conf.d/malware.conf" >>${UNBOUND_CONFIG}
+        echo "include: /etc/unbound/unbound.conf.d/privacy.conf" >>${UNBOUND_CONFIG}
+        echo "include: /etc/unbound/unbound.conf.d/sexual.conf" >>${UNBOUND_CONFIG}
+        echo "include: /etc/unbound/unbound.conf.d/social.conf" >>${UNBOUND_CONFIG}
         ;;
       2)
-        IPV6_SUBNET="fd86:ea04:1115::0/64"
+        echo "include: /etc/unbound/unbound.conf.d/adware.conf" >>${UNBOUND_CONFIG}
         ;;
       3)
-        read -rp "Custom Subnet: " -e -i "fd42:42:42::0/64" IPV6_SUBNET
-        if [ -z "${IPV6_SUBNET}" ]; then
-          IPV6_SUBNET="fd42:42:42::0/64"
-        fi
+        echo "include: /etc/unbound/unbound.conf.d/malware.conf" >>${UNBOUND_CONFIG}
+        ;;
+      4)
+        echo "include: /etc/unbound/unbound.conf.d/privacy.conf" >>${UNBOUND_CONFIG}
+        ;;
+      5)
+        echo "include: /etc/unbound/unbound.conf.d/sexual.conf" >>${UNBOUND_CONFIG}
+        ;;
+      6)
+        echo "include: /etc/unbound/unbound.conf.d/social.conf" >>${UNBOUND_CONFIG}
         ;;
       esac
-    fi
   }
 
   # Custom IPv6 Subnet
-  set-ipv6-subnet
+  choose-your-list
 
   # Function to install unbound
   function install-unbound() {
