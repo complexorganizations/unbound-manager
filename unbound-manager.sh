@@ -70,6 +70,60 @@ UNBOUND_CONFIG_SOCIAL="/etc/unbound/unbound.conf.d/social.conf"
 UNBOUND_CONFIG_SOCIAL_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/social.conf"
 UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/unbound-manager.sh"
 
+function usage-help() {
+  echo "usage: ./$(basename "$0") <command>"
+  echo "  --install     Install Unbound"
+  echo "  --start       Start Unbound"
+  echo "  --stop        Stop Unbound"
+  echo "  --restart     Restart Unbound"
+  echo "  --uninstall   Uninstall Unbound"
+  echo "  --update      Update Unbound Manager"
+  echo "  --help        Show Usage Guide"
+}
+
+# The usage of the script
+function usage() {
+  while [ $# -ne 0 ]; do
+    case ${1} in
+    --install)
+      shift
+      HEADLESS_INSTALL=${HEADLESS_INSTALL:-y}
+      ;;
+    --start)
+      shift
+      USER_OPTIONS=${USER_OPTIONS:-1}
+      ;;
+    --stop)
+      shift
+      USER_OPTIONS=${USER_OPTIONS:-2}
+      ;;
+    --restart)
+      shift
+      USER_OPTIONS=${USER_OPTIONS:-3}
+      ;;
+    --uninstall)
+      shift
+      USER_OPTIONS=${USER_OPTIONS:-4}
+      ;;
+    --update)
+      shift
+      USER_OPTIONS=${USER_OPTIONS:-5}
+      ;;
+    --help)
+      shift
+      usage-help
+      ;;
+    *)
+      echo "Invalid argument: ${1}"
+      usage-help
+      exit
+      ;;
+    esac
+  done
+}
+
+usage "$@"
+
 if [ ! -f "${UNBOUND_MANAGER}" ]; then
 
   # real-time updates
@@ -249,7 +303,7 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
     fi
   }
 
-  # wireguard unbound
+  # Unbound unbound
   install-unbound-manager-file
 
 else
