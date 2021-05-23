@@ -60,6 +60,8 @@ UNBOUND_ANCHOR="/var/lib/unbound/root.key"
 UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
 UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/unbound-manager.sh"
 
+if [ ! -f "${UNBOUND_MANAGER}" ]; then
+
 # real-time updates
 function enable-automatic-updates() {
   echo "Would you like to setup real-time updates?"
@@ -90,8 +92,6 @@ function enable-automatic-updates() {
 
 # real-time updates
 enable-automatic-updates
-
-if [ ! -f "${UNBOUND_MANAGER}" ]; then
 
   # Function to install unbound
   function install-unbound() {
