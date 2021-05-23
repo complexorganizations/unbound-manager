@@ -66,11 +66,8 @@ function usage-help() {
   echo "  --start       Start Unbound"
   echo "  --stop        Stop Unbound"
   echo "  --restart     Restart Unbound"
-  echo "  --reinstall   Reinstall Unbound"
   echo "  --uninstall   Uninstall Unbound"
   echo "  --update      Update Unbound Manager"
-  echo "  --backup      Backup Unbound Config"
-  echo "  --restore     Restore Unbound Config"
   echo "  --help        Show Usage Guide"
 }
 
@@ -84,35 +81,23 @@ function usage() {
       ;;
     --start)
       shift
-      USER_OPTIONS=${USER_OPTIONS:-2}
+      USER_OPTIONS=${USER_OPTIONS:-1}
       ;;
     --stop)
       shift
-      USER_OPTIONS=${USER_OPTIONS:-3}
+      USER_OPTIONS=${USER_OPTIONS:-2}
       ;;
     --restart)
       shift
-      USER_OPTIONS=${USER_OPTIONS:-4}
-      ;;
-    --reinstall)
-      shift
-      USER_OPTIONS=${USER_OPTIONS:-7}
+      USER_OPTIONS=${USER_OPTIONS:-3}
       ;;
     --uninstall)
       shift
-      USER_OPTIONS=${USER_OPTIONS:-8}
+      USER_OPTIONS=${USER_OPTIONS:-4}
       ;;
     --update)
       shift
       USER_OPTIONS=${USER_OPTIONS:-5}
-      ;;
-    --backup)
-      shift
-      USER_OPTIONS=${USER_OPTIONS:-10}
-      ;;
-    --restore)
-      shift
-      USER_OPTIONS=${USER_OPTIONS:-11}
       ;;
     --help)
       shift
