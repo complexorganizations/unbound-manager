@@ -33,7 +33,7 @@ function installing-system-requirements() {
       elif { [ "${DISTRO}" == "fedora" ] || [ "${DISTRO}" == "centos" ] || [ "${DISTRO}" == "rhel" ]; }; then
         yum update -y && yum install curl cron -y
       elif { [ "${DISTRO}" == "arch" ] || [ "${DISTRO}" == "manjaro" ]; }; then
-        pacman -Syu && pacman -Syu --noconfirm curl cronie
+        pacman -Syu && pacman -Syu --noconfirm --needed curl cronie
       elif [ "${DISTRO}" == "alpine" ]; then
         apk update && apk add curl cron
       elif [ "${DISTRO}" == "freebsd" ]; then
