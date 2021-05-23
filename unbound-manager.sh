@@ -124,38 +124,18 @@ function usage() {
 
 usage "$@"
 
+function headless-install() {
+  if [[ ${HEADLESS_INSTALL} =~ ^[Yy]$ ]]; then
+    INTERFACE_OR_PEER=${INTERFACE_OR_PEER:-1}
+    AUTOMATIC_UPDATES_SETTINGS=${AUTOMATIC_UPDATES_SETTINGS:-1}
+    LIST_CHOICE_SETTINGS=${LIST_CHOICE_SETTINGS:-1}
+  fi
+}
+
+# No GUI
+headless-install
+
 if [ ! -f "${UNBOUND_MANAGER}" ]; then
-
-  # real-time updates
-  function enable-automatic-updates() {
-    echo "Would you like to setup real-time updates?"
-    echo "  1) Yes (Recommended)"
-    echo "  2) No (Advanced)"
-    until [[ "${AUTOMATIC_UPDATES_SETTINGS}" =~ ^[1-2]$ ]]; do
-      read -rp "Automatic Updates [1-2]: " -e -i 1 AUTOMATIC_UPDATES_SETTINGS
-    done
-    case ${AUTOMATIC_UPDATES_SETTINGS} in
-    1)
-      crontab -l | {
-        cat
-        echo "0 0 * * * $(realpath "$0") --update"
-      } | crontab -
-      if pgrep systemd-journal; then
-        systemctl enable cron
-        systemctl start cron
-      else
-        service cron enable
-        service cron start
-      fi
-      ;;
-    2)
-      echo "Real-time Updates Disabled"
-      ;;
-    esac
-  }
-
-  # real-time updates
-  enable-automatic-updates
 
   # Function to install unbound
   function install-unbound() {
@@ -293,6 +273,37 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
   }
 
   choose-your-list
+
+  # real-time updates
+  function enable-automatic-updates() {
+    echo "Would you like to setup real-time updates?"
+    echo "  1) Yes (Recommended)"
+    echo "  2) No (Advanced)"
+    until [[ "${AUTOMATIC_UPDATES_SETTINGS}" =~ ^[1-2]$ ]]; do
+      read -rp "Automatic Updates [1-2]: " -e -i 1 AUTOMATIC_UPDATES_SETTINGS
+    done
+    case ${AUTOMATIC_UPDATES_SETTINGS} in
+    1)
+      crontab -l | {
+        cat
+        echo "0 0 * * * $(realpath "$0") --update"
+      } | crontab -
+      if pgrep systemd-journal; then
+        systemctl enable cron
+        systemctl start cron
+      else
+        service cron enable
+        service cron start
+      fi
+      ;;
+    2)
+      echo "Real-time Updates Disabled"
+      ;;
+    esac
+  }
+
+  # real-time updates
+  enable-automatic-updates
 
   # Install unbound manager
   function install-unbound-manager-file() {
