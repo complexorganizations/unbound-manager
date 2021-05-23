@@ -27,17 +27,17 @@ dist-check
 # Pre-Checks system requirements
 function installing-system-requirements() {
   if { [ "${DISTRO}" == "ubuntu" ] || [ "${DISTRO}" == "debian" ] || [ "${DISTRO}" == "raspbian" ] || [ "${DISTRO}" == "pop" ] || [ "${DISTRO}" == "kali" ] || [ "${DISTRO}" == "linuxmint" ] || [ "${DISTRO}" == "fedora" ] || [ "${DISTRO}" == "centos" ] || [ "${DISTRO}" == "rhel" ] || [ "${DISTRO}" == "arch" ] || [ "${DISTRO}" == "manjaro" ] || [ "${DISTRO}" == "alpine" ] || [ "${DISTRO}" == "freebsd" ]; }; then
-    if [ ! -x "$(command -v curl)" ]; then
+    if { [ ! -x "$(command -v curl)" ] || [ ! -x "$(command -v cron)" ]; }; then
       if { [ "${DISTRO}" == "ubuntu" ] || [ "${DISTRO}" == "debian" ] || [ "${DISTRO}" == "raspbian" ] || [ "${DISTRO}" == "pop" ] || [ "${DISTRO}" == "kali" ] || [ "${DISTRO}" == "linuxmint" ]; }; then
-        apt-get update && apt-get install curl -y
+        apt-get update && apt-get install curl cron -y
       elif { [ "${DISTRO}" == "fedora" ] || [ "${DISTRO}" == "centos" ] || [ "${DISTRO}" == "rhel" ]; }; then
-        yum update -y && yum install curl -y
+        yum update -y && yum install curl cron -y
       elif { [ "${DISTRO}" == "arch" ] || [ "${DISTRO}" == "manjaro" ]; }; then
-        pacman -Syu && pacman -Syu --noconfirm curl
+        pacman -Syu && pacman -Syu --noconfirm curl cronie
       elif [ "${DISTRO}" == "alpine" ]; then
-        apk update && apk add curl
+        apk update && apk add curl cron
       elif [ "${DISTRO}" == "freebsd" ]; then
-        pkg update && pkg install curl
+        pkg update && pkg install curl cron
       fi
     fi
   else
@@ -60,36 +60,36 @@ UNBOUND_ANCHOR="/var/lib/unbound/root.key"
 UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
 UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/unbound-manager.sh"
 
-  # real-time updates
-  function enable-automatic-updates() {
-      echo "Would you like to setup real-time updates?"
-      echo "  1) Yes (Recommended)"
-      echo "  2) No (Advanced)"
-      until [[ "${AUTOMATIC_UPDATES_SETTINGS}" =~ ^[1-3]$ ]]; do
-        read -rp "Automatic Updates [1-2]: " -e -i 1 AUTOMATIC_UPDATES_SETTINGS
-      done
-      case ${AUTOMATIC_UPDATES_SETTINGS} in
-      1)
-        crontab -l | {
-          cat
-          echo "0 0 * * * $(realpath "$0") --update"
-        } | crontab -
-        if pgrep systemd-journal; then
-          systemctl enable cron
-          systemctl start cron
-        else
-          service cron enable
-          service cron start
-        fi
-        ;;
-      2)
-        echo "Real-time Updates Disabled"
-        ;;
-      esac
-  }
+# real-time updates
+function enable-automatic-updates() {
+  echo "Would you like to setup real-time updates?"
+  echo "  1) Yes (Recommended)"
+  echo "  2) No (Advanced)"
+  until [[ "${AUTOMATIC_UPDATES_SETTINGS}" =~ ^[1-2]$ ]]; do
+    read -rp "Automatic Updates [1-2]: " -e -i 1 AUTOMATIC_UPDATES_SETTINGS
+  done
+  case ${AUTOMATIC_UPDATES_SETTINGS} in
+  1)
+    crontab -l | {
+      cat
+      echo "0 0 * * * $(realpath "$0") --update"
+    } | crontab -
+    if pgrep systemd-journal; then
+      systemctl enable cron
+      systemctl start cron
+    else
+      service cron enable
+      service cron start
+    fi
+    ;;
+  2)
+    echo "Real-time Updates Disabled"
+    ;;
+  esac
+}
 
-  # real-time updates
-  enable-automatic-updates
+# real-time updates
+enable-automatic-updates
 
 if [ ! -f "${UNBOUND_MANAGER}" ]; then
 
