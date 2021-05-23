@@ -58,6 +58,11 @@ UNBOUND_CONFIG="${UNBOUND_ROOT}/unbound.conf"
 UNBOUND_ROOT_HINTS="${UNBOUND_ROOT}/root.hints"
 UNBOUND_ANCHOR="/var/lib/unbound/root.key"
 UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
+UNBOUND_CONFIG_ADWARE="/etc/unbound/unbound.conf.d/adware.conf"
+UNBOUND_CONFIG_MALWARE="/etc/unbound/unbound.conf.d/malware.conf"
+UNBOUND_CONFIG_PRIVACY="/etc/unbound/unbound.conf.d/privacy.conf"
+UNBOUND_CONFIG_SEXUAL="/etc/unbound/unbound.conf.d/sexual.conf"
+UNBOUND_CONFIG_SOCIAL="/etc/unbound/unbound.conf.d/social.conf"
 UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/unbound-manager.sh"
 
 if [ ! -f "${UNBOUND_MANAGER}" ]; then
@@ -75,26 +80,26 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
     done
     case ${LIST_CHOICE_SETTINGS} in
     1)
-      echo "include: /etc/unbound/unbound.conf.d/adware.conf" >>${UNBOUND_CONFIG}
-      echo "include: /etc/unbound/unbound.conf.d/malware.conf" >>${UNBOUND_CONFIG}
-      echo "include: /etc/unbound/unbound.conf.d/privacy.conf" >>${UNBOUND_CONFIG}
-      echo "include: /etc/unbound/unbound.conf.d/sexual.conf" >>${UNBOUND_CONFIG}
-      echo "include: /etc/unbound/unbound.conf.d/social.conf" >>${UNBOUND_CONFIG}
+      echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
+      echo "include: ${UNBOUND_CONFIG_MALWARE}" >>${UNBOUND_CONFIG}
+      echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
+      echo "include: ${UNBOUND_CONFIG_SEXUAL}" >>${UNBOUND_CONFIG}
+      echo "include: ${UNBOUND_CONFIG_SOCIAL}" >>${UNBOUND_CONFIG}
       ;;
     2)
-      echo "include: /etc/unbound/unbound.conf.d/adware.conf" >>${UNBOUND_CONFIG}
+      echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
       ;;
     3)
-      echo "include: /etc/unbound/unbound.conf.d/malware.conf" >>${UNBOUND_CONFIG}
+      echo "include: ${UNBOUND_CONFIG_MALWARE}" >>${UNBOUND_CONFIG}
       ;;
     4)
-      echo "include: /etc/unbound/unbound.conf.d/privacy.conf" >>${UNBOUND_CONFIG}
+      echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
       ;;
     5)
-      echo "include: /etc/unbound/unbound.conf.d/sexual.conf" >>${UNBOUND_CONFIG}
+      echo "include: ${UNBOUND_CONFIG_SEXUAL}" >>${UNBOUND_CONFIG}
       ;;
     6)
-      echo "include: /etc/unbound/unbound.conf.d/social.conf" >>${UNBOUND_CONFIG}
+      echo "include: ${UNBOUND_CONFIG_SOCIAL}" >>${UNBOUND_CONFIG}
       ;;
     esac
   }
