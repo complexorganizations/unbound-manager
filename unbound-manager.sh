@@ -339,10 +339,35 @@ else
       fi
       ;;
     5)
+      # Update script
       CURRENT_FILE_PATH="$(realpath "$0")"
       if [ -f "${CURRENT_FILE_PATH}" ]; then
         curl -o "${CURRENT_FILE_PATH}" ${UNBOUND_MANAGER_UPDATE_URL}
         chmod +x "${CURRENT_FILE_PATH}" || exit
+      fi
+      # Update root hints
+      if [ -f "${UNBOUND_ROOT_HINTS}" ]; then
+        curl -o ${UNBOUND_ROOT_HINTS} ${UNBOUND_ROOT_SERVER_CONFIG_URL}
+      fi
+      # Update Adware List
+      if [ -f "${UNBOUND_CONFIG_ADWARE}" ]; then
+        curl -o ${UNBOUND_CONFIG_ADWARE} ${UNBOUND_CONFIG_ADWARE_URL}
+      fi
+      # Update Malware list
+      if [ -f "${UNBOUND_CONFIG_MALWARE}" ]; then
+        curl -o ${UNBOUND_CONFIG_MALWARE} ${UNBOUND_CONFIG_MALWARE_URL}
+      fi
+      # Update privacy list
+      if [ -f "${UNBOUND_CONFIG_PRIVACY}" ]; then
+        curl -o ${UNBOUND_CONFIG_PRIVACY} ${UNBOUND_CONFIG_PRIVACY_URL}
+      fi
+      # Update sexual list
+      if [ -f "${UNBOUND_CONFIG_SEXUAL}" ]; then
+        curl -o ${UNBOUND_CONFIG_SEXUAL} ${UNBOUND_CONFIG_SEXUAL_URL}
+      fi
+      # Update sexual list
+      if [ -f "${UNBOUND_CONFIG_SOCIAL}" ]; then
+        curl -o ${UNBOUND_CONFIG_SOCIAL} ${UNBOUND_CONFIG_SOCIAL_URL}
       fi
       ;;
     esac
