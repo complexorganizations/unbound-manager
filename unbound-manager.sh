@@ -230,10 +230,9 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
     echo "  2) Adware"
     echo "  3) Malware"
     echo "  4) Privacy"
-    echo "  5) Sexual"
-    echo "  6) Social"
-    until [[ "${LIST_CHOICE_SETTINGS}" =~ ^[1-6]$ ]]; do
-      read -rp "List Choice [1-6]: " -e -i 1 LIST_CHOICE_SETTINGS
+    echo "  5) No (Advanced)"
+    until [[ "${LIST_CHOICE_SETTINGS}" =~ ^[1-5]$ ]]; do
+      read -rp "List Choice [1-5]: " -e -i 1 LIST_CHOICE_SETTINGS
     done
     case ${LIST_CHOICE_SETTINGS} in
     1)
@@ -255,18 +254,6 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
       sed -i -e 's_.*_0.0.0.0 &_' "${TMP_UNBOUND_CONFIG_PRIVACY}"
       cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
       rm -f "${TMP_UNBOUND_CONFIG_PRIVACY}"
-      # Sexual
-      echo "include: ${UNBOUND_CONFIG_SEXUAL}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_SEXUAL_URL}" ${TMP_UNBOUND_CONFIG_SEXUAL}
-      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_SEXUAL}
-      cat ${TMP_UNBOUND_CONFIG_SEXUAL} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_SEXUAL}
-      rm -f ${TMP_UNBOUND_CONFIG_SEXUAL}
-      # Social
-      echo "include: ${UNBOUND_CONFIG_SOCIAL}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_SOCIAL_URL}" ${TMP_UNBOUND_CONFIG_SOCIAL}
-      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_SOCIAL}
-      cat ${TMP_UNBOUND_CONFIG_SOCIAL} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_SOCIAL}
-      rm -f ${TMP_UNBOUND_CONFIG_SOCIAL}
       ;;
     2)
       echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
@@ -290,18 +277,7 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
       rm -f "${TMP_UNBOUND_CONFIG_PRIVACY}"
       ;;
     5)
-      echo "include: ${UNBOUND_CONFIG_SEXUAL}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_SEXUAL_URL}" ${TMP_UNBOUND_CONFIG_SEXUAL}
-      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_SEXUAL}
-      cat ${TMP_UNBOUND_CONFIG_SEXUAL} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_SEXUAL}
-      rm -f ${TMP_UNBOUND_CONFIG_SEXUAL}
-      ;;
-    6)
-      echo "include: ${UNBOUND_CONFIG_SOCIAL}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_SOCIAL_URL}" ${TMP_UNBOUND_CONFIG_SOCIAL}
-      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_SOCIAL}
-      cat ${TMP_UNBOUND_CONFIG_SOCIAL} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_SOCIAL}
-      rm -f ${TMP_UNBOUND_CONFIG_SOCIAL}
+      echo "There are no lists selected."
       ;;
     esac
 
@@ -472,22 +448,6 @@ else
         sed -i -e 's_.*_0.0.0.0 &_' "${TMP_UNBOUND_CONFIG_PRIVACY}"
         cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
         rm -f "${TMP_UNBOUND_CONFIG_PRIVACY}"
-      fi
-      # Update sexual list
-      if [ -f "${UNBOUND_CONFIG_SEXUAL}" ]; then
-        rm -f ${UNBOUND_CONFIG_SEXUAL}
-        curl -o "${UNBOUND_CONFIG_SEXUAL_URL}" ${TMP_UNBOUND_CONFIG_SEXUAL}
-        sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_SEXUAL}
-        cat ${TMP_UNBOUND_CONFIG_SEXUAL} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_SEXUAL}
-        rm -f ${TMP_UNBOUND_CONFIG_SEXUAL}
-      fi
-      # Update sexual list
-      if [ -f "${UNBOUND_CONFIG_SOCIAL}" ]; then
-        rm -f ${UNBOUND_CONFIG_SOCIAL}
-        curl -o "${UNBOUND_CONFIG_SOCIAL_URL}" ${TMP_UNBOUND_CONFIG_SOCIAL}
-        sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_SOCIAL}
-        cat ${TMP_UNBOUND_CONFIG_SOCIAL} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_SOCIAL}
-        rm -f ${TMP_UNBOUND_CONFIG_SOCIAL}
       fi
       ;;
     esac
