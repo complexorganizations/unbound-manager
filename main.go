@@ -30,6 +30,7 @@ func main() {
 	// Privacy
 	// Sexual
 	// Social
+	validateAndSave("https://www.github.developerdan.com/hosts/lists/facebook-extended.txt", socialConfig)
 }
 
 func validateAndSave(url, path string) {
