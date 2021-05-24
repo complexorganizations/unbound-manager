@@ -26,11 +26,14 @@ func init() {
 func main() {
 	// Adware
 	validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
+	validateAndSave("https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt", adwareConfig)
 	// Malware
 	// Privacy
+	validateAndSave("https://www.github.developerdan.com/hosts/lists/tracking-aggressive-extended.txt", privacyConfig)
 	// Sexual
 	// Social
 	validateAndSave("https://www.github.developerdan.com/hosts/lists/facebook-extended.txt", socialConfig)
+	validateAndSave("https://www.github.developerdan.com/hosts/lists/hate-and-junk-extended.txt", socialConfig)
 }
 
 func validateAndSave(url, path string) {
