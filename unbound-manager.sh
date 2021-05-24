@@ -66,7 +66,7 @@ UNBOUND_CONFIG_MALWARE="/etc/unbound/unbound.conf.d/malware.conf"
 TMP_UNBOUND_CONFIG_MALWARE="/tmp/malware"
 UNBOUND_CONFIG_PRIVACY_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/privacy"
 UNBOUND_CONFIG_PRIVACY="/etc/unbound/unbound.conf.d/privacy.conf"
-TMP=UNBOUND_CONFIG_PRIVACY="/tmp/privacy"
+TMP_UNBOUND_CONFIG_PRIVACY="/tmp/privacy"
 UNBOUND_CONFIG_SEXUAL_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/sexual"
 UNBOUND_CONFIG_SEXUAL="/etc/unbound/unbound.conf.d/sexual.conf"
 TMP_UNBOUND_CONFIG_SEXUAL="/tmp/sexual"
@@ -251,10 +251,10 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
       rm -f ${TMP_UNBOUND_CONFIG_MALWARE}
       # Privacy
       echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" ${TMP_UNBOUND_CONFIG_PRIVACY}
-      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_PRIVACY}
-      cat ${TMP_UNBOUND_CONFIG_PRIVACY} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
-      rm -f ${TMP_UNBOUND_CONFIG_PRIVACY}
+      curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" "${TMP_UNBOUND_CONFIG_PRIVACY}"
+      sed -i -e 's_.*_0.0.0.0 &_' "${TMP_UNBOUND_CONFIG_PRIVACY}"
+      cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
+      rm -f "${TMP_UNBOUND_CONFIG_PRIVACY}"
       # Sexual
       echo "include: ${UNBOUND_CONFIG_SEXUAL}" >>${UNBOUND_CONFIG}
       curl -o "${UNBOUND_CONFIG_SEXUAL_URL}" ${TMP_UNBOUND_CONFIG_SEXUAL}
@@ -284,10 +284,10 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
       ;;
     4)
       echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" ${TMP_UNBOUND_CONFIG_PRIVACY}
-      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_PRIVACY}
-      cat ${TMP_UNBOUND_CONFIG_PRIVACY} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
-      rm -f ${TMP_UNBOUND_CONFIG_PRIVACY}
+      curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" "${TMP_UNBOUND_CONFIG_PRIVACY}"
+      sed -i -e 's_.*_0.0.0.0 &_' "${TMP_UNBOUND_CONFIG_PRIVACY}"
+      cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
+      rm -f "${TMP_UNBOUND_CONFIG_PRIVACY}"
       ;;
     5)
       echo "include: ${UNBOUND_CONFIG_SEXUAL}" >>${UNBOUND_CONFIG}
@@ -451,23 +451,43 @@ else
       fi
       # Update Adware List
       if [ -f "${UNBOUND_CONFIG_ADWARE}" ]; then
-        curl -o ${UNBOUND_CONFIG_ADWARE} ${UNBOUND_CONFIG_ADWARE_URL}
+        rm -f ${UNBOUND_CONFIG_ADWARE}
+        curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${TMP_UNBOUND_CONFIG_ADWARE}
+        sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_ADWARE}
+        cat ${TMP_UNBOUND_CONFIG_ADWARE} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_ADWARE}
+        rm -f ${TMP_UNBOUND_CONFIG_ADWARE}
       fi
       # Update Malware list
       if [ -f "${UNBOUND_CONFIG_MALWARE}" ]; then
-        curl -o ${UNBOUND_CONFIG_MALWARE} ${UNBOUND_CONFIG_MALWARE_URL}
+        rm -f ${UNBOUND_CONFIG_MALWARE}
+        curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${TMP_UNBOUND_CONFIG_MALWARE}
+        sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_MALWARE}
+        cat ${TMP_UNBOUND_CONFIG_MALWARE} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_MALWARE}
+        rm -f ${TMP_UNBOUND_CONFIG_MALWARE}
       fi
       # Update privacy list
       if [ -f "${UNBOUND_CONFIG_PRIVACY}" ]; then
-        curl -o ${UNBOUND_CONFIG_PRIVACY} ${UNBOUND_CONFIG_PRIVACY_URL}
+        rm -f ${UNBOUND_CONFIG_PRIVACY}
+        curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" "${TMP_UNBOUND_CONFIG_PRIVACY}"
+        sed -i -e 's_.*_0.0.0.0 &_' "${TMP_UNBOUND_CONFIG_PRIVACY}"
+        cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
+        rm -f "${TMP_UNBOUND_CONFIG_PRIVACY}"
       fi
       # Update sexual list
       if [ -f "${UNBOUND_CONFIG_SEXUAL}" ]; then
-        curl -o ${UNBOUND_CONFIG_SEXUAL} ${UNBOUND_CONFIG_SEXUAL_URL}
+        rm -f ${UNBOUND_CONFIG_SEXUAL}
+        curl -o "${UNBOUND_CONFIG_SEXUAL_URL}" ${TMP_UNBOUND_CONFIG_SEXUAL}
+        sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_SEXUAL}
+        cat ${TMP_UNBOUND_CONFIG_SEXUAL} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_SEXUAL}
+        rm -f ${TMP_UNBOUND_CONFIG_SEXUAL}
       fi
       # Update sexual list
       if [ -f "${UNBOUND_CONFIG_SOCIAL}" ]; then
-        curl -o ${UNBOUND_CONFIG_SOCIAL} ${UNBOUND_CONFIG_SOCIAL_URL}
+        rm -f ${UNBOUND_CONFIG_SOCIAL}
+        curl -o "${UNBOUND_CONFIG_SOCIAL_URL}" ${TMP_UNBOUND_CONFIG_SOCIAL}
+        sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_SOCIAL}
+        cat ${TMP_UNBOUND_CONFIG_SOCIAL} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_SOCIAL}
+        rm -f ${TMP_UNBOUND_CONFIG_SOCIAL}
       fi
       ;;
     esac
