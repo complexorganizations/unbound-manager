@@ -31,23 +31,40 @@ func validateAndSave(url, path string) {
 	handleErrors(err)
 	regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
 	domains := regex.FindAllString(string(body), -1)
-	for _, domain := range domains {
-		if validateDomain(domain) {
+	// unique
+	uniqueDomains := makeUnique(domains)
+	for i := 0; i < len(uniqueDomains); i++ {
+		if validateDomain(uniqueDomains[i]) {
 			filePath, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
 			defer filePath.Close()
-			fileContent := fmt.Sprint(domain, "\n")
+			fileContent := fmt.Sprint(uniqueDomains[i], "\n")
 			_, err = filePath.WriteString(fileContent)
 			handleErrors(err)
 		}
 	}
 }
 
+// Take in a list of domain and make them uniquie
+func makeUnique(randomStrings []string) []string {
+	flag := make(map[string]bool)
+	var uniqueString []string
+	for _, randomString := range randomStrings {
+		if !flag[randomString] {
+			flag[randomString] = true
+			uniqueString = append(uniqueString, randomString)
+		}
+	}
+	return uniqueString
+}
+
+// Validate a domain
 func validateDomain(domain string) bool {
 	ns, _ := net.LookupNS(domain)
 	return len(ns) >= 1
 }
 
+// Decide what to do with errors
 func handleErrors(err error) {
 	if err != nil {
 		log.Fatal(err)
