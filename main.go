@@ -10,6 +10,14 @@ import (
 	"regexp"
 )
 
+var (
+	adwareConfig  = "configs/adware.conf"
+	malwareConfig = "configs/malware.conf"
+	privacyConfig = "configs/privacy.conf"
+	sexualConfig  = "configs/sexual.conf"
+	socialConfig  = "configs/social.conf"
+)
+
 func main() {
 	response, err := http.Get("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts")
 	handleErrors(err)
