@@ -58,16 +58,21 @@ UNBOUND_CONFIG="${UNBOUND_ROOT}/unbound.conf"
 UNBOUND_ROOT_HINTS="${UNBOUND_ROOT}/root.hints"
 UNBOUND_ANCHOR="/var/lib/unbound/root.key"
 UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
+UNBOUND_CONFIG_ADWARE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/adware"
 UNBOUND_CONFIG_ADWARE="/etc/unbound/unbound.conf.d/adware.conf"
-UNBOUND_CONFIG_ADWARE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/adware.conf"
+TMP_UNBOUND_CONFIG_ADWARE="/tmp/adware"
+UNBOUND_CONFIG_MALWARE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/malware"
 UNBOUND_CONFIG_MALWARE="/etc/unbound/unbound.conf.d/malware.conf"
-UNBOUND_CONFIG_MALWARE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/malware.conf"
+TMP_UNBOUND_CONFIG_MALWARE="/tmp/malware"
+UNBOUND_CONFIG_PRIVACY_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/privacy"
 UNBOUND_CONFIG_PRIVACY="/etc/unbound/unbound.conf.d/privacy.conf"
-UNBOUND_CONFIG_PRIVACY_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/privacy.conf"
+TMP=UNBOUND_CONFIG_PRIVACY="/tmp/privacy"
+UNBOUND_CONFIG_SEXUAL_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/sexual"
 UNBOUND_CONFIG_SEXUAL="/etc/unbound/unbound.conf.d/sexual.conf"
-UNBOUND_CONFIG_SEXUAL_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/sexual.conf"
+TMP_UNBOUND_CONFIG_SEXUAL="/tmp/sexual"
+UNBOUND_CONFIG_SOCIAL_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/social"
 UNBOUND_CONFIG_SOCIAL="/etc/unbound/unbound.conf.d/social.conf"
-UNBOUND_CONFIG_SOCIAL_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/social.conf"
+TMP_UNBOUND_CONFIG_SOCIAL="/tmp/social"
 UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/unbound-manager.sh"
 
 function usage-help() {
@@ -234,41 +239,72 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
     1)
       # Adware
       echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${UNBOUND_CONFIG_ADWARE}
+      curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${TMP_UNBOUND_CONFIG_ADWARE}
+      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_ADWARE}
+      cat ${TMP_UNBOUND_CONFIG_ADWARE} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_ADWARE}
+      rm -f ${TMP_UNBOUND_CONFIG_ADWARE}
       # Malware
       echo "include: ${UNBOUND_CONFIG_MALWARE}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${UNBOUND_CONFIG_MALWARE}
+      curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${TMP_UNBOUND_CONFIG_MALWARE}
+      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_MALWARE}
+      cat ${TMP_UNBOUND_CONFIG_MALWARE} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_MALWARE}
+      rm -f ${TMP_UNBOUND_CONFIG_MALWARE}
       # Privacy
       echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" ${UNBOUND_CONFIG_PRIVACY}
+      curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" ${TMP_UNBOUND_CONFIG_PRIVACY}
+      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_PRIVACY}
+      cat ${TMP_UNBOUND_CONFIG_PRIVACY} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
+      rm -f ${TMP_UNBOUND_CONFIG_PRIVACY}
       # Sexual
       echo "include: ${UNBOUND_CONFIG_SEXUAL}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_SEXUAL_URL}" ${UNBOUND_CONFIG_SEXUAL}
+      curl -o "${UNBOUND_CONFIG_SEXUAL_URL}" ${TMP_UNBOUND_CONFIG_SEXUAL}
+      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_SEXUAL}
+      cat ${TMP_UNBOUND_CONFIG_SEXUAL} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_SEXUAL}
+      rm -f ${TMP_UNBOUND_CONFIG_SEXUAL}
       # Social
       echo "include: ${UNBOUND_CONFIG_SOCIAL}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_SOCIAL_URL}" ${UNBOUND_CONFIG_SOCIAL}
+      curl -o "${UNBOUND_CONFIG_SOCIAL_URL}" ${TMP_UNBOUND_CONFIG_SOCIAL}
+      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_SOCIAL}
+      cat ${TMP_UNBOUND_CONFIG_SOCIAL} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_SOCIAL}
+      rm -f ${TMP_UNBOUND_CONFIG_SOCIAL}
       ;;
     2)
       echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${UNBOUND_CONFIG_ADWARE}
+      curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${TMP_UNBOUND_CONFIG_ADWARE}
+      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_ADWARE}
+      cat ${TMP_UNBOUND_CONFIG_ADWARE} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_ADWARE}
+      rm -f ${TMP_UNBOUND_CONFIG_ADWARE}
       ;;
     3)
       echo "include: ${UNBOUND_CONFIG_MALWARE}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${UNBOUND_CONFIG_MALWARE}
+      curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${TMP_UNBOUND_CONFIG_MALWARE}
+      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_MALWARE}
+      cat ${TMP_UNBOUND_CONFIG_MALWARE} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_MALWARE}
+      rm -f ${TMP_UNBOUND_CONFIG_MALWARE}
       ;;
     4)
       echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" ${UNBOUND_CONFIG_PRIVACY}
+      curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" ${TMP_UNBOUND_CONFIG_PRIVACY}
+      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_PRIVACY}
+      cat ${TMP_UNBOUND_CONFIG_PRIVACY} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
+      rm -f ${TMP_UNBOUND_CONFIG_PRIVACY}
       ;;
     5)
       echo "include: ${UNBOUND_CONFIG_SEXUAL}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_SEXUAL_URL}" ${UNBOUND_CONFIG_SEXUAL}
+      curl -o "${UNBOUND_CONFIG_SEXUAL_URL}" ${TMP_UNBOUND_CONFIG_SEXUAL}
+      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_SEXUAL}
+      cat ${TMP_UNBOUND_CONFIG_SEXUAL} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_SEXUAL}
+      rm -f ${TMP_UNBOUND_CONFIG_SEXUAL}
       ;;
     6)
       echo "include: ${UNBOUND_CONFIG_SOCIAL}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_SOCIAL_URL}" ${UNBOUND_CONFIG_SOCIAL}
+      curl -o "${UNBOUND_CONFIG_SOCIAL_URL}" ${TMP_UNBOUND_CONFIG_SOCIAL}
+      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_SOCIAL}
+      cat ${TMP_UNBOUND_CONFIG_SOCIAL} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_SOCIAL}
+      rm -f ${TMP_UNBOUND_CONFIG_SOCIAL}
       ;;
     esac
+
   }
 
   choose-your-list
