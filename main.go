@@ -19,6 +19,10 @@ var (
 	socialConfig  = "configs/social.conf"
 )
 
+func init() {
+	//
+}
+
 func main() {
 	validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
 }
@@ -35,6 +39,12 @@ func validateAndSave(url, path string) {
 	uniqueDomains := makeUnique(domains)
 	for i := 0; i < len(uniqueDomains); i++ {
 		if validateDomain(uniqueDomains[i]) {
+			if fileExists(path) {
+				os.Remove(path)
+			}
+			if !fileExists(path) {
+				os.Create(path)
+			}
 			filePath, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
 			defer filePath.Close()
@@ -69,4 +79,13 @@ func handleErrors(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+// Check if a file exists
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
