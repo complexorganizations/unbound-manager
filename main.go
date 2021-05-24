@@ -1,4 +1,3 @@
-/* Update lists with a simple application. */
 package main
 
 import (
