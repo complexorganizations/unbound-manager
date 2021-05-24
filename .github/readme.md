@@ -19,12 +19,21 @@ bash /usr/local/bin/unbound-manager.sh
 - DNSSEC Validation
 - DNS Proxy
 
+### Variants
+| Variants               |
+| ---------------------  |
+| [Adware](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/adware) |
+| [Malware](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/malware) |
+| [Privacy](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/privacy) |
+| [Sexual](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/sexual) |
+| [Social](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/social) |
+
 ---
 ### Author
 * Name: Prajwal Koirala
 * Website: [prajwalkoirala.com](https://www.prajwalkoirala.com)
 
----	
+---
 ### Credits
 Open Source Community
 
