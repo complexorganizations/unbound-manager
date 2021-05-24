@@ -18,6 +18,7 @@ bash /usr/local/bin/unbound-manager.sh
 - Install, manage your own DNS
 - DNSSEC Validation
 - DNS Proxy
+- Blocking based on DNS
 
 ### Variants
 | Variants               |
