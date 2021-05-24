@@ -67,12 +67,6 @@ TMP_UNBOUND_CONFIG_MALWARE="/tmp/malware"
 UNBOUND_CONFIG_PRIVACY_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/privacy"
 UNBOUND_CONFIG_PRIVACY="/etc/unbound/unbound.conf.d/privacy.conf"
 TMP_UNBOUND_CONFIG_PRIVACY="/tmp/privacy"
-UNBOUND_CONFIG_SEXUAL_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/sexual"
-UNBOUND_CONFIG_SEXUAL="/etc/unbound/unbound.conf.d/sexual.conf"
-TMP_UNBOUND_CONFIG_SEXUAL="/tmp/sexual"
-UNBOUND_CONFIG_SOCIAL_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/social"
-UNBOUND_CONFIG_SOCIAL="/etc/unbound/unbound.conf.d/social.conf"
-TMP_UNBOUND_CONFIG_SOCIAL="/tmp/social"
 UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/unbound-manager.sh"
 
 function usage-help() {
