@@ -24,7 +24,12 @@ func init() {
 }
 
 func main() {
+	// Adware
 	validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
+	// Malware
+	// Privacy
+	// Sexual
+	// Social
 }
 
 func validateAndSave(url, path string) {
