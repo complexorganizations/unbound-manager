@@ -35,7 +35,7 @@ func main() {
 			fileContent := fmt.Sprint(domain, "\n")
 			_, err = filePath.WriteString(fileContent)
 			handleErrors(err)
-			log.Println(comment)
+			log.Println(fileContent)
 		}
 	}
 }
