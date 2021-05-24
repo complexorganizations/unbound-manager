@@ -25,8 +25,7 @@ bash /usr/local/bin/unbound-manager.sh
 | [Adware](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/adware) |
 | [Malware](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/malware) |
 | [Privacy](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/privacy) |
-| [Sexual](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/sexual) |
-| [Social](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/social) |
+
 
 ---
 ### Author

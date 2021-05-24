@@ -14,8 +14,6 @@ var (
 	adwareConfig    = "configs/adware"
 	malwareConfig   = "configs/malware"
 	privacyConfig   = "configs/privacy"
-	sexualConfig    = "configs/sexual"
-	socialConfig    = "configs/social"
 	exclusionConfig = "configs/exclusion"
 )
 
@@ -30,10 +28,8 @@ func main() {
 	// Malware
 	// Privacy
 	validateAndSave("https://www.github.developerdan.com/hosts/lists/tracking-aggressive-extended.txt", privacyConfig)
-	// Sexual
-	// Social
-	validateAndSave("https://www.github.developerdan.com/hosts/lists/facebook-extended.txt", socialConfig)
-	validateAndSave("https://www.github.developerdan.com/hosts/lists/hate-and-junk-extended.txt", socialConfig)
+	validateAndSave("https://www.github.developerdan.com/hosts/lists/facebook-extended.txt", privacyConfig)
+	validateAndSave("https://www.github.developerdan.com/hosts/lists/hate-and-junk-extended.txt", privacyConfig)
 }
 
 func validateAndSave(url, path string) {
