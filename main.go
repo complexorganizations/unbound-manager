@@ -11,11 +11,12 @@ import (
 )
 
 var (
-	adwareConfig  = "configs/adware.conf"
-	malwareConfig = "configs/malware.conf"
-	privacyConfig = "configs/privacy.conf"
-	sexualConfig  = "configs/sexual.conf"
-	socialConfig  = "configs/social.conf"
+	adwareConfig    = "configs/adware"
+	malwareConfig   = "configs/malware"
+	privacyConfig   = "configs/privacy"
+	sexualConfig    = "configs/sexual"
+	socialConfig    = "configs/social"
+	exclusionConfig = "configs/exclusion"
 )
 
 func init() {
@@ -27,17 +28,20 @@ func main() {
 }
 
 func validateAndSave(url, path string) {
+	// Send a request to acquire all the information you need.
 	response, err := http.Get(url)
 	handleErrors(err)
 	defer response.Body.Close()
 	body, err := io.ReadAll(response.Body)
 	handleErrors(err)
+	// locate all domains
 	regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
 	domains := regex.FindAllString(string(body), -1)
-	// unique
+	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(domains)
 	for i := 0; i < len(uniqueDomains); i++ {
 		if validateDomain(uniqueDomains[i]) {
+			// a file including all of the domains
 			filePath, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
 			defer filePath.Close()
@@ -48,7 +52,7 @@ func validateAndSave(url, path string) {
 	}
 }
 
-// Take in a list of domain and make them uniquie
+// Take a list of domains and make them one-of-a-kind
 func makeUnique(randomStrings []string) []string {
 	flag := make(map[string]bool)
 	var uniqueString []string
@@ -61,24 +65,15 @@ func makeUnique(randomStrings []string) []string {
 	return uniqueString
 }
 
-// Validate a domain
+// Validate a website's domain
 func validateDomain(domain string) bool {
 	ns, _ := net.LookupNS(domain)
 	return len(ns) >= 1
 }
 
-// Decide what to do with errors
+// Make a decision about how to handle errors.
 func handleErrors(err error) {
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
-}
-
-// Check if a file exists
-func fileExists(filename string) bool {
-	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return !info.IsDir()
 }
