@@ -34,13 +34,13 @@ func init() {
 
 func main() {
 	// Adware
-	validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
+	go validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
 	validateAndSave("https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt", adwareConfig)
 	// Malware
-	validateAndSave("https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf", malwareConfig)
+	go validateAndSave("https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf", malwareConfig)
 	// Privacy
 	validateAndSave("https://www.github.developerdan.com/hosts/lists/tracking-aggressive-extended.txt", privacyConfig)
-	validateAndSave("https://www.github.developerdan.com/hosts/lists/facebook-extended.txt", privacyConfig)
+	go validateAndSave("https://www.github.developerdan.com/hosts/lists/facebook-extended.txt", privacyConfig)
 	validateAndSave("https://www.github.developerdan.com/hosts/lists/hate-and-junk-extended.txt", privacyConfig)
 }
 
