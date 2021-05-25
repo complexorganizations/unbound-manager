@@ -95,14 +95,6 @@ func handleErrors(err error) {
 	}
 }
 
-func folderExists(foldername string) bool {
-	info, err := os.Stat(foldername)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return info.IsDir()
-}
-
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
