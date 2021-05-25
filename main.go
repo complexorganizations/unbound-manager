@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"sync"
 )
 
 var (
@@ -30,18 +31,23 @@ func init() {
 	if fileExists(privacyConfig) {
 		os.Remove(privacyConfig)
 	}
+	// Read Exclusion
+	_, err := os.ReadFile(exclusionConfig)
+	handleErrors(err)
 }
 
 func main() {
-	// Adware
-	go validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
-	validateAndSave("https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt", adwareConfig)
-	// Malware
-	go validateAndSave("https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf", malwareConfig)
-	// Privacy
-	validateAndSave("https://www.github.developerdan.com/hosts/lists/tracking-aggressive-extended.txt", privacyConfig)
-	go validateAndSave("https://www.github.developerdan.com/hosts/lists/facebook-extended.txt", privacyConfig)
-	validateAndSave("https://www.github.developerdan.com/hosts/lists/hate-and-junk-extended.txt", privacyConfig)
+	var waitGroup sync.WaitGroup
+	waitGroup.Add(1)
+	go func() {
+		validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
+		waitGroup.Done()
+	}()
+	go func() {
+		validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
+		waitGroup.Done()
+	}()
+	waitGroup.Wait()
 }
 
 func validateAndSave(url, path string) {
