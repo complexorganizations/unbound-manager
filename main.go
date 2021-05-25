@@ -18,7 +18,12 @@ var (
 )
 
 func init() {
-	//
+	if fileExists(adwareConfig) {
+		os.Remove(adwareConfig)
+	}
+	if !fileExists(adwareConfig) {
+		os.Create(adwareConfig)
+	}
 }
 
 func main() {
@@ -82,4 +87,20 @@ func handleErrors(err error) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func folderExists(foldername string) bool {
+	info, err := os.Stat(foldername)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return info.IsDir()
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
