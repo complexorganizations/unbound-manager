@@ -18,11 +18,17 @@ var (
 )
 
 func init() {
+	// Adware
 	if fileExists(adwareConfig) {
 		os.Remove(adwareConfig)
 	}
-	if !fileExists(adwareConfig) {
-		os.Create(adwareConfig)
+	// Malware
+	if fileExists(malwareConfig) {
+		os.Remove(malwareConfig)
+	}
+	// Privacy
+	if fileExists(privacyConfig) {
+		os.Remove(privacyConfig)
 	}
 }
 
