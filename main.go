@@ -39,12 +39,31 @@ func init() {
 func main() {
 	var waitGroup sync.WaitGroup
 	waitGroup.Add(1)
+	// Adware
 	go func() {
 		validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
 		waitGroup.Done()
 	}()
 	go func() {
-		validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
+		validateAndSave("https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt", adwareConfig)
+		waitGroup.Done()
+	}()
+	// Malware
+	go func() {
+		validateAndSave("https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf", adwareConfig)
+		waitGroup.Done()
+	}()
+	// Privacy
+	go func() {
+		validateAndSave("https://www.github.developerdan.com/hosts/lists/tracking-aggressive-extended.txt", adwareConfig)
+		waitGroup.Done()
+	}()
+	go func() {
+		validateAndSave("https://www.github.developerdan.com/hosts/lists/facebook-extended.txt", adwareConfig)
+		waitGroup.Done()
+	}()
+	go func() {
+		validateAndSave("https://www.github.developerdan.com/hosts/lists/hate-and-junk-extended.txt", adwareConfig)
 		waitGroup.Done()
 	}()
 	waitGroup.Wait()
