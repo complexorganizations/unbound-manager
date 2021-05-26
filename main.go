@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"sync"
 )
 
 var (
@@ -30,18 +31,42 @@ func init() {
 	if fileExists(privacyConfig) {
 		os.Remove(privacyConfig)
 	}
+	// Read Exclusion
+	_, err := os.ReadFile(exclusionConfig)
+	handleErrors(err)
 }
 
 func main() {
+	var waitGroup sync.WaitGroup
+	waitGroup.Add(1)
 	// Adware
-	go validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
-	validateAndSave("https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt", adwareConfig)
+	go func() {
+		validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
+		waitGroup.Done()
+	}()
+	go func() {
+		validateAndSave("https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt", adwareConfig)
+		waitGroup.Done()
+	}()
 	// Malware
-	go validateAndSave("https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf", malwareConfig)
+	go func() {
+		validateAndSave("https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf", adwareConfig)
+		waitGroup.Done()
+	}()
 	// Privacy
-	validateAndSave("https://www.github.developerdan.com/hosts/lists/tracking-aggressive-extended.txt", privacyConfig)
-	go validateAndSave("https://www.github.developerdan.com/hosts/lists/facebook-extended.txt", privacyConfig)
-	validateAndSave("https://www.github.developerdan.com/hosts/lists/hate-and-junk-extended.txt", privacyConfig)
+	go func() {
+		validateAndSave("https://www.github.developerdan.com/hosts/lists/tracking-aggressive-extended.txt", adwareConfig)
+		waitGroup.Done()
+	}()
+	go func() {
+		validateAndSave("https://www.github.developerdan.com/hosts/lists/facebook-extended.txt", adwareConfig)
+		waitGroup.Done()
+	}()
+	go func() {
+		validateAndSave("https://www.github.developerdan.com/hosts/lists/hate-and-junk-extended.txt", adwareConfig)
+		waitGroup.Done()
+	}()
+	waitGroup.Wait()
 }
 
 func validateAndSave(url, path string) {
