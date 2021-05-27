@@ -233,41 +233,41 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
       # Adware
       echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
       curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${TMP_UNBOUND_CONFIG_ADWARE}
-      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_ADWARE}
-      cat ${TMP_UNBOUND_CONFIG_ADWARE} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_ADWARE}
+      sed -i -e "s_.*_0.0.0.0 &_" ${TMP_UNBOUND_CONFIG_ADWARE}
+      cat ${TMP_UNBOUND_CONFIG_ADWARE} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_ADWARE}
       rm -f ${TMP_UNBOUND_CONFIG_ADWARE}
       # Malware
       echo "include: ${UNBOUND_CONFIG_MALWARE}" >>${UNBOUND_CONFIG}
       curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${TMP_UNBOUND_CONFIG_MALWARE}
-      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_MALWARE}
-      cat ${TMP_UNBOUND_CONFIG_MALWARE} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_MALWARE}
+      sed -i -e "s_.*_0.0.0.0 &_" ${TMP_UNBOUND_CONFIG_MALWARE}
+      cat ${TMP_UNBOUND_CONFIG_MALWARE} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_MALWARE}
       rm -f ${TMP_UNBOUND_CONFIG_MALWARE}
       # Privacy
       echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
       curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" "${TMP_UNBOUND_CONFIG_PRIVACY}"
-      sed -i -e 's_.*_0.0.0.0 &_' "${TMP_UNBOUND_CONFIG_PRIVACY}"
-      cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
+      sed -i -e "s_.*_0.0.0.0 &_" "${TMP_UNBOUND_CONFIG_PRIVACY}"
+      cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
       rm -f "${TMP_UNBOUND_CONFIG_PRIVACY}"
       ;;
     2)
       echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
       curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${TMP_UNBOUND_CONFIG_ADWARE}
-      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_ADWARE}
-      cat ${TMP_UNBOUND_CONFIG_ADWARE} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_ADWARE}
+      sed -i -e "s_.*_0.0.0.0 &_" ${TMP_UNBOUND_CONFIG_ADWARE}
+      cat ${TMP_UNBOUND_CONFIG_ADWARE} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_ADWARE}
       rm -f ${TMP_UNBOUND_CONFIG_ADWARE}
       ;;
     3)
       echo "include: ${UNBOUND_CONFIG_MALWARE}" >>${UNBOUND_CONFIG}
       curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${TMP_UNBOUND_CONFIG_MALWARE}
-      sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_MALWARE}
-      cat ${TMP_UNBOUND_CONFIG_MALWARE} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_MALWARE}
+      sed -i -e "s_.*_0.0.0.0 &_" ${TMP_UNBOUND_CONFIG_MALWARE}
+      cat ${TMP_UNBOUND_CONFIG_MALWARE} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_MALWARE}
       rm -f ${TMP_UNBOUND_CONFIG_MALWARE}
       ;;
     4)
       echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
       curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" "${TMP_UNBOUND_CONFIG_PRIVACY}"
-      sed -i -e 's_.*_0.0.0.0 &_' "${TMP_UNBOUND_CONFIG_PRIVACY}"
-      cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
+      sed -i -e "s_.*_0.0.0.0 &_" "${TMP_UNBOUND_CONFIG_PRIVACY}"
+      cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
       rm -f "${TMP_UNBOUND_CONFIG_PRIVACY}"
       ;;
     5)
@@ -423,24 +423,24 @@ else
       if [ -f "${UNBOUND_CONFIG_ADWARE}" ]; then
         rm -f ${UNBOUND_CONFIG_ADWARE}
         curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${TMP_UNBOUND_CONFIG_ADWARE}
-        sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_ADWARE}
-        cat ${TMP_UNBOUND_CONFIG_ADWARE} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_ADWARE}
+        sed -i -e "s_.*_0.0.0.0 &_" ${TMP_UNBOUND_CONFIG_ADWARE}
+        cat ${TMP_UNBOUND_CONFIG_ADWARE} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_ADWARE}
         rm -f ${TMP_UNBOUND_CONFIG_ADWARE}
       fi
       # Update Malware list
       if [ -f "${UNBOUND_CONFIG_MALWARE}" ]; then
         rm -f ${UNBOUND_CONFIG_MALWARE}
         curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${TMP_UNBOUND_CONFIG_MALWARE}
-        sed -i -e 's_.*_0.0.0.0 &_' ${TMP_UNBOUND_CONFIG_MALWARE}
-        cat ${TMP_UNBOUND_CONFIG_MALWARE} | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_MALWARE}
+        sed -i -e "s_.*_0.0.0.0 &_" ${TMP_UNBOUND_CONFIG_MALWARE}
+        cat ${TMP_UNBOUND_CONFIG_MALWARE} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_MALWARE}
         rm -f ${TMP_UNBOUND_CONFIG_MALWARE}
       fi
       # Update privacy list
       if [ -f "${UNBOUND_CONFIG_PRIVACY}" ]; then
         rm -f ${UNBOUND_CONFIG_PRIVACY}
         curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" "${TMP_UNBOUND_CONFIG_PRIVACY}"
-        sed -i -e 's_.*_0.0.0.0 &_' "${TMP_UNBOUND_CONFIG_PRIVACY}"
-        cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep '^0\.0\.0\.0' | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
+        sed -i -e "s_.*_0.0.0.0 &_" "${TMP_UNBOUND_CONFIG_PRIVACY}"
+        cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
         rm -f "${TMP_UNBOUND_CONFIG_PRIVACY}"
       fi
       ;;
