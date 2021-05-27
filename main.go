@@ -12,6 +12,12 @@ import (
 )
 
 var (
+// Adware
+// Malware
+// Privacy
+)
+
+const (
 	adwareConfig    = "configs/adware"
 	malwareConfig   = "configs/malware"
 	privacyConfig   = "configs/privacy"
@@ -41,8 +47,10 @@ func main() {
 	waitGroup.Add(1)
 	// Adware
 	go func() {
-		validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
-		waitGroup.Done()
+		if validURL(uniqueDomains[i]) {
+			validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
+			waitGroup.Done()
+		}
 	}()
 	go func() {
 		validateAndSave("https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt", adwareConfig)
@@ -82,16 +90,14 @@ func validateAndSave(url, path string) {
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(domains)
 	for i := 0; i < len(uniqueDomains); i++ {
-		if validURL(uniqueDomains[i]) {
-			if validateDomain(uniqueDomains[i]) {
-				// a file including all of the domains
-				filePath, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-				handleErrors(err)
-				defer filePath.Close()
-				fileContent := fmt.Sprint(uniqueDomains[i], "\n")
-				_, err = filePath.WriteString(fileContent)
-				handleErrors(err)
-			}
+		if validateDomain(uniqueDomains[i]) {
+			// a file including all of the domains
+			filePath, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			handleErrors(err)
+			defer filePath.Close()
+			fileContent := fmt.Sprint(uniqueDomains[i], "\n")
+			_, err = filePath.WriteString(fileContent)
+			handleErrors(err)
 		}
 	}
 }
