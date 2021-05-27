@@ -82,14 +82,16 @@ func validateAndSave(url, path string) {
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(domains)
 	for i := 0; i < len(uniqueDomains); i++ {
-		if validateDomain(uniqueDomains[i]) {
-			// a file including all of the domains
-			filePath, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-			handleErrors(err)
-			defer filePath.Close()
-			fileContent := fmt.Sprint(uniqueDomains[i], "\n")
-			_, err = filePath.WriteString(fileContent)
-			handleErrors(err)
+		if validURL(uniqueDomains[i]) {
+			if validateDomain(uniqueDomains[i]) {
+				// a file including all of the domains
+				filePath, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+				handleErrors(err)
+				defer filePath.Close()
+				fileContent := fmt.Sprint(uniqueDomains[i], "\n")
+				_, err = filePath.WriteString(fileContent)
+				handleErrors(err)
+			}
 		}
 	}
 }
@@ -111,6 +113,16 @@ func makeUnique(randomStrings []string) []string {
 func validateDomain(domain string) bool {
 	ns, _ := net.LookupNS(domain)
 	return len(ns) >= 1
+}
+
+// Validate the URI
+func validURL(uri string) bool {
+	validUri, err := url.ParseRequestURI(uri)
+	if err != nil {
+		return false
+	}
+	_ = validUri
+	return true
 }
 
 // Make a decision about how to handle errors.
