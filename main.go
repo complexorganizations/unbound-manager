@@ -6,39 +6,46 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"regexp"
 	"sync"
 )
 
 var (
-// Adware
-// Malware
-// Privacy
+	// Adware
+	stevenBlackHost = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+	lightSwitchHost = "https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt"
+	// Malware
+	noTrackingHost = "https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf"
+	// Privacy
+	lightSwitchTracking = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/tracking-aggressive-extended.txt"
+	lightSwitchFacebook = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/facebook-extended.txt"
+	lightSwitchJunk     = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/hate-and-junk-extended.txt"
 )
 
 const (
-	adwareConfig    = "configs/adware"
-	malwareConfig   = "configs/malware"
-	privacyConfig   = "configs/privacy"
-	exclusionConfig = "configs/exclusion"
+	localAdwareConfig    = "configs/adware"
+	localMalwareConfig   = "configs/malware"
+	localPrivacyConfig   = "configs/privacy"
+	localExclusionConfig = "configs/exclusion"
 )
 
 func init() {
 	// Adware
-	if fileExists(adwareConfig) {
-		os.Remove(adwareConfig)
+	if fileExists(localAdwareConfig) {
+		os.Remove(localAdwareConfig)
 	}
 	// Malware
-	if fileExists(malwareConfig) {
-		os.Remove(malwareConfig)
+	if fileExists(localMalwareConfig) {
+		os.Remove(localMalwareConfig)
 	}
 	// Privacy
-	if fileExists(privacyConfig) {
-		os.Remove(privacyConfig)
+	if fileExists(localPrivacyConfig) {
+		os.Remove(localPrivacyConfig)
 	}
 	// Read Exclusion
-	_, err := os.ReadFile(exclusionConfig)
+	_, err := os.ReadFile(localExclusionConfig)
 	handleErrors(err)
 }
 
@@ -47,32 +54,42 @@ func main() {
 	waitGroup.Add(1)
 	// Adware
 	go func() {
-		if validURL(uniqueDomains[i]) {
-			validateAndSave("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts", adwareConfig)
+		if validURL(stevenBlackHost) {
+			validateAndSave(stevenBlackHost, localAdwareConfig)
 			waitGroup.Done()
 		}
 	}()
 	go func() {
-		validateAndSave("https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt", adwareConfig)
-		waitGroup.Done()
+		if validURL(lightSwitchHost) {
+			validateAndSave(lightSwitchHost, localAdwareConfig)
+			waitGroup.Done()
+		}
 	}()
 	// Malware
 	go func() {
-		validateAndSave("https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf", adwareConfig)
-		waitGroup.Done()
+		if validURL(noTrackingHost) {
+			validateAndSave(noTrackingHost, localAdwareConfig)
+			waitGroup.Done()
+		}
 	}()
 	// Privacy
 	go func() {
-		validateAndSave("https://www.github.developerdan.com/hosts/lists/tracking-aggressive-extended.txt", adwareConfig)
-		waitGroup.Done()
+		if validURL(lightSwitchTracking) {
+			validateAndSave(lightSwitchTracking, localAdwareConfig)
+			waitGroup.Done()
+		}
 	}()
 	go func() {
-		validateAndSave("https://www.github.developerdan.com/hosts/lists/facebook-extended.txt", adwareConfig)
-		waitGroup.Done()
+		if validURL(lightSwitchFacebook) {
+			validateAndSave(lightSwitchFacebook, localAdwareConfig)
+			waitGroup.Done()
+		}
 	}()
 	go func() {
-		validateAndSave("https://www.github.developerdan.com/hosts/lists/hate-and-junk-extended.txt", adwareConfig)
-		waitGroup.Done()
+		if validURL(lightSwitchJunk) {
+			validateAndSave(lightSwitchJunk, localAdwareConfig)
+			waitGroup.Done()
+		}
 	}()
 	waitGroup.Wait()
 }
