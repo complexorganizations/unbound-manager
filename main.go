@@ -14,14 +14,14 @@ import (
 
 var (
 	// Adware
-	stevenBlackHost = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
-	lightSwitchHost = "https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt"
+	stevenBlackAdsURL = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+	lightSwitchAdsURL = "https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt"
 	// Malware
-	noTrackingHost = "https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf"
+	noTrackingAdsURL = "https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf"
 	// Privacy
-	lightSwitchTracking = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/tracking-aggressive-extended.txt"
-	lightSwitchFacebook = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/facebook-extended.txt"
-	lightSwitchJunk     = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/hate-and-junk-extended.txt"
+	lightSwitchTrackingURL = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/tracking-aggressive-extended.txt"
+	lightSwitchFacebookURL = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/facebook-extended.txt"
+	lightSwitchJunkURL     = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/hate-and-junk-extended.txt"
 )
 
 const (
@@ -54,40 +54,40 @@ func main() {
 	waitGroup.Add(1)
 	// Adware
 	go func() {
-		if validURL(stevenBlackHost) {
-			validateAndSave(stevenBlackHost, localAdwareConfig)
+		if validURL(stevenBlackAdsURL) {
+			validateAndSave(stevenBlackAdsURL, localAdwareConfig)
 			waitGroup.Done()
 		}
 	}()
 	go func() {
-		if validURL(lightSwitchHost) {
-			validateAndSave(lightSwitchHost, localAdwareConfig)
+		if validURL(lightSwitchAdsURL) {
+			validateAndSave(lightSwitchAdsURL, localAdwareConfig)
 			waitGroup.Done()
 		}
 	}()
 	// Malware
 	go func() {
-		if validURL(noTrackingHost) {
-			validateAndSave(noTrackingHost, localAdwareConfig)
+		if validURL(noTrackingAdsURL) {
+			validateAndSave(noTrackingAdsURL, localAdwareConfig)
 			waitGroup.Done()
 		}
 	}()
 	// Privacy
 	go func() {
-		if validURL(lightSwitchTracking) {
-			validateAndSave(lightSwitchTracking, localAdwareConfig)
+		if validURL(lightSwitchTrackingURL) {
+			validateAndSave(lightSwitchTrackingURL, localAdwareConfig)
 			waitGroup.Done()
 		}
 	}()
 	go func() {
-		if validURL(lightSwitchFacebook) {
-			validateAndSave(lightSwitchFacebook, localAdwareConfig)
+		if validURL(lightSwitchFacebookURL) {
+			validateAndSave(lightSwitchFacebookURL, localAdwareConfig)
 			waitGroup.Done()
 		}
 	}()
 	go func() {
-		if validURL(lightSwitchJunk) {
-			validateAndSave(lightSwitchJunk, localAdwareConfig)
+		if validURL(lightSwitchJunkURL) {
+			validateAndSave(lightSwitchJunkURL, localAdwareConfig)
 			waitGroup.Done()
 		}
 	}()
