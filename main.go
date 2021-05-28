@@ -57,6 +57,11 @@ func main() {
 		"https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareHosts.txt",
 		"https://raw.githubusercontent.com/anudeepND/blacklist/master/facebook.txt",
 	}
+	for i := 0; i < len(urls); i++ {
+		if validURL(urls[i]) {
+			validateAndSave(urls[i])
+		}
+	}
 }
 
 func validateAndSave(url string) {
