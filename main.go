@@ -30,7 +30,7 @@ func init() {
 }
 
 func main() {
-	urls := []typeURL{
+	urls := []string{
 		"https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
 		"https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt",
 		"https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf",
