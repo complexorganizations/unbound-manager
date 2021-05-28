@@ -164,7 +164,6 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
     fi
     if [ -d "${UNBOUND_ROOT}" ]; then
       unbound-anchor -a ${UNBOUND_ANCHOR}
-      curl ${UNBOUND_ROOT_SERVER_CONFIG_URL} -o ${UNBOUND_ROOT_HINTS}
       NPROC=$(nproc)
       echo "server:
     num-threads: ${NPROC}
@@ -188,6 +187,7 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
     prefetch: yes
     qname-minimisation: yes
     prefetch-key: yes" >>${UNBOUND_CONFIG}
+    curl ${UNBOUND_ROOT_SERVER_CONFIG_URL} -o ${UNBOUND_ROOT_HINTS}
     fi
     # Move the resolve file to the old file
     if [ -f "${RESOLV_CONFIG}" ]; then
