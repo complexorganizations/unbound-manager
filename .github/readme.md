@@ -28,6 +28,16 @@ bash /usr/local/bin/unbound-manager.sh
 | [Privacy](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/privacy) |
 
 
+### Lists that were used
+| Adware                 | Malware                | Privacy                |
+| ---------------------  | ---------------------  | ---------------------  |
+| [Steven-Black-Ads](https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts) |                        |                        |
+| [Light-Switch-Ads](https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt) |                        |                        |
+|                        |                        | [Notracking-Trackers](https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf) |
+|                        |                        |                        |
+|                        |                        |                        |
+
+
 ---
 ### Author
 * Name: Prajwal Koirala
