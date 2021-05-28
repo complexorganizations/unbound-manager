@@ -33,8 +33,10 @@ func init() {
 		os.Remove(localPrivacyConfig)
 	}
 	// Read Exclusion
-	_, err := os.ReadFile(localExclusionConfig)
-	handleErrors(err)
+	if fileExists(localExclusionConfig) {
+		_, err := os.ReadFile(localExclusionConfig)
+		handleErrors(err)
+	}
 }
 
 func main() {
