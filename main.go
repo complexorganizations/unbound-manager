@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"regexp"
+	"strings"
 	//"sync"
 )
 
@@ -16,6 +17,7 @@ var (
 	localHost      = "configs/host"
 	tempLocalHost  = fmt.Sprint(os.TempDir(), "/unbound-manager")
 	localExclusion = "configs/exclusion"
+	err            error
 )
 
 func init() {
@@ -44,7 +46,8 @@ func main() {
 func uniqueDomains() {
 	domains, err := os.ReadFile(tempLocalHost)
 	handleErrors(err)
-	uniqueDomains := makeUnique(domains)
+	sliceData := strings.Split(string(domains), "\n")
+	uniqueDomains := makeUnique(sliceData)
 	for i := 0; i < len(uniqueDomains); i++ {
 		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		handleErrors(err)
