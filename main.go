@@ -12,18 +12,6 @@ import (
 	//"sync"
 )
 
-var (
-	// Adware
-	stevenBlackAdsURL = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
-	lightSwitchAdsURL = "https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt"
-	// Malware
-	noTrackingAdsURL = "https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf"
-	// Privacy
-	lightSwitchTrackingURL = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/tracking-aggressive-extended.txt"
-	lightSwitchFacebookURL = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/facebook-extended.txt"
-	lightSwitchJunkURL     = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/hate-and-junk-extended.txt"
-)
-
 const (
 	localAdwareConfig    = "configs/adware"
 	localMalwareConfig   = "configs/malware"
@@ -51,8 +39,12 @@ func init() {
 
 func main() {
 	urls := []typeURL{
-		"https://raw.githubusercontent.com/ivolo/disposable-email-domains/master/index.json",
-		"https://raw.githubusercontent.com/ivolo/disposable-email-domains/master/wildcard.json",
+		"https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
+		"https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt",
+		"https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf",
+		"https://raw.githubusercontent.com/lightswitch05/hosts/lists/tracking-aggressive-extended.txt",
+		"https://raw.githubusercontent.com/lightswitch05/hosts/lists/facebook-extended.txt",
+		"https://raw.githubusercontent.com/lightswitch05/hosts/lists/hate-and-junk-extended.txt",
 	}
 }
 
