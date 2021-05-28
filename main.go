@@ -162,3 +162,8 @@ func fileExists(filename string) bool {
 	}
 	return !info.IsDir()
 }
+
+urls := []typeURL{
+	"https://raw.githubusercontent.com/ivolo/disposable-email-domains/master/index.json",
+	"https://raw.githubusercontent.com/ivolo/disposable-email-domains/master/wildcard.json",
+}
