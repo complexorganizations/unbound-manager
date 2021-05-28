@@ -13,24 +13,14 @@ import (
 )
 
 const (
-	localAdwareConfig    = "configs/adware"
-	localMalwareConfig   = "configs/malware"
-	localPrivacyConfig   = "configs/privacy"
+	localHost            = "configs/host"
 	localExclusionConfig = "configs/exclusion"
 )
 
 func init() {
-	// Adware
-	if fileExists(localAdwareConfig) {
-		os.Remove(localAdwareConfig)
-	}
-	// Malware
-	if fileExists(localMalwareConfig) {
-		os.Remove(localMalwareConfig)
-	}
-	// Privacy
-	if fileExists(localPrivacyConfig) {
-		os.Remove(localPrivacyConfig)
+	// Host
+	if fileExists(localHost) {
+		os.Remove(localHost)
 	}
 	// Read Exclusion
 	if fileExists(localExclusionConfig) {
