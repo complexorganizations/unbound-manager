@@ -40,6 +40,10 @@ func main() {
 		"https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt",
 		"https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/EnglishFilter/sections/adservers.txt",
 		"https://raw.githubusercontent.com/tg12/pihole-phishtank-list/master/list/phish_domains.txt",
+		"https://raw.githubusercontent.com/HorusTeknoloji/TR-PhishingList/master/url-lists.txt",
+		"https://raw.githubusercontent.com/Spam404/lists/master/main-blacklist.txt",
+		"https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Risk/hosts",
+		"https://gitlab.com/quidsup/notrack-blocklists/raw/master/notrack-malware.txt",
 	}
 }
 
