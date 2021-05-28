@@ -47,6 +47,7 @@ func main() {
 		"https://raw.githubusercontent.com/lightswitch05/hosts/lists/tracking-aggressive-extended.txt",
 		"https://raw.githubusercontent.com/lightswitch05/hosts/lists/facebook-extended.txt",
 		"https://raw.githubusercontent.com/lightswitch05/hosts/lists/hate-and-junk-extended.txt",
+		"https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt",
 	}
 }
 
