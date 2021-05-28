@@ -14,10 +14,11 @@ import (
 )
 
 var (
-	localHost      = "configs/host"
-	tempLocalHost  = fmt.Sprint(os.TempDir(), "/unbound-manager")
-	localExclusion = "configs/exclusion"
-	err            error
+	localHost          = "configs/host"
+	tempLocalHost      = fmt.Sprint(os.TempDir(), "/unbound-manager")
+	localExclusion     = "configs/exclusion"
+	tempLocalExclusion string
+	err                error
 )
 
 func init() {
