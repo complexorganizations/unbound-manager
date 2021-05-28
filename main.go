@@ -10,15 +10,23 @@ import (
 	"os"
 	"regexp"
 	//"sync"
-	"io/ioutil"
 )
 
-const (
+var (
 	localHost      = "configs/host"
+	tempLocalHost  = fmt.Sprint(os.TempDir(), "/unbound-manager")
 	localExclusion = "configs/exclusion"
 )
 
 func init() {
+	if fileExists(tempLocalHost) {
+		err = os.Remove(tempLocalHost)
+		handleErrors(err)
+	}
+	if fileExists(localHost) {
+		err = os.Remove(localHost)
+		handleErrors(err)
+	}
 	// Read Exclusion
 	if fileExists(localExclusion) {
 		_, err := os.ReadFile(localExclusion)
@@ -29,6 +37,22 @@ func init() {
 func main() {
 	// Scrape
 	startScraping()
+	// Unique
+	uniqueDomains()
+}
+
+func uniqueDomains() {
+	domains, err := os.ReadFile(tempLocalHost)
+	handleErrors(err)
+	uniqueDomains := makeUnique(domains)
+	for i := 0; i < len(uniqueDomains); i++ {
+		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		handleErrors(err)
+		defer filePath.Close()
+		fileContent := fmt.Sprint(uniqueDomains[i], "\n")
+		_, err = filePath.WriteString(fileContent)
+		handleErrors(err)
+	}
 }
 
 func startScraping() {
@@ -84,11 +108,7 @@ func validateAndSave(url string) {
 	uniqueDomains := makeUnique(domains)
 	for i := 0; i < len(uniqueDomains); i++ {
 		if validateDomain(uniqueDomains[i]) {
-			tempFile, err := ioutil.TempFile("", "unbound-manager")
-			handleErrors(err)
-			tempFileLocation := tempFile.Name()
-			// a file including all of the domains
-			filePath, err := os.OpenFile(tempFileLocation, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			filePath, err := os.OpenFile(tempLocalHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
 			defer filePath.Close()
 			fileContent := fmt.Sprint(uniqueDomains[i], "\n")
