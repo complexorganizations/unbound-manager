@@ -18,10 +18,6 @@ const (
 )
 
 func init() {
-	// Host
-	if fileExists(localHost) {
-		os.Remove(localHost)
-	}
 	// Read Exclusion
 	if fileExists(localExclusion) {
 		_, err := os.ReadFile(localExclusion)
@@ -63,7 +59,7 @@ func main() {
 	}
 }
 
-func validateAndSave(url, path string) {
+func validateAndSave(url string) {
 	// Send a request to acquire all the information you need.
 	response, err := http.Get(url)
 	handleErrors(err)
@@ -77,8 +73,11 @@ func validateAndSave(url, path string) {
 	uniqueDomains := makeUnique(domains)
 	for i := 0; i < len(uniqueDomains); i++ {
 		if validateDomain(uniqueDomains[i]) {
+			if fileExists(localHost) {
+				os.Remove(localHost)
+			}
 			// a file including all of the domains
-			filePath, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
 			defer filePath.Close()
 			fileContent := fmt.Sprint(uniqueDomains[i], "\n")
