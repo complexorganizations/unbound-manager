@@ -86,8 +86,9 @@ func validateAndSave(url string) {
 		if validateDomain(uniqueDomains[i]) {
 			tempFile, err := ioutil.TempFile("", "unbound-manager")
 			handleErrors(err)
+			tempFile := tempFile.Name()
 			// a file including all of the domains
-			filePath, err := os.OpenFile(tempFile.Name(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			filePath, err := os.OpenFile(tempFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
 			defer filePath.Close()
 			fileContent := fmt.Sprint(uniqueDomains[i], "\n")
