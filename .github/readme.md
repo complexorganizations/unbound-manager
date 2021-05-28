@@ -23,10 +23,7 @@ bash /usr/local/bin/unbound-manager.sh
 ### Variants
 | Variants               |
 | ---------------------  |
-| [Adware](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/adware) |
-| [Malware](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/malware) |
-| [Privacy](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/privacy) |
-
+| [Host](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/host) |
 
 ---
 ### Author
