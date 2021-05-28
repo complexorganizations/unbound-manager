@@ -58,15 +58,9 @@ UNBOUND_CONFIG="${UNBOUND_ROOT}/unbound.conf"
 UNBOUND_ROOT_HINTS="${UNBOUND_ROOT}/root.hints"
 UNBOUND_ANCHOR="/var/lib/unbound/root.key"
 UNBOUND_ROOT_SERVER_CONFIG_URL="https://www.internic.net/domain/named.cache"
-UNBOUND_CONFIG_ADWARE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/adware"
-UNBOUND_CONFIG_ADWARE="/etc/unbound/unbound.conf.d/adware.conf"
-TMP_UNBOUND_CONFIG_ADWARE="/tmp/adware"
-UNBOUND_CONFIG_MALWARE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/malware"
-UNBOUND_CONFIG_MALWARE="/etc/unbound/unbound.conf.d/malware.conf"
-TMP_UNBOUND_CONFIG_MALWARE="/tmp/malware"
-UNBOUND_CONFIG_PRIVACY_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/privacy"
-UNBOUND_CONFIG_PRIVACY="/etc/unbound/unbound.conf.d/privacy.conf"
-TMP_UNBOUND_CONFIG_PRIVACY="/tmp/privacy"
+UNBOUND_CONFIG_HOST_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/host"
+UNBOUND_CONFIG_HOST="/etc/unbound/unbound.conf.d/host.conf"
+UNBOUND_CONFIG_HOST_TMP="/tmp/host"
 UNBOUND_MANAGER_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/unbound-manager.sh"
 
 function usage-help() {
@@ -221,60 +215,22 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
   function choose-your-list() {
     echo "Which list do you want to use?"
     echo "  1) All (Recommended)"
-    echo "  2) Adware"
-    echo "  3) Malware"
-    echo "  4) Privacy"
-    echo "  5) No (Advanced)"
-    until [[ "${LIST_CHOICE_SETTINGS}" =~ ^[1-5]$ ]]; do
-      read -rp "List Choice [1-5]: " -e -i 1 LIST_CHOICE_SETTINGS
+    echo "  2) No (Advanced)"
+    until [[ "${LIST_CHOICE_SETTINGS}" =~ ^[1-2]$ ]]; do
+      read -rp "List Choice [1-2]: " -e -i 1 LIST_CHOICE_SETTINGS
     done
     case ${LIST_CHOICE_SETTINGS} in
     1)
-      # Adware
-      echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${TMP_UNBOUND_CONFIG_ADWARE}
-      sed -i -e "s_.*_0.0.0.0 &_" ${TMP_UNBOUND_CONFIG_ADWARE}
-      cat ${TMP_UNBOUND_CONFIG_ADWARE} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_ADWARE}
-      rm -f ${TMP_UNBOUND_CONFIG_ADWARE}
-      # Malware
-      echo "include: ${UNBOUND_CONFIG_MALWARE}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${TMP_UNBOUND_CONFIG_MALWARE}
-      sed -i -e "s_.*_0.0.0.0 &_" ${TMP_UNBOUND_CONFIG_MALWARE}
-      cat ${TMP_UNBOUND_CONFIG_MALWARE} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_MALWARE}
-      rm -f ${TMP_UNBOUND_CONFIG_MALWARE}
-      # Privacy
-      echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" "${TMP_UNBOUND_CONFIG_PRIVACY}"
-      sed -i -e "s_.*_0.0.0.0 &_" "${TMP_UNBOUND_CONFIG_PRIVACY}"
-      cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
-      rm -f "${TMP_UNBOUND_CONFIG_PRIVACY}"
+      echo "include: ${UNBOUND_CONFIG_HOST}" >>${UNBOUND_CONFIG}
+      curl -o "${UNBOUND_CONFIG_HOST_URL}" ${UNBOUND_CONFIG_HOST_TMP}
+      sed -i -e "s_.*_0.0.0.0 &_" ${UNBOUND_CONFIG_HOST_TMP}
+      cat ${UNBOUND_CONFIG_HOST_TMP} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_HOST}
+      rm -f ${UNBOUND_CONFIG_HOST_TMP}
       ;;
     2)
-      echo "include: ${UNBOUND_CONFIG_ADWARE}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${TMP_UNBOUND_CONFIG_ADWARE}
-      sed -i -e "s_.*_0.0.0.0 &_" ${TMP_UNBOUND_CONFIG_ADWARE}
-      cat ${TMP_UNBOUND_CONFIG_ADWARE} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_ADWARE}
-      rm -f ${TMP_UNBOUND_CONFIG_ADWARE}
-      ;;
-    3)
-      echo "include: ${UNBOUND_CONFIG_MALWARE}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${TMP_UNBOUND_CONFIG_MALWARE}
-      sed -i -e "s_.*_0.0.0.0 &_" ${TMP_UNBOUND_CONFIG_MALWARE}
-      cat ${TMP_UNBOUND_CONFIG_MALWARE} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_MALWARE}
-      rm -f ${TMP_UNBOUND_CONFIG_MALWARE}
-      ;;
-    4)
-      echo "include: ${UNBOUND_CONFIG_PRIVACY}" >>${UNBOUND_CONFIG}
-      curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" "${TMP_UNBOUND_CONFIG_PRIVACY}"
-      sed -i -e "s_.*_0.0.0.0 &_" "${TMP_UNBOUND_CONFIG_PRIVACY}"
-      cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
-      rm -f "${TMP_UNBOUND_CONFIG_PRIVACY}"
-      ;;
-    5)
       echo "There are no lists selected."
       ;;
     esac
-
   }
 
   choose-your-list
@@ -419,29 +375,13 @@ else
       if [ -f "${UNBOUND_ROOT_HINTS}" ]; then
         curl -o ${UNBOUND_ROOT_HINTS} ${UNBOUND_ROOT_SERVER_CONFIG_URL}
       fi
-      # Update Adware List
-      if [ -f "${UNBOUND_CONFIG_ADWARE}" ]; then
-        rm -f ${UNBOUND_CONFIG_ADWARE}
-        curl -o "${UNBOUND_CONFIG_ADWARE_URL}" ${TMP_UNBOUND_CONFIG_ADWARE}
-        sed -i -e "s_.*_0.0.0.0 &_" ${TMP_UNBOUND_CONFIG_ADWARE}
-        cat ${TMP_UNBOUND_CONFIG_ADWARE} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_ADWARE}
-        rm -f ${TMP_UNBOUND_CONFIG_ADWARE}
-      fi
-      # Update Malware list
-      if [ -f "${UNBOUND_CONFIG_MALWARE}" ]; then
-        rm -f ${UNBOUND_CONFIG_MALWARE}
-        curl -o "${UNBOUND_CONFIG_MALWARE_URL}" ${TMP_UNBOUND_CONFIG_MALWARE}
-        sed -i -e "s_.*_0.0.0.0 &_" ${TMP_UNBOUND_CONFIG_MALWARE}
-        cat ${TMP_UNBOUND_CONFIG_MALWARE} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_MALWARE}
-        rm -f ${TMP_UNBOUND_CONFIG_MALWARE}
-      fi
-      # Update privacy list
-      if [ -f "${UNBOUND_CONFIG_PRIVACY}" ]; then
-        rm -f ${UNBOUND_CONFIG_PRIVACY}
-        curl -o "${UNBOUND_CONFIG_PRIVACY_URL}" "${TMP_UNBOUND_CONFIG_PRIVACY}"
-        sed -i -e "s_.*_0.0.0.0 &_" "${TMP_UNBOUND_CONFIG_PRIVACY}"
-        cat "${TMP_UNBOUND_CONFIG_PRIVACY}" | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_PRIVACY}
-        rm -f "${TMP_UNBOUND_CONFIG_PRIVACY}"
+      # Update Host List
+      if [ -f "${UNBOUND_CONFIG_HOST}" ]; then
+        rm -f ${UNBOUND_CONFIG_HOST}
+        curl -o "${UNBOUND_CONFIG_HOST_URL}" ${UNBOUND_CONFIG_HOST_TMP}
+        sed -i -e "s_.*_0.0.0.0 &_" ${UNBOUND_CONFIG_HOST_TMP}
+        cat ${UNBOUND_CONFIG_HOST_TMP} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_HOST}
+        rm -f ${UNBOUND_CONFIG_HOST_TMP}
       fi
       ;;
     esac

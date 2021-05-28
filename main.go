@@ -9,89 +9,36 @@ import (
 	"net/url"
 	"os"
 	"regexp"
-	"sync"
-)
-
-var (
-	// Adware
-	stevenBlackAdsURL = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
-	lightSwitchAdsURL = "https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt"
-	// Malware
-	noTrackingAdsURL = "https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf"
-	// Privacy
-	lightSwitchTrackingURL = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/tracking-aggressive-extended.txt"
-	lightSwitchFacebookURL = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/facebook-extended.txt"
-	lightSwitchJunkURL     = "https://raw.githubusercontent.com/lightswitch05/hosts/lists/hate-and-junk-extended.txt"
+	//"sync"
 )
 
 const (
-	localAdwareConfig    = "configs/adware"
-	localMalwareConfig   = "configs/malware"
-	localPrivacyConfig   = "configs/privacy"
+	localHost            = "configs/host"
 	localExclusionConfig = "configs/exclusion"
 )
 
 func init() {
-	// Adware
-	if fileExists(localAdwareConfig) {
-		os.Remove(localAdwareConfig)
-	}
-	// Malware
-	if fileExists(localMalwareConfig) {
-		os.Remove(localMalwareConfig)
-	}
-	// Privacy
-	if fileExists(localPrivacyConfig) {
-		os.Remove(localPrivacyConfig)
+	// Host
+	if fileExists(localHost) {
+		os.Remove(localHost)
 	}
 	// Read Exclusion
-	_, err := os.ReadFile(localExclusionConfig)
-	handleErrors(err)
+	if fileExists(localExclusionConfig) {
+		_, err := os.ReadFile(localExclusionConfig)
+		handleErrors(err)
+	}
 }
 
 func main() {
-	var waitGroup sync.WaitGroup
-	waitGroup.Add(1)
-	// Adware
-	go func() {
-		if validURL(stevenBlackAdsURL) {
-			validateAndSave(stevenBlackAdsURL, localAdwareConfig)
-			waitGroup.Done()
-		}
-	}()
-	go func() {
-		if validURL(lightSwitchAdsURL) {
-			validateAndSave(lightSwitchAdsURL, localAdwareConfig)
-			waitGroup.Done()
-		}
-	}()
-	// Malware
-	go func() {
-		if validURL(noTrackingAdsURL) {
-			validateAndSave(noTrackingAdsURL, localAdwareConfig)
-			waitGroup.Done()
-		}
-	}()
-	// Privacy
-	go func() {
-		if validURL(lightSwitchTrackingURL) {
-			validateAndSave(lightSwitchTrackingURL, localAdwareConfig)
-			waitGroup.Done()
-		}
-	}()
-	go func() {
-		if validURL(lightSwitchFacebookURL) {
-			validateAndSave(lightSwitchFacebookURL, localAdwareConfig)
-			waitGroup.Done()
-		}
-	}()
-	go func() {
-		if validURL(lightSwitchJunkURL) {
-			validateAndSave(lightSwitchJunkURL, localAdwareConfig)
-			waitGroup.Done()
-		}
-	}()
-	waitGroup.Wait()
+	urls := []string{
+		"https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
+		"https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt",
+		"https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf",
+		"https://raw.githubusercontent.com/lightswitch05/hosts/lists/tracking-aggressive-extended.txt",
+		"https://raw.githubusercontent.com/lightswitch05/hosts/lists/facebook-extended.txt",
+		"https://raw.githubusercontent.com/lightswitch05/hosts/lists/hate-and-junk-extended.txt",
+		"https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt",
+	}
 }
 
 func validateAndSave(url, path string) {
