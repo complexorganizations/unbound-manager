@@ -131,81 +131,89 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
 
   # Function to install unbound
   function install-unbound() {
-    if [ "${DISTRO}" == "ubuntu" ]; then
-      apt-get install unbound unbound-host e2fsprogs -y
-      if pgrep systemd-journal; then
-        systemctl stop systemd-resolved
-        systemctl disable systemd-resolved
-      else
-        service systemd-resolved stop
-        service systemd-resolved disable
+    if [ ! -x "$(command -v unbound)" ]; then
+      if [ "${DISTRO}" == "ubuntu" ]; then
+        apt-get install unbound unbound-host e2fsprogs -y
+        if pgrep systemd-journal; then
+          systemctl stop systemd-resolved
+          systemctl disable systemd-resolved
+        else
+          service systemd-resolved stop
+          service systemd-resolved disable
+        fi
+      elif { [ "${DISTRO}" == "debian" ] || [ "${DISTRO}" == "raspbian" ] || [ "${DISTRO}" == "pop" ] || [ "${DISTRO}" == "kali" ] || [ "${DISTRO}" == "linuxmint" ]; }; then
+        apt-get install unbound unbound-host e2fsprogs -y
+      elif { [ "${DISTRO}" == "centos" ] || [ "${DISTRO}" == "rhel" ]; }; then
+        yum install unbound unbound-libs -y
+      elif [ "${DISTRO}" == "fedora" ]; then
+        dnf install unbound -y
+      elif { [ "${DISTRO}" == "arch" ] || [ "${DISTRO}" == "archarm" ] || [ "${DISTRO}" == "manjaro" ]; }; then
+        pacman -Syu --noconfirm unbound
+      elif [ "${DISTRO}" == "alpine" ]; then
+        apk add unbound
+      elif [ "${DISTRO}" == "freebsd" ]; then
+        pkg install unbound
       fi
-    elif { [ "${DISTRO}" == "debian" ] || [ "${DISTRO}" == "raspbian" ] || [ "${DISTRO}" == "pop" ] || [ "${DISTRO}" == "kali" ] || [ "${DISTRO}" == "linuxmint" ]; }; then
-      apt-get install unbound unbound-host e2fsprogs -y
-    elif { [ "${DISTRO}" == "centos" ] || [ "${DISTRO}" == "rhel" ]; }; then
-      yum install unbound unbound-libs -y
-    elif [ "${DISTRO}" == "fedora" ]; then
-      dnf install unbound -y
-    elif { [ "${DISTRO}" == "arch" ] || [ "${DISTRO}" == "manjaro" ]; }; then
-      pacman -Syu --noconfirm unbound
-    elif [ "${DISTRO}" == "alpine" ]; then
-      apk add unbound
-    elif [ "${DISTRO}" == "freebsd" ]; then
-      pkg install unbound
-    fi
-    if [ -f "${UNBOUND_ANCHOR}" ]; then
-      rm -f ${UNBOUND_ANCHOR}
-    fi
-    if [ -f "${UNBOUND_CONFIG}" ]; then
-      rm -f ${UNBOUND_CONFIG}
-    fi
-    if [ -f "${UNBOUND_ROOT_HINTS}" ]; then
-      rm -f ${UNBOUND_ROOT_HINTS}
-    fi
-    if [ -d "${UNBOUND_ROOT}" ]; then
-      unbound-anchor -a ${UNBOUND_ANCHOR}
-      NPROC=$(nproc)
-      echo "server:
-    num-threads: ${NPROC}
-    verbosity: 1
-    root-hints: ${UNBOUND_ROOT_HINTS}
-    auto-trust-anchor-file: ${UNBOUND_ANCHOR}
-    interface: 0.0.0.0
-    interface: ::0
-    max-udp-size: 3072
-    access-control: 0.0.0.0/0                 allow
-    access-control: ::0                       allow
-    hide-identity: yes
-    hide-version: yes
-    harden-glue: yes
-    harden-dnssec-stripped: yes
-    harden-referral-path: yes
-    unwanted-reply-threshold: 10000000
-    val-log-level: 1
-    cache-min-ttl: 1800
-    cache-max-ttl: 14400
-    prefetch: yes
-    qname-minimisation: yes
-    prefetch-key: yes" >>${UNBOUND_CONFIG}
-    curl ${UNBOUND_ROOT_SERVER_CONFIG_URL} -o ${UNBOUND_ROOT_HINTS}
-    fi
-    # Move the resolve file to the old file
-    if [ -f "${RESOLV_CONFIG}" ]; then
-      mv ${RESOLV_CONFIG} ${RESOLV_CONFIG_OLD}
-    fi
-    # Use unbound as a nameserver
-    echo "nameserver 127.0.0.1" >>${RESOLV_CONFIG}
-    echo "nameserver ::1" >>${RESOLV_CONFIG}
-    if [ ! -f "${UNBOUND_MANAGER}" ]; then
+      if [ -f "${UNBOUND_ANCHOR}" ]; then
+        rm -f ${UNBOUND_ANCHOR}
+      fi
+      if [ -f "${UNBOUND_CONFIG}" ]; then
+        rm -f ${UNBOUND_CONFIG}
+      fi
+      if [ -f "${UNBOUND_ROOT_HINTS}" ]; then
+        rm -f ${UNBOUND_ROOT_HINTS}
+      fi
+      if [ -d "${UNBOUND_ROOT}" ]; then
+        unbound-anchor -a ${UNBOUND_ANCHOR}
+        curl ${UNBOUND_ROOT_SERVER_CONFIG_URL} --create-dirs -o ${UNBOUND_ROOT_HINTS}
+        NPROC=$(nproc)
+        echo "server:
+num-threads: ${NPROC}
+verbosity: 1
+root-hints: ${UNBOUND_ROOT_HINTS}
+auto-trust-anchor-file: ${UNBOUND_ANCHOR}
+interface: 0.0.0.0
+interface: ::0
+max-udp-size: 3072
+access-control: 0.0.0.0/0 allow
+access-control: ::0 allow
+access-control: 127.0.0.1 allow
+do-tcp: no
+hide-identity: yes
+hide-version: yes
+harden-glue: yes
+harden-dnssec-stripped: yes
+harden-referral-path: yes
+unwanted-reply-threshold: 10000000
+val-log-level: 1
+cache-min-ttl: 1800
+cache-max-ttl: 14400
+prefetch: yes
+qname-minimisation: yes
+prefetch-key: yes" >>${UNBOUND_CONFIG}
+      fi
+      if [ -f "${RESOLV_CONFIG_OLD}" ]; then
+        rm -f ${RESOLV_CONFIG_OLD}
+      fi
+      if [ -f "${RESOLV_CONFIG}" ]; then
+        chattr -i ${RESOLV_CONFIG}
+        mv ${RESOLV_CONFIG} ${RESOLV_CONFIG_OLD}
+        echo "nameserver 127.0.0.1" >>${RESOLV_CONFIG}
+        echo "nameserver ::1" >>${RESOLV_CONFIG}
+        chattr +i ${RESOLV_CONFIG}
+      else
+        echo "nameserver 127.0.0.1" >>${RESOLV_CONFIG}
+        echo "nameserver ::1" >>${RESOLV_CONFIG}
+      fi
       echo "Unbound: true" >>${UNBOUND_MANAGER}
-    fi
-    # restart unbound
-    if pgrep systemd-journal; then
-      systemctl reenable unbound
-      systemctl restart unbound
-    else
-      service unbound enable
-      service unbound restart
+      # restart unbound
+      if pgrep systemd-journal; then
+        systemctl reenable unbound
+        systemctl restart unbound
+      else
+        service unbound enable
+        service unbound restart
+      fi
     fi
   }
 
@@ -214,8 +222,8 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
 
   function choose-your-list() {
     echo "Which list do you want to use?"
-    echo "  1) All (Recommended)"
-    echo "  2) No (Advanced)"
+    echo "1) All (Recommended)"
+    echo "2) No (Advanced)"
     until [[ "${LIST_CHOICE_SETTINGS}" =~ ^[1-2]$ ]]; do
       read -rp "List Choice [1-2]: " -e -i 1 LIST_CHOICE_SETTINGS
     done
@@ -238,8 +246,8 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
   # real-time updates
   function enable-automatic-updates() {
     echo "Would you like to setup real-time updates?"
-    echo "  1) Yes (Recommended)"
-    echo "  2) No (Advanced)"
+    echo "1) Yes (Recommended)"
+    echo "2) No (Advanced)"
     until [[ "${AUTOMATIC_UPDATES_SETTINGS}" =~ ^[1-2]$ ]]; do
       read -rp "Automatic Updates [1-2]: " -e -i 1 AUTOMATIC_UPDATES_SETTINGS
     done
@@ -283,11 +291,11 @@ else
   # take user input
   function take-user-input() {
     echo "What do you want to do?"
-    echo "   1) Start Unbound"
-    echo "   2) Stop Unbound"
-    echo "   3) Restart Unbound"
-    echo "   4) Uninstall Unbound"
-    echo "   5) Update Unbound Manager"
+    echo " 1) Start Unbound"
+    echo " 2) Stop Unbound"
+    echo " 3) Restart Unbound"
+    echo " 4) Uninstall Unbound"
+    echo " 5) Update Unbound Manager"
     until [[ "$USER_OPTIONS" =~ ^[0-9]+$ ]] && [ "$USER_OPTIONS" -ge 1 ] && [ "$USER_OPTIONS" -le 5 ]; do
       read -rp "Select an Option [1-5]: " -e -i 1 USER_OPTIONS
     done
