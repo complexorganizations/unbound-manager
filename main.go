@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"os"
 	"regexp"
-	"sync"
+	//"sync"
 )
 
 var (
