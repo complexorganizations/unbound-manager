@@ -165,7 +165,7 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
       fi
       if [ -d "${UNBOUND_ROOT}" ]; then
         unbound-anchor -a ${UNBOUND_ANCHOR}
-        curl ${UNBOUND_ROOT_SERVER_CONFIG_URL} --create-dirs -o ${UNBOUND_ROOT_HINTS}
+        curl ${UNBOUND_ROOT_SERVER_CONFIG_URL} -o ${UNBOUND_ROOT_HINTS}
         NPROC=$(nproc)
         echo "server:
 num-threads: ${NPROC}
@@ -381,7 +381,7 @@ else
       fi
       # Update root hints
       if [ -f "${UNBOUND_ROOT_HINTS}" ]; then
-        curl -o ${UNBOUND_ROOT_HINTS} ${UNBOUND_ROOT_SERVER_CONFIG_URL}
+        curl ${UNBOUND_ROOT_SERVER_CONFIG_URL} -o ${UNBOUND_ROOT_HINTS}
       fi
       if [ -f "${UNBOUND_ANCHOR}" ]; then
         unbound-anchor -a ${UNBOUND_ANCHOR}
