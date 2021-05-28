@@ -224,7 +224,7 @@ if [ ! -f "${UNBOUND_MANAGER}" ]; then
       echo "include: ${UNBOUND_CONFIG_HOST}" >>${UNBOUND_CONFIG}
       curl -o "${UNBOUND_CONFIG_HOST_URL}" ${UNBOUND_CONFIG_HOST_TMP}
       sed -i -e "s_.*_0.0.0.0 &_" ${UNBOUND_CONFIG_HOST_TMP}
-      cat ${UNBOUND_CONFIG_HOST_TMP} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_HOST}
+      grep "^0\.0\.0\.0" "${UNBOUND_CONFIG_HOST_TMP}" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >"${UNBOUND_CONFIG_HOST}"
       rm -f ${UNBOUND_CONFIG_HOST_TMP}
       ;;
     2)
@@ -380,7 +380,7 @@ else
         rm -f ${UNBOUND_CONFIG_HOST}
         curl -o "${UNBOUND_CONFIG_HOST_URL}" ${UNBOUND_CONFIG_HOST_TMP}
         sed -i -e "s_.*_0.0.0.0 &_" ${UNBOUND_CONFIG_HOST_TMP}
-        cat ${UNBOUND_CONFIG_HOST_TMP} | grep "^0\.0\.0\.0" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >${UNBOUND_CONFIG_HOST}
+        grep "^0\.0\.0\.0" "${UNBOUND_CONFIG_HOST_TMP}" | awk '{print "local-data: \""$2" IN A 0.0.0.0\""}' >"${UNBOUND_CONFIG_HOST}"
         rm -f ${UNBOUND_CONFIG_HOST_TMP}
       fi
       ;;
