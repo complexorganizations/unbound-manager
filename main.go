@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	localHost            = "configs/host"
-	localExclusionConfig = "configs/exclusion"
+	localHost      = "configs/host"
+	localExclusion = "configs/exclusion"
 )
 
 func init() {
@@ -23,8 +23,8 @@ func init() {
 		os.Remove(localHost)
 	}
 	// Read Exclusion
-	if fileExists(localExclusionConfig) {
-		_, err := os.ReadFile(localExclusionConfig)
+	if fileExists(localExclusion) {
+		_, err := os.ReadFile(localExclusion)
 		handleErrors(err)
 	}
 }
