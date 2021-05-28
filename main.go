@@ -11,7 +11,6 @@ import (
 	"regexp"
 	//"sync"
 	"io/ioutil"
-	"path/filepath"
 )
 
 const (
