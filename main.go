@@ -50,48 +50,10 @@ func init() {
 }
 
 func main() {
-	var waitGroup sync.WaitGroup
-	waitGroup.Add(1)
-	// Adware
-	go func() {
-		if validURL(stevenBlackAdsURL) {
-			validateAndSave(stevenBlackAdsURL, localAdwareConfig)
-			waitGroup.Done()
-		}
-	}()
-	go func() {
-		if validURL(lightSwitchAdsURL) {
-			validateAndSave(lightSwitchAdsURL, localAdwareConfig)
-			waitGroup.Done()
-		}
-	}()
-	// Malware
-	go func() {
-		if validURL(noTrackingAdsURL) {
-			validateAndSave(noTrackingAdsURL, localAdwareConfig)
-			waitGroup.Done()
-		}
-	}()
-	// Privacy
-	go func() {
-		if validURL(lightSwitchTrackingURL) {
-			validateAndSave(lightSwitchTrackingURL, localAdwareConfig)
-			waitGroup.Done()
-		}
-	}()
-	go func() {
-		if validURL(lightSwitchFacebookURL) {
-			validateAndSave(lightSwitchFacebookURL, localAdwareConfig)
-			waitGroup.Done()
-		}
-	}()
-	go func() {
-		if validURL(lightSwitchJunkURL) {
-			validateAndSave(lightSwitchJunkURL, localAdwareConfig)
-			waitGroup.Done()
-		}
-	}()
-	waitGroup.Wait()
+	urls := []typeURL{
+		"https://raw.githubusercontent.com/ivolo/disposable-email-domains/master/index.json",
+		"https://raw.githubusercontent.com/ivolo/disposable-email-domains/master/wildcard.json",
+	}
 }
 
 func validateAndSave(url, path string) {
@@ -161,9 +123,4 @@ func fileExists(filename string) bool {
 		return false
 	}
 	return !info.IsDir()
-}
-
-urls := []typeURL{
-	"https://raw.githubusercontent.com/ivolo/disposable-email-domains/master/index.json",
-	"https://raw.githubusercontent.com/ivolo/disposable-email-domains/master/wildcard.json",
 }
