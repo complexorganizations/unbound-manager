@@ -20,6 +20,7 @@ var (
 )
 
 func init() {
+	// Remove the file
 	if fileExists(localHost) {
 		err = os.Remove(localHost)
 		handleErrors(err)
@@ -89,11 +90,6 @@ func validateAndSave(url string) {
 	domains := regex.FindAllString(string(body), -1)
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(domains)
-	// Remove the file
-	if fileExists(localHost) {
-		err = os.Remove(localHost)
-		handleErrors(err)
-	}
 	for i := 0; i < len(uniqueDomains); i++ {
 		if validateDomain(uniqueDomains[i]) {
 			filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
