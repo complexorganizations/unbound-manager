@@ -14,18 +14,12 @@ import (
 )
 
 var (
-	localHost          = "configs/host"
-	tempLocalHost      = fmt.Sprint(os.TempDir(), "/unbound-manager")
-	localExclusion     = "configs/exclusion"
-	tempLocalExclusion string
-	err                error
+	localHost      = "configs/host"
+	localExclusion = "configs/exclusion"
+	err            error
 )
 
 func init() {
-	if fileExists(tempLocalHost) {
-		err = os.Remove(tempLocalHost)
-		handleErrors(err)
-	}
 	if fileExists(localHost) {
 		err = os.Remove(localHost)
 		handleErrors(err)
@@ -45,10 +39,14 @@ func main() {
 }
 
 func uniqueDomains() {
-	domains, err := os.ReadFile(tempLocalHost)
+	domains, err := os.ReadFile(localHost)
 	handleErrors(err)
 	sliceData := strings.Split(string(domains), "\n")
 	uniqueDomains := makeUnique(sliceData)
+	if fileExists(localHost) {
+		err = os.Remove(localHost)
+		handleErrors(err)
+	}
 	for i := 0; i < len(uniqueDomains); i++ {
 		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		handleErrors(err)
@@ -110,9 +108,14 @@ func validateAndSave(url string) {
 	domains := regex.FindAllString(string(body), -1)
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(domains)
+	// Remove the file
+	if fileExists(localHost) {
+		err = os.Remove(localHost)
+		handleErrors(err)
+	}
 	for i := 0; i < len(uniqueDomains); i++ {
 		if validateDomain(uniqueDomains[i]) {
-			filePath, err := os.OpenFile(tempLocalHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
 			defer filePath.Close()
 			fileContent := fmt.Sprint(uniqueDomains[i], "\n")
@@ -158,6 +161,7 @@ func handleErrors(err error) {
 	}
 }
 
+// Check to see if a file already exists.
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
