@@ -38,25 +38,6 @@ func main() {
 	uniqueDomains()
 }
 
-func uniqueDomains() {
-	domains, err := os.ReadFile(localHost)
-	handleErrors(err)
-	sliceData := strings.Split(string(domains), "\n")
-	uniqueDomains := makeUnique(sliceData)
-	if fileExists(localHost) {
-		err = os.Remove(localHost)
-		handleErrors(err)
-	}
-	for i := 0; i < len(uniqueDomains); i++ {
-		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		handleErrors(err)
-		defer filePath.Close()
-		fileContent := fmt.Sprint(uniqueDomains[i], "\n")
-		_, err = filePath.WriteString(fileContent)
-		handleErrors(err)
-	}
-}
-
 func startScraping() {
 	urls := []string{
 		"https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
@@ -122,6 +103,26 @@ func validateAndSave(url string) {
 			_, err = filePath.WriteString(fileContent)
 			handleErrors(err)
 		}
+	}
+}
+
+// Make sure everything is unique
+func uniqueDomains() {
+	domains, err := os.ReadFile(localHost)
+	handleErrors(err)
+	sliceData := strings.Split(string(domains), "\n")
+	uniqueDomains := makeUnique(sliceData)
+	if fileExists(localHost) {
+		err = os.Remove(localHost)
+		handleErrors(err)
+	}
+	for i := 0; i < len(uniqueDomains); i++ {
+		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		handleErrors(err)
+		defer filePath.Close()
+		fileContent := fmt.Sprint(uniqueDomains[i], "\n")
+		_, err = filePath.WriteString(fileContent)
+		handleErrors(err)
 	}
 }
 
