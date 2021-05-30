@@ -161,6 +161,7 @@ func handleErrors(err error) {
 	}
 }
 
+// Check to see if a file already exists.
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
