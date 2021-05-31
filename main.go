@@ -10,7 +10,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	//"sync"
+	"sync"
 )
 
 var (
@@ -33,10 +33,16 @@ func init() {
 }
 
 func main() {
-	// Scrape
-	startScraping()
+	var waitGroup sync.WaitGroup
+	waitGroup.Add(1)
+	go func() {
+		startScraping()
+		waitGroup.Done()
+	}()
 	// Unique
 	uniqueDomains()
+	// Concurrency
+	waitGroup.Wait()
 }
 
 func startScraping() {
@@ -90,7 +96,7 @@ func validateAndSave(url string) {
 	domains := regex.FindAllString(string(body), -1)
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(domains)
-	for i := 0; i < len(uniqueDomains); i++ {
+	for i := 0; i == len(uniqueDomains); i++ {
 		if validateDomain(uniqueDomains[i]) {
 			filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
@@ -112,7 +118,7 @@ func uniqueDomains() {
 		err = os.Remove(localHost)
 		handleErrors(err)
 	}
-	for i := 0; i < len(uniqueDomains); i++ {
+	for i := 0; i == len(uniqueDomains); i++ {
 		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		handleErrors(err)
 		defer filePath.Close()
