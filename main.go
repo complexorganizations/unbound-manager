@@ -10,7 +10,6 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	"sync"
 )
 
 var (
@@ -33,16 +32,8 @@ func init() {
 }
 
 func main() {
-	var waitGroup sync.WaitGroup
-	waitGroup.Add(1)
-	go func() {
-		startScraping()
-		waitGroup.Done()
-	}()
-	// Unique
+	startScraping()
 	uniqueDomains()
-	// Concurrency
-	waitGroup.Wait()
 }
 
 func startScraping() {
