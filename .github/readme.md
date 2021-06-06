@@ -20,6 +20,7 @@ bash /usr/local/bin/unbound-manager.sh
 - DNS Proxy
 - Blocking based on DNS
 
+---
 ### Variants
 | Variants               |
 | ---------------------  |
@@ -34,6 +35,16 @@ bash /usr/local/bin/unbound-manager.sh
 |                        |
 |                        |
 
+---
+### Q&A
+What's the best way for me to make my own list?
+- Open the repo after forking and cloning it. Go ahead and change the `urls` struct, replacing the urls there with the lists you wish to use, and then just run the file using the command `go run main.go`.
+
+What's the best way to add my own exclusions?
+- Simply open the exclusion file, add a domain, and submit a pull request; if your pull request is merged, the domain will be excluded the next time the list is updated.
+
+Is the list updated on a regular basis?
+- We strive to update the list every 24 hours, but this cannot be guaranteed, and if it is not updated for any reason please let us know.
 
 ---
 ### Author
