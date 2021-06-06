@@ -118,9 +118,9 @@ func uniqueDomains() {
 			fileContent := fmt.Sprint(uniqueDomains[i], "\n")
 			_, err = filePath.WriteString(fileContent)
 			handleErrors(err)
-			//log.Println("Validity:", uniqueDomains[i])
+			log.Println("Validity:", uniqueDomains[i])
 		} else {
-			//log.Println("Invalidity:", uniqueDomains[i])
+			log.Println("Invalidity:", uniqueDomains[i])
 		}
 	}
 }
