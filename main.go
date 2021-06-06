@@ -10,6 +10,8 @@ import (
 	"net/url"
 	"os"
 	"regexp"
+
+	"github.com/bobesa/go-domain-util/domainutil"
 )
 
 var (
@@ -107,7 +109,8 @@ func uniqueDomains() {
 	// Make everything one more time unique and then save it.
 	for i := 0; i < len(uniqueDomains); i++ {
 		// Validate all the domains
-		if validateDomain(uniqueDomains[i]) {
+		log.Println(domainutil.Domain(uniqueDomains[i]))
+		if validateDomain(domainutil.Domain(uniqueDomains[i])) {
 			// Keep a list of all the valid domains.
 			filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
@@ -115,6 +118,9 @@ func uniqueDomains() {
 			fileContent := fmt.Sprint(uniqueDomains[i], "\n")
 			_, err = filePath.WriteString(fileContent)
 			handleErrors(err)
+			//log.Println("Validity:", uniqueDomains[i])
+		} else {
+			//log.Println("Invalidity:", uniqueDomains[i])
 		}
 	}
 }
