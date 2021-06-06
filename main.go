@@ -14,9 +14,10 @@ import (
 )
 
 var (
-	localHost      = "configs/host"
-	localExclusion = "configs/exclusion"
-	err            error
+	localHost        = "configs/host"
+	localExclusion   = "configs/exclusion"
+	exclusionDomains string
+	err              error
 )
 
 func init() {
@@ -37,7 +38,7 @@ func init() {
 			tempExclusionDomains = append(tempExclusionDomains, scanner.Text())
 		}
 		for i := 0; i < len(tempExclusionDomains); i++ {
-			fmt.Println(tempExclusionDomains[i])
+			exclusionDomains = tempExclusionDomains[i]
 		}
 	}
 }
