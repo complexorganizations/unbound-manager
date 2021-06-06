@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"log"
@@ -26,8 +27,14 @@ func init() {
 	}
 	// Read Exclusion
 	if fileExists(localExclusion) {
-		_, err := os.ReadFile(localExclusion)
+		file, err := os.Open(localExclusion)
 		handleErrors(err)
+		defer file.Close()
+		scanner := bufio.NewScanner(file)
+		scanner.Split(bufio.ScanLines)
+		for scanner.Scan() {
+			fmt.Print(scanner.Text())
+		}
 	}
 }
 
