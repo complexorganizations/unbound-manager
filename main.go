@@ -10,12 +10,12 @@ import (
 	"net/url"
 	"os"
 	"regexp"
-	"strings"
 )
 
 var (
 	localHost        = "configs/host"
 	localExclusion   = "configs/exclusion"
+	foundDomains     []string
 	exclusionDomains []string
 	err              error
 )
@@ -94,34 +94,15 @@ func saveTheDomains(url string) {
 	handleErrors(err)
 	// locate all domains
 	regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
-	domains := regex.FindAllString(string(body), -1)
-	// Save all of the domains in a single file.
-	for i := 0; i < len(domains); i++ {
-		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		handleErrors(err)
-		defer filePath.Close()
-		fileContent := fmt.Sprint(domains[i], "\n")
-		_, err = filePath.WriteString(fileContent)
-		handleErrors(err)
-	}
+	foundDomains = regex.FindAllString(string(body), -1)
 }
 
-// Make sure everything is unique
 func uniqueDomains() {
-	// Make a slice of everything you've read.
-	domains, err := os.ReadFile(localHost)
-	handleErrors(err)
-	sliceData := strings.Split(string(domains), "\n")
 	// Make each domain one-of-a-kind.
-	uniqueDomains := makeUnique(sliceData)
+	uniqueDomains := makeUnique(foundDomains)
 	// Remove all the exclusions domains from the list.
 	for a := 0; a < len(exclusionDomains); a++ {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
-	}
-	// Delete the previous file.
-	if fileExists(localHost) {
-		err = os.Remove(localHost)
-		handleErrors(err)
 	}
 	// Make everything one more time unique and then save it.
 	for i := 0; i < len(uniqueDomains); i++ {
