@@ -32,8 +32,12 @@ func init() {
 		defer file.Close()
 		scanner := bufio.NewScanner(file)
 		scanner.Split(bufio.ScanLines)
+		var tempExclusionDomains []string
 		for scanner.Scan() {
-			fmt.Print(scanner.Text())
+			tempExclusionDomains = append(tempExclusionDomains, scanner.Text())
+		}
+		for _, exclusionDomains := range tempExclusionDomains {
+			fmt.Println(exclusionDomains)
 		}
 	}
 }
