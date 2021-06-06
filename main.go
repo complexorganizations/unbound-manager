@@ -80,12 +80,12 @@ func startScraping() {
 	for i := 0; i < len(urls); i++ {
 		// Validate the URI before beginning the scraping process.
 		if validURL(urls[i]) {
-			validateAndSave(urls[i])
+			saveTheDomains(urls[i])
 		}
 	}
 }
 
-func validateAndSave(url string) {
+func saveTheDomains(url string) {
 	// Send a request to acquire all the information you need.
 	response, err := http.Get(url)
 	handleErrors(err)
