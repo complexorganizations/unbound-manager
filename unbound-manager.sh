@@ -383,9 +383,6 @@ else
       if [ -f "${UNBOUND_ROOT_HINTS}" ]; then
         curl ${UNBOUND_ROOT_SERVER_CONFIG_URL} -o ${UNBOUND_ROOT_HINTS}
       fi
-      if [ -f "${UNBOUND_ANCHOR}" ]; then
-        unbound-anchor -a ${UNBOUND_ANCHOR}
-      fi
       # Update Host List
       if [ -f "${UNBOUND_CONFIG_HOST}" ]; then
         rm -f ${UNBOUND_CONFIG_HOST}
