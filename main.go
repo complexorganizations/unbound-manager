@@ -36,8 +36,8 @@ func init() {
 		for scanner.Scan() {
 			tempExclusionDomains = append(tempExclusionDomains, scanner.Text())
 		}
-		for _, exclusionDomains := range tempExclusionDomains {
-			fmt.Println(exclusionDomains)
+		for i := 0; i < len(tempExclusionDomains); i++ {
+			fmt.Println(tempExclusionDomains[i])
 		}
 	}
 }
