@@ -41,7 +41,6 @@ func init() {
 
 func main() {
 	startScraping()
-	uniqueDomains()
 }
 
 func startScraping() {
@@ -95,6 +94,7 @@ func saveTheDomains(url string) {
 	// locate all domains
 	regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
 	foundDomains = regex.FindAllString(string(body), -1)
+	uniqueDomains()
 }
 
 func uniqueDomains() {
