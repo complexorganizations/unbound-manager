@@ -68,7 +68,7 @@ func startScraping() {
 		"https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareHosts.txt",
 		"https://raw.githubusercontent.com/anudeepND/blacklist/master/facebook.txt",
 	}
-	for i := 0; i <= len(urls); i++ {
+	for i := 0; i < len(urls); i++ {
 		if validURL(urls[i]) {
 			validateAndSave(urls[i])
 		}
@@ -87,7 +87,7 @@ func validateAndSave(url string) {
 	domains := regex.FindAllString(string(body), -1)
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(domains)
-	for i := 0; i <= len(uniqueDomains); i++ {
+	for i := 0; i < len(uniqueDomains); i++ {
 		if validateDomain(uniqueDomains[i]) {
 			filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
@@ -109,7 +109,7 @@ func uniqueDomains() {
 		err = os.Remove(localHost)
 		handleErrors(err)
 	}
-	for i := 0; i <= len(uniqueDomains); i++ {
+	for i := 0; i < len(uniqueDomains); i++ {
 		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		handleErrors(err)
 		defer filePath.Close()
