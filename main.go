@@ -16,7 +16,7 @@ import (
 var (
 	localHost        = "configs/host"
 	localExclusion   = "configs/exclusion"
-	exclusionDomains string
+	exclusionDomains []string
 	err              error
 )
 
@@ -33,12 +33,8 @@ func init() {
 		defer file.Close()
 		scanner := bufio.NewScanner(file)
 		scanner.Split(bufio.ScanLines)
-		var tempExclusionDomains []string
 		for scanner.Scan() {
-			tempExclusionDomains = append(tempExclusionDomains, scanner.Text())
-		}
-		for i := 0; i < len(tempExclusionDomains); i++ {
-			exclusionDomains = tempExclusionDomains[i]
+			exclusionDomains = append(exclusionDomains, scanner.Text())
 		}
 	}
 }
