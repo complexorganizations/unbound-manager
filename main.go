@@ -45,6 +45,7 @@ func main() {
 }
 
 func startScraping() {
+	// Replace the URLs in this section to create your own list or add new lists.
 	urls := []string{
 		"https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
 		"https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt",
@@ -77,13 +78,14 @@ func startScraping() {
 		"https://raw.githubusercontent.com/anudeepND/blacklist/master/facebook.txt",
 	}
 	for i := 0; i < len(urls); i++ {
+		// Validate the URI before beginning the scraping process.
 		if validURL(urls[i]) {
-			validateAndSave(urls[i])
+			saveTheDomains(urls[i])
 		}
 	}
 }
 
-func validateAndSave(url string) {
+func saveTheDomains(url string) {
 	// Send a request to acquire all the information you need.
 	response, err := http.Get(url)
 	handleErrors(err)
@@ -93,14 +95,39 @@ func validateAndSave(url string) {
 	// locate all domains
 	regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
 	domains := regex.FindAllString(string(body), -1)
+	// Save all of the domains in a single file.
+	for i := 0; i < len(domains); i++ {
+		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		handleErrors(err)
+		defer filePath.Close()
+		fileContent := fmt.Sprint(domains[i], "\n")
+		_, err = filePath.WriteString(fileContent)
+		handleErrors(err)
+	}
+}
+
+// Make sure everything is unique
+func uniqueDomains() {
+	// Make a slice of everything you've read.
+	domains, err := os.ReadFile(localHost)
+	handleErrors(err)
+	sliceData := strings.Split(string(domains), "\n")
 	// Make each domain one-of-a-kind.
-	uniqueDomains := makeUnique(domains)
-	// Remove it from the domains
+	uniqueDomains := makeUnique(sliceData)
+	// Remove all the exclusions domains from the list.
 	for a := 0; a < len(exclusionDomains); a++ {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
 	}
+	// Delete the previous file.
+	if fileExists(localHost) {
+		err = os.Remove(localHost)
+		handleErrors(err)
+	}
+	// Make everything one more time unique and then save it.
 	for i := 0; i < len(uniqueDomains); i++ {
+		// Validate all the domains
 		if validateDomain(uniqueDomains[i]) {
+			// Keep a list of all the valid domains.
 			filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
 			defer filePath.Close()
@@ -108,26 +135,6 @@ func validateAndSave(url string) {
 			_, err = filePath.WriteString(fileContent)
 			handleErrors(err)
 		}
-	}
-}
-
-// Make sure everything is unique
-func uniqueDomains() {
-	domains, err := os.ReadFile(localHost)
-	handleErrors(err)
-	sliceData := strings.Split(string(domains), "\n")
-	uniqueDomains := makeUnique(sliceData)
-	if fileExists(localHost) {
-		err = os.Remove(localHost)
-		handleErrors(err)
-	}
-	for i := 0; i < len(uniqueDomains); i++ {
-		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		handleErrors(err)
-		defer filePath.Close()
-		fileContent := fmt.Sprint(uniqueDomains[i], "\n")
-		_, err = filePath.WriteString(fileContent)
-		handleErrors(err)
 	}
 }
 
