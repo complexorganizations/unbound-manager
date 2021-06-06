@@ -142,10 +142,10 @@ func uniqueDomains() {
 func makeUnique(randomStrings []string) []string {
 	flag := make(map[string]bool)
 	var uniqueString []string
-	for _, randomString := range randomStrings {
-		if !flag[randomString] {
-			flag[randomString] = true
-			uniqueString = append(uniqueString, randomString)
+	for i := 0; i < len(randomStrings); i++ {
+		if !flag[randomStrings[i]] {
+			flag[randomStrings[i]] = true
+			uniqueString = append(uniqueString, randomStrings[i])
 		}
 	}
 	return uniqueString
