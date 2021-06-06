@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"log"
@@ -13,9 +14,10 @@ import (
 )
 
 var (
-	localHost      = "configs/host"
-	localExclusion = "configs/exclusion"
-	err            error
+	localHost        = "configs/host"
+	localExclusion   = "configs/exclusion"
+	exclusionDomains []string
+	err              error
 )
 
 func init() {
@@ -26,8 +28,14 @@ func init() {
 	}
 	// Read Exclusion
 	if fileExists(localExclusion) {
-		_, err := os.ReadFile(localExclusion)
+		file, err := os.Open(localExclusion)
 		handleErrors(err)
+		defer file.Close()
+		scanner := bufio.NewScanner(file)
+		scanner.Split(bufio.ScanLines)
+		for scanner.Scan() {
+			exclusionDomains = append(exclusionDomains, scanner.Text())
+		}
 	}
 }
 
@@ -87,6 +95,10 @@ func validateAndSave(url string) {
 	domains := regex.FindAllString(string(body), -1)
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(domains)
+	// Remove it from the domains
+	for a := 0; a < len(exclusionDomains); a++ {
+		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
+	}
 	for i := 0; i < len(uniqueDomains); i++ {
 		if validateDomain(uniqueDomains[i]) {
 			filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
@@ -162,4 +174,14 @@ func fileExists(filename string) bool {
 		return false
 	}
 	return !info.IsDir()
+}
+
+// Remove a string from a slice
+func removeStringFromSlice(originalSlice []string, removeString string) []string {
+	for i := 0; i < len(originalSlice); i++ {
+		if originalSlice[i] == removeString {
+			return append(originalSlice[:i], originalSlice[i+1:]...)
+		}
+	}
+	return originalSlice
 }
