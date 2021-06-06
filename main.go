@@ -107,7 +107,7 @@ func uniqueDomains() {
 	// Make everything one more time unique and then save it.
 	for i := 0; i < len(uniqueDomains); i++ {
 		// Validate all the domains
-		if validateDomain(uniqueDomains[i]) {
+		if validateDomainViaNameServer(uniqueDomains[i]) {
 			// Keep a list of all the valid domains.
 			filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
@@ -132,8 +132,8 @@ func makeUnique(randomStrings []string) []string {
 	return uniqueString
 }
 
-// Validate a website's domain
-func validateDomain(domain string) bool {
+// Validate a website's domain using the name server
+func validateDomainViaNameServer(domain string) bool {
 	ns, _ := net.LookupNS(domain)
 	return len(ns) >= 1
 }
