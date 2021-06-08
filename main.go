@@ -100,10 +100,10 @@ func saveTheDomains(url string) {
 	regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
 	foundDomains = regex.FindAllString(string(body), -1)
 	defer response.Body.Close()
-	uniqueDomains()
+	makeDomainsUnique()
 }
 
-func uniqueDomains() {
+func makeDomainsUnique() {
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(foundDomains)
 	// Remove all the exclusions domains from the list.
