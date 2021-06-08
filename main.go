@@ -49,9 +49,9 @@ func startScraping() {
 		"https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
 		"https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt",
 		"https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf",
-		"https://raw.githubusercontent.com/lightswitch05/hosts/lists/tracking-aggressive-extended.txt",
-		"https://raw.githubusercontent.com/lightswitch05/hosts/lists/facebook-extended.txt",
-		"https://raw.githubusercontent.com/lightswitch05/hosts/lists/hate-and-junk-extended.txt",
+		"https://raw.githubusercontent.com/lightswitch05/docs/hosts/lists/tracking-aggressive-extended.txt",
+		"https://raw.githubusercontent.com/lightswitch05/docs/hosts/lists/facebook-extended.txt",
+		"https://raw.githubusercontent.com/lightswitch05/docs/hosts/lists/hate-and-junk-extended.txt",
 		"https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt",
 		"https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/EnglishFilter/sections/adservers.txt",
 		"https://raw.githubusercontent.com/tg12/pihole-phishtank-list/master/list/phish_domains.txt",
@@ -88,12 +88,15 @@ func saveTheDomains(url string) {
 	// Send a request to acquire all the information you need.
 	response, err := http.Get(url)
 	handleErrors(err)
-	defer response.Body.Close()
 	body, err := io.ReadAll(response.Body)
 	handleErrors(err)
+	if body == "404: Not Found" {
+		log.Fatalln("Error: ", url)
+	}
 	// locate all domains
 	regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
 	foundDomains = regex.FindAllString(string(body), -1)
+	defer response.Body.Close()
 	uniqueDomains()
 }
 
