@@ -111,7 +111,7 @@ func uniqueDomains() {
 	// Make everything one more time unique and then save it.
 	for i := 0; i < len(uniqueDomains); i++ {
 		// Validate all the domains
-		if validateDomainViaLookupNS(uniqueDomains[i]) || validateDomainViaLookupAddr(uniqueDomains[i]) || validateDomainViaLookupIP(uniqueDomains[i]) || validateDomainViaLookupCNAME(uniqueDomains[i]) || validateDomainViaLookupMX(uniqueDomains[i]) || validateDomainViaLookupTXT(uniqueDomains[i]) || validateDomainViaLookupHost(uniqueDomains[i]) {
+		if validateDomainViaLookupNS(uniqueDomains[i]) || validateDomainViaLookupAddr(uniqueDomains[i]) || validateDomainViaLookupCNAME(uniqueDomains[i]) || validateDomainViaLookupMX(uniqueDomains[i]) || validateDomainViaLookupTXT(uniqueDomains[i]) {
 			// Keep a list of all the valid domains.
 			filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
@@ -150,11 +150,6 @@ func validateDomainViaLookupAddr(domain string) bool {
 	return len(valid) >= 1
 }
 
-func validateDomainViaLookupIP(domain string) bool {
-	valid, _ := net.LookupIP(domain)
-	return len(valid) >= 1
-}
-
 func validateDomainViaLookupCNAME(domain string) bool {
 	valid, _ := net.LookupCNAME(domain)
 	return len(valid) >= 1
@@ -167,11 +162,6 @@ func validateDomainViaLookupMX(domain string) bool {
 
 func validateDomainViaLookupTXT(domain string) bool {
 	valid, _ := net.LookupTXT(domain)
-	return len(valid) >= 1
-}
-
-func validateDomainViaLookupHost(domain string) bool {
-	valid, _ := net.LookupHost(domain)
 	return len(valid) >= 1
 }
 
