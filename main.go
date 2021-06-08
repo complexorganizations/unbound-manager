@@ -10,6 +10,8 @@ import (
 	"net/url"
 	"os"
 	"regexp"
+
+	"github.com/openrdap/rdap"
 )
 
 var (
@@ -111,7 +113,7 @@ func uniqueDomains() {
 	// Make everything one more time unique and then save it.
 	for i := 0; i < len(uniqueDomains); i++ {
 		// Validate all the domains
-		if validateDomainViaLookupNS(uniqueDomains[i]) || validateDomainViaLookupAddr(uniqueDomains[i]) || validateDomainViaLookupCNAME(uniqueDomains[i]) || validateDomainViaLookupMX(uniqueDomains[i]) || validateDomainViaLookupTXT(uniqueDomains[i]) {
+		if validateDomainViaLookupNS(uniqueDomains[i]) || validateDomainViaLookupAddr(uniqueDomains[i]) || validateDomainViaLookupCNAME(uniqueDomains[i]) || validateDomainViaLookupMX(uniqueDomains[i]) || validateDomainViaLookupTXT(uniqueDomains[i]) || domainRegistration(uniqueDomains[i]) {
 			// Keep a list of all the valid domains.
 			filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			handleErrors(err)
@@ -119,7 +121,7 @@ func uniqueDomains() {
 			fileContent := fmt.Sprint(uniqueDomains[i], "\n")
 			_, err = filePath.WriteString(fileContent)
 			handleErrors(err)
-			log.Println("Validity:", uniqueDomains[i])
+			//log.Println("Validity:", uniqueDomains[i])
 		} else {
 			log.Println("Invalidity:", uniqueDomains[i])
 		}
@@ -163,6 +165,16 @@ func validateDomainViaLookupMX(domain string) bool {
 func validateDomainViaLookupTXT(domain string) bool {
 	valid, _ := net.LookupTXT(domain)
 	return len(valid) >= 1
+}
+
+func domainRegistration(domain string) bool {
+	client := &rdap.Client{}
+	valid, ok := client.QueryDomain(domain)
+	if ok == nil {
+		return true
+	}
+	_ = valid
+	return false
 }
 
 // Validate the URI
