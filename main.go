@@ -90,7 +90,8 @@ func saveTheDomains(url string) {
 	handleErrors(err)
 	body, err := io.ReadAll(response.Body)
 	handleErrors(err)
-	if body == "404: Not Found" {
+	bodyAsString := string(body)
+	if bodyAsString == "404: Not Found" {
 		log.Fatalln("Error: ", url)
 	}
 	// locate all domains
