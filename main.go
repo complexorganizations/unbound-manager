@@ -169,12 +169,8 @@ func validateDomainViaLookupTXT(domain string) bool {
 
 func domainRegistration(domain string) bool {
 	client := &rdap.Client{}
-	valid, ok := client.QueryDomain(domain)
-	if ok == nil {
-		return true
-	}
-	_ = valid
-	return false
+	_, ok := client.QueryDomain(domain)
+	return ok == nil
 }
 
 // Validate the URI
