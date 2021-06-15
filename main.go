@@ -20,6 +20,7 @@ var (
 	foundDomains     []string
 	exclusionDomains []string
 	err              error
+	workers          = 25000
 )
 
 func init() {
@@ -100,31 +101,32 @@ func saveTheDomains(url string) {
 	regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
 	foundDomains = regex.FindAllString(string(body), -1)
 	defer response.Body.Close()
-	makeDomainsUnique()
-}
-
-func makeDomainsUnique() {
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(foundDomains)
 	// Remove all the exclusions domains from the list.
 	for a := 0; a < len(exclusionDomains); a++ {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
 	}
-	// Make everything one more time unique and then save it.
-	for i := 0; i < len(uniqueDomains); i++ {
-		// Validate all the domains
-		if validateDomainViaLookupNS(uniqueDomains[i]) || validateDomainViaLookupAddr(uniqueDomains[i]) || validateDomainViaLookupCNAME(uniqueDomains[i]) || validateDomainViaLookupMX(uniqueDomains[i]) || validateDomainViaLookupTXT(uniqueDomains[i]) || domainRegistration(uniqueDomains[i]) {
-			// Keep a list of all the valid domains.
-			filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-			handleErrors(err)
-			defer filePath.Close()
-			fileContent := fmt.Sprint(uniqueDomains[i], "\n")
-			_, err = filePath.WriteString(fileContent)
-			handleErrors(err)
-			//log.Println("Validity:", uniqueDomains[i])
-		} else {
-			log.Println("Invalidity:", uniqueDomains[i])
+	for a := 0; a < workers; a++ {
+		for i := 0; i < len(uniqueDomains); i++ {
+			go makeDomainsUnique(uniqueDomains[i])
 		}
+	}
+}
+
+func makeDomainsUnique(uniqueDomains string) {
+	// Validate all the domains
+	if validateDomainViaLookupNS(uniqueDomains) || validateDomainViaLookupAddr(uniqueDomains) || validateDomainViaLookupCNAME(uniqueDomains) || validateDomainViaLookupMX(uniqueDomains) || validateDomainViaLookupTXT(uniqueDomains) || domainRegistration(uniqueDomains) {
+		// Keep a list of all the valid domains.
+		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		handleErrors(err)
+		defer filePath.Close()
+		fileContent := fmt.Sprint(uniqueDomains, "\n")
+		_, err = filePath.WriteString(fileContent)
+		handleErrors(err)
+		// log.Println("Validity:", uniqueDomains)
+	} else {
+		log.Println("Invalidity:", uniqueDomains)
 	}
 }
 
