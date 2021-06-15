@@ -20,6 +20,7 @@ var (
 	foundDomains     []string
 	exclusionDomains []string
 	err              error
+	workers          = 10000
 )
 
 func init() {
@@ -106,8 +107,11 @@ func saveTheDomains(url string) {
 	for a := 0; a < len(exclusionDomains); a++ {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
 	}
-	for i := 0; i < len(uniqueDomains); i++ {
-		go makeDomainsUnique(uniqueDomains[i])
+	fmt.Println(len(uniqueDomains))
+	for a := 0; a < workers; a++ {
+		for i := 0; i < len(uniqueDomains); i++ {
+			go makeDomainsUnique(uniqueDomains[i])
+		}
 	}
 }
 
