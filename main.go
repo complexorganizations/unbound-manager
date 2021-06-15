@@ -122,12 +122,12 @@ func makeDomainsUnique(uniqueDomains string) {
 		// Keep a list of all the valid domains.
 		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		handleErrors(err)
-		defer filePath.Close()
 		fileContent := fmt.Sprint(uniqueDomains, "\n")
 		_, err = filePath.WriteString(fileContent)
 		handleErrors(err)
-		defer wg.Done()
+		filePath.Close()
 	}
+	wg.Done()
 }
 
 // Take a list of domains and make them one-of-a-kind
