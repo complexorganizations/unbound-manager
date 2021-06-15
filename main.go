@@ -32,19 +32,15 @@ func init() {
 	}
 	// Read Exclusion
 	if fileExists(localExclusion) {
-		file, err := os.Open(localExclusion)
-		handleErrors(err)
-		defer file.Close()
-		scanner := bufio.NewScanner(file)
-		scanner.Split(bufio.ScanLines)
-		for scanner.Scan() {
-			exclusionDomains = append(exclusionDomains, scanner.Text())
-		}
+		// exclusion domain
+		exclusionDomains = readAndAppend(localExclusion, exclusionDomains)
 	}
 }
 
 func main() {
 	startScraping()
+	// once done scraping, make everything unique.
+	makeEverythingUnique()
 }
 
 func startScraping() {
@@ -122,12 +118,7 @@ func makeDomainsUnique(uniqueDomains string) {
 	// Validate all the domains
 	if validateDomainViaLookupNS(uniqueDomains) || validateDomainViaLookupAddr(uniqueDomains) || validateDomainViaLookupCNAME(uniqueDomains) || validateDomainViaLookupMX(uniqueDomains) || validateDomainViaLookupTXT(uniqueDomains) || domainRegistration(uniqueDomains) {
 		// Keep a list of all the valid domains.
-		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		handleErrors(err)
-		fileContent := fmt.Sprint(uniqueDomains, "\n")
-		_, err = filePath.WriteString(fileContent)
-		handleErrors(err)
-		filePath.Close()
+		writeToFile(localHost, uniqueDomains)
 	}
 	wg.Done()
 }
@@ -207,4 +198,36 @@ func removeStringFromSlice(originalSlice []string, removeString string) []string
 		}
 	}
 	return originalSlice
+}
+
+// Save to a file
+func writeToFile(pathInSystem string, content string) {
+	filePath, err := os.OpenFile(pathInSystem, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	handleErrors(err)
+	_, err = filePath.WriteString(content + "\n")
+	handleErrors(err)
+	filePath.Close()
+}
+
+// Read and append to array
+func readAndAppend(fileLocation string, arrayName []string) []string {
+	file, err := os.Open(fileLocation)
+	handleErrors(err)
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		arrayName = append(arrayName, scanner.Text())
+	}
+	file.Close()
+	return arrayName
+}
+
+// make everything unique
+func makeEverythingUnique() {
+	var finalDomainList []string
+	finalDomainList = readAndAppend(localHost, finalDomainList)
+	uniqueDomains := makeUnique(finalDomainList)
+	for i := 0; i < len(uniqueDomains); i++ {
+		writeToFile(localHost, uniqueDomains[i])
+	}
 }
