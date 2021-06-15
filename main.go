@@ -113,8 +113,8 @@ func saveTheDomains(url string) {
 	fmt.Println("Domains:", len(uniqueDomains))
 	for i := 0; i < len(uniqueDomains); i++ {
 		go makeDomainsUnique(uniqueDomains[i])
-		wg.Wait()
 	}
+	wg.Wait()
 }
 
 func makeDomainsUnique(uniqueDomains string) {
@@ -127,9 +127,6 @@ func makeDomainsUnique(uniqueDomains string) {
 		fileContent := fmt.Sprint(uniqueDomains, "\n")
 		_, err = filePath.WriteString(fileContent)
 		handleErrors(err)
-		log.Println("Validity:", uniqueDomains)
-	} else {
-		log.Println("Invalidity:", uniqueDomains)
 	}
 }
 
