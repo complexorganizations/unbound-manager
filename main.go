@@ -83,11 +83,9 @@ func startScraping() {
 	for i := 0; i < len(urls); i++ {
 		// Validate the URI before beginning the scraping process.
 		if validURL(urls[i]) {
-			wg.Add(1)
 			saveTheDomains(urls[i])
 		}
 	}
-	wg.Done()
 }
 
 func saveTheDomains(url string) {
@@ -112,6 +110,7 @@ func saveTheDomains(url string) {
 	}
 	fmt.Println("Domains:", len(uniqueDomains))
 	for i := 0; i < len(uniqueDomains); i++ {
+		wg.Add(1)
 		go makeDomainsUnique(uniqueDomains[i])
 	}
 	wg.Wait()
@@ -127,6 +126,7 @@ func makeDomainsUnique(uniqueDomains string) {
 		fileContent := fmt.Sprint(uniqueDomains, "\n")
 		_, err = filePath.WriteString(fileContent)
 		handleErrors(err)
+		defer wg.Done()
 	}
 }
 
