@@ -110,8 +110,6 @@ func saveTheDomains(url string) {
 		go makeDomainsUnique(uniqueDomains[i])
 	}
 	wg.Wait()
-	uniqueDomains = nil
-	foundDomains = nil
 }
 
 func makeDomainsUnique(uniqueDomains string) {
