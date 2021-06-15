@@ -20,7 +20,7 @@ var (
 	foundDomains     []string
 	exclusionDomains []string
 	err              error
-	workers          = 10000
+	workers          = 25000
 )
 
 func init() {
@@ -107,7 +107,6 @@ func saveTheDomains(url string) {
 	for a := 0; a < len(exclusionDomains); a++ {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
 	}
-	fmt.Println(len(uniqueDomains))
 	for a := 0; a < workers; a++ {
 		for i := 0; i < len(uniqueDomains); i++ {
 			go makeDomainsUnique(uniqueDomains[i])
@@ -116,7 +115,6 @@ func saveTheDomains(url string) {
 }
 
 func makeDomainsUnique(uniqueDomains string) {
-	// Make everything one more time unique and then save it.
 	// Validate all the domains
 	if validateDomainViaLookupNS(uniqueDomains) || validateDomainViaLookupAddr(uniqueDomains) || validateDomainViaLookupCNAME(uniqueDomains) || validateDomainViaLookupMX(uniqueDomains) || validateDomainViaLookupTXT(uniqueDomains) || domainRegistration(uniqueDomains) {
 		// Keep a list of all the valid domains.
