@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"regexp"
+	"sync"
 
 	"github.com/openrdap/rdap"
 )
@@ -20,7 +21,7 @@ var (
 	foundDomains     []string
 	exclusionDomains []string
 	err              error
-	workers          = 25000
+	wg               sync.WaitGroup
 )
 
 func init() {
@@ -107,11 +108,12 @@ func saveTheDomains(url string) {
 	for a := 0; a < len(exclusionDomains); a++ {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
 	}
-	for a := 0; a < workers; a++ {
-		for i := 0; i < len(uniqueDomains); i++ {
-			go makeDomainsUnique(uniqueDomains[i])
-		}
+	fmt.Println("Domains:", len(uniqueDomains))
+	for i := 0; i < len(uniqueDomains); i++ {
+		wg.Add(1)
+		go makeDomainsUnique(uniqueDomains[i])
 	}
+	wg.Wait()
 }
 
 func makeDomainsUnique(uniqueDomains string) {
@@ -120,14 +122,12 @@ func makeDomainsUnique(uniqueDomains string) {
 		// Keep a list of all the valid domains.
 		filePath, err := os.OpenFile(localHost, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		handleErrors(err)
-		defer filePath.Close()
 		fileContent := fmt.Sprint(uniqueDomains, "\n")
 		_, err = filePath.WriteString(fileContent)
 		handleErrors(err)
-		// log.Println("Validity:", uniqueDomains)
-	} else {
-		log.Println("Invalidity:", uniqueDomains)
+		filePath.Close()
 	}
+	wg.Done()
 }
 
 // Take a list of domains and make them one-of-a-kind
