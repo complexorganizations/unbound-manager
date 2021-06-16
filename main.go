@@ -1,8 +1,3 @@
-/*
-Tasks:
-- Support for extensive logging should be added.
-*/
-
 package main
 
 import (
@@ -30,22 +25,20 @@ var (
 )
 
 func init() {
-	// Remove the file
+	// Remove the localhost file from your system.
 	if fileExists(localHost) {
 		err = os.Remove(localHost)
 		handleErrors(err)
 	}
-	// Read Exclusion
+	// Read through all of the exclusion domains before appending them.
 	if fileExists(localExclusion) {
-		// exclusion domain
 		exclusionDomains = readAndAppend(localExclusion, exclusionDomains)
 	}
 }
 
 func main() {
+	// Scrape all of the domains and save them afterwards.
 	startScraping()
-	// once done scraping, make everything unique.
-	makeEverythingUnique()
 }
 
 func startScraping() {
@@ -87,6 +80,8 @@ func startScraping() {
 			saveTheDomains(urls[i])
 		}
 	}
+	// We'll make everything distinctive once everything is finished.
+	makeEverythingUnique()
 }
 
 func saveTheDomains(url string) {
@@ -95,11 +90,11 @@ func saveTheDomains(url string) {
 	handleErrors(err)
 	body, err := io.ReadAll(response.Body)
 	handleErrors(err)
-	bodyAsString := string(body)
-	if bodyAsString == "404: Not Found" {
-		log.Fatalln("Error: ", url)
+	// Examine the page's response code.
+	if response.StatusCode == 404 {
+		log.Println("Sorry, but we were unable to scrape the page you requested due to a 404 error.", url)
 	}
-	// locate all domains
+	// To find all the domains on a page, use regex.
 	regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
 	foundDomains = regex.FindAllString(string(body), -1)
 	defer response.Body.Close()
@@ -109,17 +104,20 @@ func saveTheDomains(url string) {
 	for a := 0; a < len(exclusionDomains); a++ {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
 	}
+	// Validate the entire list of domains.
 	for i := 0; i < len(uniqueDomains); i++ {
 		wg.Add(1)
+		// Go ahead and verify it in the background.
 		go makeDomainsUnique(uniqueDomains[i])
 	}
+	// While the validation is being performed, we wait.
 	wg.Wait()
 }
 
 func makeDomainsUnique(uniqueDomains string) {
-	// Validate all the domains
+	// Validate each and every found domain.
 	if validateDomainViaLookupNS(uniqueDomains) || validateDomainViaLookupAddr(uniqueDomains) || validateDomainViaLookupCNAME(uniqueDomains) || validateDomainViaLookupMX(uniqueDomains) || validateDomainViaLookupTXT(uniqueDomains) || domainRegistration(uniqueDomains) {
-		// Keep a list of all the valid domains.
+		// Maintain a list of all authorized domains.
 		writeToFile(localHost, uniqueDomains)
 	} else {
 		log.Println("Invalid Domain:", uniqueDomains)
@@ -140,39 +138,44 @@ func makeUnique(randomStrings []string) []string {
 	return uniqueString
 }
 
-// Validate a domain
+// Using name servers, verify the domain.
 func validateDomainViaLookupNS(domain string) bool {
 	valid, _ := net.LookupNS(domain)
 	return len(valid) >= 1
 }
 
+// Using a lookup address, verify the domain.
 func validateDomainViaLookupAddr(domain string) bool {
 	valid, _ := net.LookupAddr(domain)
 	return len(valid) >= 1
 }
 
+// Using cname, verify the domain.
 func validateDomainViaLookupCNAME(domain string) bool {
 	valid, _ := net.LookupCNAME(domain)
 	return len(valid) >= 1
 }
 
+// mx records are used to validate the domain.
 func validateDomainViaLookupMX(domain string) bool {
 	valid, _ := net.LookupMX(domain)
 	return len(valid) >= 1
 }
 
+// Using txt records, validate the domain.
 func validateDomainViaLookupTXT(domain string) bool {
 	valid, _ := net.LookupTXT(domain)
 	return len(valid) >= 1
 }
 
+// Validate the domain by checking the domain registration.
 func domainRegistration(domain string) bool {
 	client := &rdap.Client{}
 	_, ok := client.QueryDomain(domain)
 	return ok == nil
 }
 
-// Validate the URI
+// Verify the URI.
 func validURL(uri string) bool {
 	_, err = url.ParseRequestURI(uri)
 	return err == nil
@@ -232,7 +235,7 @@ func readAndAppend(fileLocation string, arrayName []string) []string {
 	return arrayName
 }
 
-// make everything unique
+// Read the completed file, then delete any duplicates before saving it.
 func makeEverythingUnique() {
 	var finalDomainList []string
 	finalDomainList = readAndAppend(localHost, finalDomainList)
@@ -243,3 +246,8 @@ func makeEverythingUnique() {
 		writeToFile(localHost, uniqueDomains[i])
 	}
 }
+
+/*
+Tasks:
+-
+*/
