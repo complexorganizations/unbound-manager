@@ -26,20 +26,17 @@ var (
 	err              error
 	wg               sync.WaitGroup
 	validation       bool
+	memory           bool
 )
 
 func init() {
 	// If any user input flags are provided, use them.
 	if len(os.Args) > 1 {
-		tempValidation := flag.Bool("validation", false, "Choose whether or not to do domain validation.")
+		tempValidation := flag.Bool("validation", true, "Choose whether or not to do domain validation.")
+		tempMemory := flag.Bool("memory", true, "Is it necessary for the program to erase the memory as soon as possible?")
 		flag.Parse()
 		validation = *tempValidation
-	} else {
-		validation = true
-	}
-	// It is impossible for an flag to be both true and false at the same time.
-	if validation && !validation {
-		log.Fatal("Error: Validation and no validation cannot be done at the same time.")
+		memory = *tempMemory
 	}
 	// Remove the localhost file from your system.
 	if fileExists(localHost) {
@@ -104,7 +101,9 @@ func startScraping() {
 		if validURL(urls[i]) {
 			saveTheDomains(urls[i])
 			// To save memory, remove the string from the array.
-			urls = removeStringFromSlice(urls, urls[i])
+			if memory {
+				urls = removeStringFromSlice(urls, urls[i])
+			}
 		}
 	}
 	// We'll make everything distinctive once everything is finished.
@@ -132,7 +131,9 @@ func saveTheDomains(url string) {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
 	}
 	// Remove the memory from the unused array.
-	foundDomains = nil
+	if memory {
+		foundDomains = nil
+	}
 	// Validate the entire list of domains.
 	for i := 0; i < len(uniqueDomains); i++ {
 		// icann.org confirms it's a public suffix domain
@@ -141,8 +142,10 @@ func saveTheDomains(url string) {
 			wg.Add(1)
 			// Go ahead and verify it in the background.
 			go makeDomainsUnique(uniqueDomains[i])
-			// Remove the string from the array to save memory.
-			uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
+			if memory {
+				// Remove the string from the array to save memory.
+				uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
+			}
 		} else {
 			log.Println("Invalid Domain:", uniqueDomains[i])
 		}
@@ -286,14 +289,11 @@ func makeEverythingUnique() {
 	// Delete the original file and rewrite it.
 	err = os.Remove(localHost)
 	handleErrors(err)
-	// the array should be removed from memory
-	finalDomainList = nil
+	if memory {
+		// the array should be removed from memory
+		finalDomainList = nil
+	}
 	for i := 0; i < len(uniqueDomains); i++ {
 		writeToFile(localHost, uniqueDomains[i])
 	}
 }
-
-/*
-Tasks:
--
-*/
