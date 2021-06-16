@@ -121,6 +121,7 @@ func saveTheDomains(url string) {
 			// Remove the string from the array to save memory.
 			uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
 		}
+		log.Println("Invalid Domain:", uniqueDomains[i])
 	}
 	// While the validation is being performed, we wait.
 	wg.Wait()
@@ -132,7 +133,7 @@ func makeDomainsUnique(uniqueDomains string) {
 		// Maintain a list of all authorized domains.
 		writeToFile(localHost, uniqueDomains)
 	} else {
-		log.Println("Invalid Domain:", uniqueDomains)
+		log.Println("Error validating domain:", uniqueDomains)
 	}
 	// When it's finished, we'll be able to inform waitgroup that it's finished.
 	wg.Done()
