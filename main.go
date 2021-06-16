@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"log"
 	"net"
@@ -117,7 +116,7 @@ func makeDomainsUnique(uniqueDomains string) {
 		// Keep a list of all the valid domains.
 		writeToFile(localHost, uniqueDomains)
 	} else {
-		fmt.Println("Invalid Domain:", uniqueDomains)
+		log.Println("Invalid Domain:", uniqueDomains)
 	}
 	wg.Done()
 }
