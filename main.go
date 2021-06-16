@@ -9,9 +9,11 @@ import (
 	"net/url"
 	"os"
 	"regexp"
+	"strings"
 	"sync"
 
 	"github.com/openrdap/rdap"
+	"golang.org/x/net/publicsuffix"
 )
 
 var (
@@ -110,11 +112,15 @@ func saveTheDomains(url string) {
 	foundDomains = nil
 	// Validate the entire list of domains.
 	for i := 0; i < len(uniqueDomains); i++ {
-		wg.Add(1)
-		// Go ahead and verify it in the background.
-		go makeDomainsUnique(uniqueDomains[i])
-		// Remove the string from the array to save memory.
-		uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
+		// icann.org confirms it's a public suffix domain
+		eTLD, icann := publicsuffix.PublicSuffix(uniqueDomains[i])
+		if icann || strings.IndexByte(eTLD, '.') >= 0 {
+			wg.Add(1)
+			// Go ahead and verify it in the background.
+			go makeDomainsUnique(uniqueDomains[i])
+			// Remove the string from the array to save memory.
+			uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
+		}
 	}
 	// While the validation is being performed, we wait.
 	wg.Wait()
