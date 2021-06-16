@@ -191,7 +191,7 @@ func handleErrors(err error) {
 		}
 		log.SetOutput(file)
 		log.Println(err)
-		file.Close()
+		defer file.Close()
 	}
 }
 
@@ -220,7 +220,7 @@ func writeToFile(pathInSystem string, content string) {
 	handleErrors(err)
 	_, err = filePath.WriteString(content + "\n")
 	handleErrors(err)
-	filePath.Close()
+	defer filePath.Close()
 }
 
 // Read and append to array
@@ -232,7 +232,7 @@ func readAndAppend(fileLocation string, arrayName []string) []string {
 	for scanner.Scan() {
 		arrayName = append(arrayName, scanner.Text())
 	}
-	file.Close()
+	defer file.Close()
 	return arrayName
 }
 
