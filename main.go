@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"io"
 	"log"
 	"net"
@@ -24,9 +25,22 @@ var (
 	exclusionDomains []string
 	err              error
 	wg               sync.WaitGroup
+	validation       bool
 )
 
 func init() {
+	// If any user input flags are provided, use them.
+	if len(os.Args) > 1 {
+		tempValidation := flag.Bool("validation", false, "Choose whether or not to do domain validation.")
+		flag.Parse()
+		validation = *tempValidation
+	} else {
+		validation = true
+	}
+	// It is impossible for an flag to be both true and false at the same time.
+	if validation && !validation {
+		log.Fatal("Error: Validation and no validation cannot be done at the same time.")
+	}
 	// Remove the localhost file from your system.
 	if fileExists(localHost) {
 		err = os.Remove(localHost)
@@ -81,6 +95,7 @@ func startScraping() {
 		"https://raw.githubusercontent.com/anudeepND/blacklist/master/facebook.txt",
 		"https://raw.githubusercontent.com/hl2guide/Filterlist-for-AdGuard-or-PiHole/master/Blocklist/filter_blocklist1.txt",
 		"https://raw.githubusercontent.com/hl2guide/Filterlist-for-AdGuard-or-PiHole/master/Blocklist/filter_blocklist2.txt",
+		"https://raw.githubusercontent.com/BlackJack8/iOSAdblockList/master/Regular%20Hosts.txt",
 		"https://raw.githubusercontent.com/hl2guide/Filterlist-for-AdGuard-or-PiHole/master/Blocklist/filter_blocklist3.txt",
 		"https://raw.githubusercontent.com/hl2guide/Filterlist-for-AdGuard-or-PiHole/master/Blocklist/filter_blocklist4.txt",
 	}
@@ -137,12 +152,17 @@ func saveTheDomains(url string) {
 }
 
 func makeDomainsUnique(uniqueDomains string) {
-	// Validate each and every found domain.
-	if validateDomainViaLookupNS(uniqueDomains) || validateDomainViaLookupAddr(uniqueDomains) || validateDomainViaLookupCNAME(uniqueDomains) || validateDomainViaLookupMX(uniqueDomains) || validateDomainViaLookupTXT(uniqueDomains) || domainRegistration(uniqueDomains) {
-		// Maintain a list of all authorized domains.
-		writeToFile(localHost, uniqueDomains)
+	if validation {
+		// Validate each and every found domain.
+		if validateDomainViaLookupNS(uniqueDomains) || validateDomainViaLookupAddr(uniqueDomains) || validateDomainViaLookupCNAME(uniqueDomains) || validateDomainViaLookupMX(uniqueDomains) || validateDomainViaLookupTXT(uniqueDomains) || domainRegistration(uniqueDomains) {
+			// Maintain a list of all authorized domains.
+			writeToFile(localHost, uniqueDomains)
+		} else {
+			log.Println("Error validating domain:", uniqueDomains)
+		}
 	} else {
-		log.Println("Error validating domain:", uniqueDomains)
+		// To the list, add all of the domains.
+		writeToFile(localHost, uniqueDomains)
 	}
 	// When it's finished, we'll be able to inform waitgroup that it's finished.
 	wg.Done()
