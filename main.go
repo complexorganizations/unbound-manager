@@ -117,6 +117,9 @@ func makeDomainsUnique(uniqueDomains string) {
 	if validateDomainViaLookupNS(uniqueDomains) || validateDomainViaLookupAddr(uniqueDomains) || validateDomainViaLookupCNAME(uniqueDomains) || validateDomainViaLookupMX(uniqueDomains) || validateDomainViaLookupTXT(uniqueDomains) || domainRegistration(uniqueDomains) {
 		// Keep a list of all the valid domains.
 		writeToFile(localHost, uniqueDomains)
+		//fmt.Println("Valid Domain:", uniqueDomains)
+	} else {
+		fmt.Println("Invalid Domain:", uniqueDomains)
 	}
 	wg.Done()
 }
