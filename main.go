@@ -117,7 +117,6 @@ func makeDomainsUnique(uniqueDomains string) {
 	if validateDomainViaLookupNS(uniqueDomains) || validateDomainViaLookupAddr(uniqueDomains) || validateDomainViaLookupCNAME(uniqueDomains) || validateDomainViaLookupMX(uniqueDomains) || validateDomainViaLookupTXT(uniqueDomains) || domainRegistration(uniqueDomains) {
 		// Keep a list of all the valid domains.
 		writeToFile(localHost, uniqueDomains)
-		//fmt.Println("Valid Domain:", uniqueDomains)
 	} else {
 		fmt.Println("Invalid Domain:", uniqueDomains)
 	}
@@ -228,6 +227,8 @@ func makeEverythingUnique() {
 	var finalDomainList []string
 	finalDomainList = readAndAppend(localHost, finalDomainList)
 	uniqueDomains := makeUnique(finalDomainList)
+	err = os.Remove(localHost)
+	handleErrors(err)
 	for i := 0; i < len(uniqueDomains); i++ {
 		writeToFile(localHost, uniqueDomains[i])
 	}
