@@ -17,6 +17,7 @@ import (
 var (
 	localHost        = "configs/host"
 	localExclusion   = "configs/exclusion"
+	localLog         = "unbound-manager.log"
 	foundDomains     []string
 	exclusionDomains []string
 	err              error
@@ -175,7 +176,13 @@ func validURL(uri string) bool {
 // Make a decision about how to handle errors.
 func handleErrors(err error) {
 	if err != nil {
+		file, err := os.OpenFile(localLog, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.SetOutput(file)
 		log.Println(err)
+		file.Close()
 	}
 }
 
