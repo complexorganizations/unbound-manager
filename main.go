@@ -122,6 +122,7 @@ func makeDomainsUnique(uniqueDomains string) {
 	} else {
 		log.Println("Invalid Domain:", uniqueDomains)
 	}
+	// When it's finished, we'll be able to inform waitgroup that it's finished.
 	wg.Done()
 }
 
