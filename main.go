@@ -30,22 +30,20 @@ var (
 )
 
 func init() {
-	// Remove the file
+	// Remove the localhost file from your system.
 	if fileExists(localHost) {
 		err = os.Remove(localHost)
 		handleErrors(err)
 	}
-	// Read Exclusion
+	// Read through all of the exclusion domains before appending them.
 	if fileExists(localExclusion) {
-		// exclusion domain
 		exclusionDomains = readAndAppend(localExclusion, exclusionDomains)
 	}
 }
 
 func main() {
+	// Scrape all of the domains and save them afterwards.
 	startScraping()
-	// once done scraping, make everything unique.
-	makeEverythingUnique()
 }
 
 func startScraping() {
@@ -87,6 +85,8 @@ func startScraping() {
 			saveTheDomains(urls[i])
 		}
 	}
+	// We'll make everything distinctive once everything is finished.
+	makeEverythingUnique()
 }
 
 func saveTheDomains(url string) {
@@ -95,11 +95,11 @@ func saveTheDomains(url string) {
 	handleErrors(err)
 	body, err := io.ReadAll(response.Body)
 	handleErrors(err)
-	bodyAsString := string(body)
-	if bodyAsString == "404: Not Found" {
+	// Examine the page's response code.
+	if response.StatusCode == 404 {
 		log.Fatalln("Error: ", url)
 	}
-	// locate all domains
+	// To find all the domains on a page, use regex.
 	regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
 	foundDomains = regex.FindAllString(string(body), -1)
 	defer response.Body.Close()
