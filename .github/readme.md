@@ -26,15 +26,6 @@ bash /usr/local/bin/unbound-manager.sh
 | ---------------------  |
 | [Host](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/host) |
 
-### Lists that were used
-| List                   |
-| ---------------------  |
-| [Steven-Black-Ads](https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts) |
-| [Light-Switch-Ads](https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt) |
-| [Notracking-Trackers](https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf) |
-|                        |
-|                        |
-
 ---
 ### Q&A
 What's the best way for me to make my own list?
