@@ -1,3 +1,8 @@
+/*
+Tasks:
+- Support for extensive logging should be added.
+*/
+
 package main
 
 import (
