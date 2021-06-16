@@ -104,7 +104,6 @@ func saveTheDomains(url string) {
 	for a := 0; a < len(exclusionDomains); a++ {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
 	}
-	fmt.Println("Domains:", len(uniqueDomains))
 	for i := 0; i < len(uniqueDomains); i++ {
 		wg.Add(1)
 		go makeDomainsUnique(uniqueDomains[i])
