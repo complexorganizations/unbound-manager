@@ -292,8 +292,3 @@ func makeEverythingUnique() {
 		writeToFile(localHost, uniqueDomains[i])
 	}
 }
-
-/*
-Tasks:
--
-*/
