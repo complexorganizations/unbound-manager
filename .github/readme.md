@@ -1,5 +1,6 @@
 ### unbound-manager
 
+#### Note: I'm looking for assistance in identifying more lists that prohibit ADs.
 ---
 ### Installation
 Lets first use `curl` and save the file in `/usr/local/bin/`
