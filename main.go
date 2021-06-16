@@ -12,6 +12,7 @@ import (
 	"sync"
 
 	"github.com/openrdap/rdap"
+	//"golang.org/x/net/publicsuffix"
 )
 
 var (
