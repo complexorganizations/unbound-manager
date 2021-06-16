@@ -78,6 +78,8 @@ func startScraping() {
 		// Validate the URI before beginning the scraping process.
 		if validURL(urls[i]) {
 			saveTheDomains(urls[i])
+			// To save memory, remove the string from the array.
+			urls = removeStringFromSlice(urls, urls[i])
 		}
 	}
 	// We'll make everything distinctive once everything is finished.
@@ -104,11 +106,15 @@ func saveTheDomains(url string) {
 	for a := 0; a < len(exclusionDomains); a++ {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
 	}
+	// Remove the memory from the unused array.
+	foundDomains = nil
 	// Validate the entire list of domains.
 	for i := 0; i < len(uniqueDomains); i++ {
 		wg.Add(1)
 		// Go ahead and verify it in the background.
 		go makeDomainsUnique(uniqueDomains[i])
+		// Remove the string from the array to save memory.
+		uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
 	}
 	// While the validation is being performed, we wait.
 	wg.Wait()
@@ -187,7 +193,7 @@ func handleErrors(err error) {
 	if err != nil {
 		file, err := os.OpenFile(localLog, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 		log.SetOutput(file)
 		log.Println(err)
@@ -241,8 +247,11 @@ func makeEverythingUnique() {
 	var finalDomainList []string
 	finalDomainList = readAndAppend(localHost, finalDomainList)
 	uniqueDomains := makeUnique(finalDomainList)
+	// Delete the original file and rewrite it.
 	err = os.Remove(localHost)
 	handleErrors(err)
+	// the array should be removed from memory
+	finalDomainList = nil
 	for i := 0; i < len(uniqueDomains); i++ {
 		writeToFile(localHost, uniqueDomains[i])
 	}
