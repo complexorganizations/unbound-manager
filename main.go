@@ -168,10 +168,10 @@ func saveTheDomains(url string) {
 				// Remove the string from the array to save memory.
 				uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
 			} else {
-				log.Println("Invalid Domain:", uniqueDomains[i])
+				log.Println("Invalid domain suffix:", uniqueDomains[i])
 			}
 		} else {
-			log.Println("Invalid Domain:", uniqueDomains[i])
+			log.Println("Invalid domain syntax:", uniqueDomains[i])
 		}
 	}
 	// While the validation is being performed, we wait.
