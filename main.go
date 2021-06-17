@@ -103,6 +103,14 @@ func startScraping() {
 		"https://raw.githubusercontent.com/d3ward/toolz/master/src/d3host.txt",
 		"https://raw.githubusercontent.com/Ewpratten/youtube_ad_blocklist/master/blocklist.txt",
 		"https://raw.githubusercontent.com/kboghdady/youTube_ads_4_pi-hole/master/youtubelist.txt",
+		"https://raw.githubusercontent.com/ookangzheng/dbl-oisd-nl/master/hosts.txt",
+		"https://raw.githubusercontent.com/piwik/referrer-spam-blacklist/master/spammers.txt",
+		"https://raw.githubusercontent.com/anudeepND/youtubeadsblacklist/master/domainlist.txt",
+		"https://raw.githubusercontent.com/FadeMind/hosts.extras/master/CoinBlockerList/hosts",
+		"https://raw.githubusercontent.com/DRSDavidSoft/additional-hosts/master/domains/blacklist/adservers-and-trackers.txt",
+		"https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_2_English/filter.txt",
+		"https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_3_Spyware/filter.txt",
+		"https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_14_Annoyances/filter.txt",
 	}
 	for i := 0; i < len(urls); i++ {
 		// Validate the URI before beginning the scraping process.
