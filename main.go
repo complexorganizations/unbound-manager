@@ -158,7 +158,7 @@ func saveTheDomains(url string) {
 	foundDomains = nil
 	// Validate the entire list of domains.
 	for i := 0; i < len(uniqueDomains); i++ {
-		if len(uniqueDomains[i]) > 3 && len(uniqueDomains[i]) < 255 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "_") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") {
+		if len(uniqueDomains[i]) > 3 && len(uniqueDomains[i]) < 255 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "_") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") && isDomainName(uniqueDomains[i]) {
 			// icann.org confirms it's a public suffix domain
 			eTLD, icann := publicsuffix.PublicSuffix(uniqueDomains[i])
 			if icann || strings.IndexByte(eTLD, '.') >= 0 {
@@ -318,4 +318,51 @@ func makeEverythingUnique() {
 	for i := 0; i < len(uniqueDomains); i++ {
 		writeToFile(localHost, uniqueDomains[i])
 	}
+}
+
+// https://github.com/golang/go/blob/master/src/net/dnsclient.go#L77
+func isDomainName(s string) bool {
+	l := len(s)
+	if l == 0 || l > 254 || l == 254 && s[l-1] != '.' {
+		return false
+	}
+
+	last := byte('.')
+	nonNumeric := false // true once we've seen a letter or hyphen
+	partlen := 0
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		switch {
+		default:
+			return false
+		case 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_':
+			nonNumeric = true
+			partlen++
+		case '0' <= c && c <= '9':
+			// fine
+			partlen++
+		case c == '-':
+			// Byte before dash cannot be dot.
+			if last == '.' {
+				return false
+			}
+			partlen++
+			nonNumeric = true
+		case c == '.':
+			// Byte before dot cannot be dot, dash.
+			if last == '.' || last == '-' {
+				return false
+			}
+			if partlen > 63 || partlen == 0 {
+				return false
+			}
+			partlen = 0
+		}
+		last = c
+	}
+	if last == '-' || partlen > 63 {
+		return false
+	}
+
+	return nonNumeric
 }
