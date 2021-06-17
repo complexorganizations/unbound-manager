@@ -295,7 +295,7 @@ else
     echo " 2) Stop Unbound"
     echo " 3) Restart Unbound"
     echo " 4) Uninstall Unbound"
-    echo " 5) Update Unbound Manager"
+    echo " 5) Update Unbound"
     until [[ "$USER_OPTIONS" =~ ^[0-9]+$ ]] && [ "$USER_OPTIONS" -ge 1 ] && [ "$USER_OPTIONS" -le 5 ]; do
       read -rp "Select an Option [1-5]: " -e -i 1 USER_OPTIONS
     done
