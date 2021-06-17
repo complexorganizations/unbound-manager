@@ -158,7 +158,7 @@ func saveTheDomains(url string) {
 	foundDomains = nil
 	// Validate the entire list of domains.
 	for i := 0; i < len(uniqueDomains); i++ {
-		if len(uniqueDomains[i]) > 5 && len(uniqueDomains[i]) < 87 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "_") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") {
+		if len(uniqueDomains[i]) > 5 && len(uniqueDomains[i]) < 88 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "_") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") {
 			// icann.org confirms it's a public suffix domain
 			eTLD, icann := publicsuffix.PublicSuffix(uniqueDomains[i])
 			if icann || strings.IndexByte(eTLD, '.') >= 0 {
