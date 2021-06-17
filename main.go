@@ -158,7 +158,7 @@ func saveTheDomains(url string) {
 	foundDomains = nil
 	// Validate the entire list of domains.
 	for i := 0; i < len(uniqueDomains); i++ {
-		if len(uniqueDomains[i]) > 3 && len(uniqueDomains[i]) < 255 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "_") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") {
+		if len(uniqueDomains[i]) > 3 && len(uniqueDomains[i]) < 255 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "_") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") && checkIPAddress(uniqueDomains[i]) {
 			// icann.org confirms it's a public suffix domain
 			eTLD, icann := publicsuffix.PublicSuffix(uniqueDomains[i])
 			if icann || strings.IndexByte(eTLD, '.') >= 0 {
@@ -243,6 +243,14 @@ func domainRegistration(domain string) bool {
 	client := &rdap.Client{}
 	_, ok := client.QueryDomain(domain)
 	return ok == nil
+}
+
+// Make sure it's not an IP address.
+func checkIPAddress(ip string) bool {
+	if net.ParseIP(ip) == nil {
+		return true
+	}
+	return false
 }
 
 // Verify the URI.
