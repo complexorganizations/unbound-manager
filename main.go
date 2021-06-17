@@ -158,14 +158,18 @@ func saveTheDomains(url string) {
 	foundDomains = nil
 	// Validate the entire list of domains.
 	for i := 0; i < len(uniqueDomains); i++ {
-		// icann.org confirms it's a public suffix domain
-		eTLD, icann := publicsuffix.PublicSuffix(uniqueDomains[i])
-		if icann || strings.IndexByte(eTLD, '.') >= 0 {
-			wg.Add(1)
-			// Go ahead and verify it in the background.
-			go makeDomainsUnique(uniqueDomains[i])
-			// Remove the string from the array to save memory.
-			uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
+		if len(uniqueDomains[i]) > 5 && len(uniqueDomains[i]) < 67 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "_") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") {
+			// icann.org confirms it's a public suffix domain
+			eTLD, icann := publicsuffix.PublicSuffix(uniqueDomains[i])
+			if icann || strings.IndexByte(eTLD, '.') >= 0 {
+				wg.Add(1)
+				// Go ahead and verify it in the background.
+				go makeDomainsUnique(uniqueDomains[i])
+				// Remove the string from the array to save memory.
+				uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
+			} else {
+				log.Println("Invalid Domain:", uniqueDomains[i])
+			}
 		} else {
 			log.Println("Invalid Domain:", uniqueDomains[i])
 		}
