@@ -109,6 +109,13 @@ func startScraping() {
 		"https://raw.githubusercontent.com/FadeMind/hosts.extras/master/CoinBlockerList/hosts",
 		"https://raw.githubusercontent.com/DRSDavidSoft/additional-hosts/master/domains/blacklist/adservers-and-trackers.txt",
 		"https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/hosts.txt",
+		"https://v.firebog.net/hosts/static/w3kbl.txt",
+		"https://v.firebog.net/hosts/AdguardDNS.txt",
+		"https://v.firebog.net/hosts/Admiral.txt",
+		"https://v.firebog.net/hosts/Easylist.txt",
+		"https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext",
+		"https://v.firebog.net/hosts/Easyprivacy.txt",
+		"https://v.firebog.net/hosts/Prigent-Ads.txt",
 	}
 	for i := 0; i < len(urls); i++ {
 		// Validate the URI before beginning the scraping process.
