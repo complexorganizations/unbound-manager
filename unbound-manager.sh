@@ -219,6 +219,23 @@ prefetch-key: yes" >>${UNBOUND_CONFIG}
 
   # Running Install Unbound
   install-unbound
+  
+  function install-web-server() {
+  echo "package main
+
+import (
+    "fmt"
+    "net/http"
+)
+
+func main() {
+    http.HandleFunc("/", HelloServer)
+    http.ListenAndServe(":80", nil)
+}
+
+func HelloServer(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Hello, World!")
+}" >> 
 
   function choose-your-list() {
     echo "Which list do you want to use?"
