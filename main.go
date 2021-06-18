@@ -155,7 +155,7 @@ func saveTheDomains(url string) {
 		if !strings.Contains(string([]byte(returnContent[a])), "#") {
 			if len(returnContent[a]) > 1 {
 				// To find all the domains on a page, use regex.
-				regex := regexp.MustCompile(`^((?!-)[A-Za-z0-9-]{1, 63}(?<!-)\\.)+[A-Za-z]{2, 6}$`)
+				regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
 				foundDomains := regex.Find([]byte(returnContent[a]))
 				// Validate the entire list of domains.
 				if len(foundDomains) > 3 && len(foundDomains) < 255 && strings.Contains(string([]byte(returnContent[a])), ".") && !strings.Contains(string([]byte(returnContent[a])), "#") && !strings.Contains(string([]byte(returnContent[a])), "*") && !strings.Contains(string([]byte(returnContent[a])), "!") && checkIPAddress(returnContent[a]) && !strings.Contains(string([]byte(returnContent[a])), " ") {
@@ -315,12 +315,18 @@ func readAndAppend(fileLocation string, arrayName []string) []string {
 func makeEverythingUnique() {
 	var finalDomainList []string
 	finalDomainList = readAndAppend(localHost, finalDomainList)
+	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(finalDomainList)
+	// the array should be removed from memory
+	finalDomainList = nil
+	// Remove all the exclusions domains from the list.
+	for a := 0; a < len(exclusionDomains); a++ {
+		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
+	}
 	// Delete the original file and rewrite it.
 	err = os.Remove(localHost)
 	handleErrors(err)
-	// the array should be removed from memory
-	finalDomainList = nil
+	// start writing the file
 	for i := 0; i < len(uniqueDomains); i++ {
 		writeToFile(localHost, uniqueDomains[i])
 	}
