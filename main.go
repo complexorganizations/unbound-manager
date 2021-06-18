@@ -326,8 +326,6 @@ func makeEverythingUnique() {
 	finalDomainList = readAndAppend(localHost, finalDomainList)
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(finalDomainList)
-	// It is recommended that the array be deleted from memory.
-	finalDomainList = nil
 	// Remove all the exclusions domains from the list.
 	for a := 0; a < len(exclusionDomains); a++ {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
