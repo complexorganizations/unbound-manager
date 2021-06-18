@@ -1,4 +1,3 @@
-
 package main
 
 import (
@@ -23,7 +22,6 @@ var (
 	localHost        = "configs/host"
 	localExclusion   = "configs/exclusion"
 	localLog         = "unbound-manager.log"
-	foundDomains     []string
 	exclusionDomains []string
 	err              error
 	wg               sync.WaitGroup
@@ -154,26 +152,24 @@ func saveTheDomains(url string) {
 		returnContent = append(returnContent, scanner.Text())
 	}
 	for a := 0; a < len(returnContent); a++ {
-		if !strings.Contains(returnContent[a], "#") {
+		if !strings.Contains(string([]byte(returnContent[a])), "#") {
 			if len(returnContent[a]) > 1 {
 				// To find all the domains on a page, use regex.
 				regex := regexp.MustCompile(`^((?!-)[A-Za-z0-9-]{1, 63}(?<!-)\\.)+[A-Za-z]{2, 6}$`)
-				foundDomains = regex.FindAllString(returnContent[a], -1)
+				foundDomains := regex.Find([]byte(returnContent[a]))
 				// Validate the entire list of domains.
-				if len(uniqueDomains[i]) > 3 && len(uniqueDomains[i]) < 255 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") && checkIPAddress(uniqueDomains[i]) && !strings.Contains(uniqueDomains[i], " ") {
+				if len(foundDomains) > 3 && len(foundDomains) < 255 && strings.Contains(string([]byte(returnContent[a])), ".") && !strings.Contains(string([]byte(returnContent[a])), "#") && !strings.Contains(string([]byte(returnContent[a])), "*") && !strings.Contains(string([]byte(returnContent[a])), "!") && checkIPAddress(returnContent[a]) && !strings.Contains(string([]byte(returnContent[a])), " ") {
 					// icann.org confirms it's a public suffix domain
-					eTLD, icann := publicsuffix.PublicSuffix(uniqueDomains[i])
+					eTLD, icann := publicsuffix.PublicSuffix(string([]byte(returnContent[a])))
 					if icann || strings.IndexByte(eTLD, '.') >= 0 {
 						wg.Add(1)
 						// Go ahead and verify it in the background.
-						go makeDomainsUnique(uniqueDomains[i])
-						// Remove the string from the array to save memory.
-						uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
+						go makeDomainsUnique(string([]byte(returnContent[a])))
 					} else {
-						log.Println("Invalid domain suffix:", uniqueDomains[i])
+						log.Println("Invalid domain suffix:", returnContent[a])
 					}
 				} else {
-					log.Println("Invalid domain syntax:", uniqueDomains[i])
+					log.Println("Invalid domain syntax:", returnContent[a])
 				}
 			}
 		}
