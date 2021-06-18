@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"flag"
 	"io"
 	"log"
@@ -144,9 +145,16 @@ func saveTheDomains(url string) {
 	if response.StatusCode == 404 {
 		log.Println("Sorry, but we were unable to scrape the page you requested due to a 404 error.", url)
 	}
+	// Scraped data is read and appended to an array.
+	var returnContent []string
+	scanner := bufio.NewScanner(bytes.NewReader(body))
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		returnContent = append(returnContent, scanner.Text())
+	}
 	// To find all the domains on a page, use regex.
 	regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
-	foundDomains = regex.FindAllString(string(body), -1)
+	foundDomains = regex.FindAllString(strings.Join(returnContent, " "), -1)
 	defer response.Body.Close()
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(foundDomains)
