@@ -27,14 +27,22 @@ var (
 	err              error
 	wg               sync.WaitGroup
 	validation       bool
+	include          string
+	includeBool      bool
+	exclude          string
+	excludeBool      bool
 )
 
 func init() {
 	// If any user input flags are provided, use them.
 	if len(os.Args) > 1 {
 		tempValidation := flag.Bool("validation", false, "Choose whether or not to do domain validation.")
+		tempInclude := flag.String("include", "https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/host", "Determine which lists to utilize.")
+		tempExclude := flag.String("exclude", "https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/exclusion", "Instead of using a list, use a url to exclude anything.")
 		flag.Parse()
 		validation = *tempValidation
+		include = *tempInclude
+		exclude = *tempExclude
 	} else {
 		validation = true
 	}
@@ -47,9 +55,17 @@ func init() {
 		err = os.Remove(localHost)
 		handleErrors(err)
 	}
-	// Read through all of the exclusion domains before appending them.
-	if fileExists(localExclusion) {
-		exclusionDomains = readAndAppend(localExclusion, exclusionDomains)
+	//
+	if len(exclude) > 1 {
+		excludeBool = true
+	}
+	if excludeBool {
+		exclude = ""
+	} else {
+		// Read through all of the exclusion domains before appending them.
+		if fileExists(localExclusion) {
+			exclusionDomains = readAndAppend(localExclusion, exclusionDomains)
+		}
 	}
 }
 
