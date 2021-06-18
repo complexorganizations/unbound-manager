@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 	"sync"
 
@@ -325,6 +326,8 @@ func makeEverythingUnique() {
 	uniqueDomains := makeUnique(finalDomainList)
 	// It is recommended that the array be deleted from memory.
 	finalDomainList = nil
+	// Sort the entire string.
+	sort.Strings(uniqueDomains)
 	// Remove all the exclusions domains from the list.
 	for a := 0; a < len(exclusionDomains); a++ {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
