@@ -122,12 +122,14 @@ func startScraping() {
 		"https://v.firebog.net/hosts/Easyprivacy.txt",
 		"https://v.firebog.net/hosts/Prigent-Ads.txt",
 	}
-	for i := 0; i < len(urls); i++ {
+	// Let's start by making everything one-of-a-kind so we don't scrape the same thing twice.
+	removeDuplicateUrl := makeUnique(urls)
+	for i := 0; i < len(removeDuplicateUrl); i++ {
 		// Validate the URI before beginning the scraping process.
-		if validURL(urls[i]) {
-			saveTheDomains(urls[i])
+		if validURL(removeDuplicateUrl[i]) {
+			saveTheDomains(removeDuplicateUrl[i])
 			// To save memory, remove the string from the array.
-			urls = removeStringFromSlice(urls, urls[i])
+			removeDuplicateUrl = removeStringFromSlice(removeDuplicateUrl, urls[i])
 		}
 	}
 	// We'll make everything distinctive once everything is finished.
