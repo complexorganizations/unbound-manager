@@ -60,12 +60,6 @@ func main() {
 func startScraping() {
 	// Replace the URLs in this section to create your own list or add new lists.
 	urls := []string{
-		"https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
-		"https://badmojr.github.io/1Hosts/Pro/domains.txt",
-		"https://block.energized.pro/ultimate/formats/domains.txt",
-		"https://gitlab.com/quidsup/notrack-blocklists/-/raw/master/malware.list",
-		"https://gitlab.com/quidsup/notrack-blocklists/-/raw/master/trackers.list",
-		"https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext",
 		"https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt",
 		"https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/EnglishFilter/sections/adservers.txt",
 		"https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/EnglishFilter/sections/adservers_firstparty.txt",
@@ -127,14 +121,6 @@ func startScraping() {
 		"https://raw.githubusercontent.com/tg12/pihole-phishtank-list/master/list/phish_domains.txt",
 		"https://raw.githubusercontent.com/tiuxo/hosts/master/ads",
 		"https://raw.githubusercontent.com/yous/YousList/master/hosts.txt",
-		"https://someonewhocares.org/hosts/hosts",
-		"https://v.firebog.net/hosts/AdguardDNS.txt",
-		"https://v.firebog.net/hosts/Admiral.txt",
-		"https://v.firebog.net/hosts/Easylist.txt",
-		"https://v.firebog.net/hosts/Easyprivacy.txt",
-		"https://v.firebog.net/hosts/Prigent-Ads.txt",
-		"https://v.firebog.net/hosts/static/w3kbl.txt",
-		"https://winhelp2002.mvps.org/hosts.txt",
 	}
 	// Let's start by making everything one-of-a-kind so we don't scrape the same thing twice.
 	removeDuplicateUrl := makeUnique(urls)
