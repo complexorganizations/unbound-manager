@@ -121,6 +121,7 @@ func startScraping() {
 		"https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext",
 		"https://v.firebog.net/hosts/Easyprivacy.txt",
 		"https://v.firebog.net/hosts/Prigent-Ads.txt",
+		"https://someonewhocares.org/hosts/hosts",
 	}
 	// Let's start by making everything one-of-a-kind so we don't scrape the same thing twice.
 	removeDuplicateUrl := makeUnique(urls)
