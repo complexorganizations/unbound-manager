@@ -161,8 +161,7 @@ func saveTheDomains(url string) {
 			// Make sure the domain is at least 3 characters long
 			if len(returnContent[a]) > 3 {
 				// To find the domains on a page use regex.
-				regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
-				foundDomains := regex.Find([]byte(returnContent[a]))
+				foundDomains := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`).Find([]byte(returnContent[a]))
 				if len(foundDomains) > 3 {
 					// Validate the entire list of domains.
 					if len(foundDomains) < 255 && checkIPAddress(string([]byte(foundDomains))) && !strings.Contains(string([]byte(foundDomains)), " ") && strings.Contains(string([]byte(foundDomains)), ".") && !strings.Contains(string([]byte(foundDomains)), "#") && !strings.Contains(string([]byte(foundDomains)), "*") && !strings.Contains(string([]byte(foundDomains)), "!") {
