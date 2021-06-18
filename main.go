@@ -158,14 +158,14 @@ func saveTheDomains(url string) {
 	}
 	for a := 0; a < len(returnContent); a++ {
 		// Check to see if the string includes a # prefix, and if it does, skip it.
-		if !strings.HasPrefix(string([]byte(returnContent[a])), "#") || !strings.HasPrefix(string([]byte(returnContent[a])), "!") {
+		if !strings.HasPrefix(string([]byte(returnContent[a])), "#") && !strings.HasPrefix(string([]byte(returnContent[a])), "!") {
 			// Make sure the domain is at least 3 characters long
-			if len(returnContent[a]) > 3 {
+			if len(string([]byte(returnContent[a]))) > 3 {
 				// To find the domains on a page use regex.
 				foundDomains := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`).Find([]byte(returnContent[a]))
-				if len(foundDomains) > 3 {
+				if len(string([]byte(foundDomains))) > 3 {
 					// Validate the entire list of domains.
-					if len(foundDomains) < 255 && checkIPAddress(string([]byte(foundDomains))) && !strings.Contains(string([]byte(foundDomains)), " ") && strings.Contains(string([]byte(foundDomains)), ".") && !strings.Contains(string([]byte(foundDomains)), "#") && !strings.Contains(string([]byte(foundDomains)), "*") && !strings.Contains(string([]byte(foundDomains)), "!") {
+					if len(string([]byte(foundDomains))) < 255 && checkIPAddress(string([]byte(foundDomains))) && !strings.Contains(string([]byte(foundDomains)), " ") && strings.Contains(string([]byte(foundDomains)), ".") && !strings.Contains(string([]byte(foundDomains)), "#") && !strings.Contains(string([]byte(foundDomains)), "*") && !strings.Contains(string([]byte(foundDomains)), "!") {
 						// icann.org confirms it's a public suffix domain
 						eTLD, icann := publicsuffix.PublicSuffix(string([]byte(foundDomains)))
 						// Start the other tests if the domain has a valid suffix.
