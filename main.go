@@ -152,24 +152,29 @@ func saveTheDomains(url string) {
 		returnContent = append(returnContent, scanner.Text())
 	}
 	for a := 0; a < len(returnContent); a++ {
-		if !strings.Contains(string([]byte(returnContent[a])), "#") {
-			if len(returnContent[a]) > 1 {
-				// To find all the domains on a page, use regex.
+		// Check to see if the string includes a # prefix, and if it does, skip it.
+		if !strings.HasPrefix(string([]byte(returnContent[a])), "#") {
+			// Make sure the domain is at least 3 characters long
+			if len(returnContent[a]) > 3 {
+				// To find the domains on a page use regex.
 				regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
 				foundDomains := regex.Find([]byte(returnContent[a]))
-				// Validate the entire list of domains.
-				if len(foundDomains) > 3 && len(foundDomains) < 255 && strings.Contains(string([]byte(returnContent[a])), ".") && !strings.Contains(string([]byte(returnContent[a])), "#") && !strings.Contains(string([]byte(returnContent[a])), "*") && !strings.Contains(string([]byte(returnContent[a])), "!") && checkIPAddress(returnContent[a]) && !strings.Contains(string([]byte(returnContent[a])), " ") {
-					// icann.org confirms it's a public suffix domain
-					eTLD, icann := publicsuffix.PublicSuffix(string([]byte(returnContent[a])))
-					if icann || strings.IndexByte(eTLD, '.') >= 0 {
-						wg.Add(1)
-						// Go ahead and verify it in the background.
-						go makeDomainsUnique(string([]byte(returnContent[a])))
+				if len(foundDomains) > 3 {
+					// Validate the entire list of domains.
+					if len(foundDomains) < 255 && checkIPAddress(string([]byte(foundDomains))) && !strings.Contains(string([]byte(foundDomains)), " ") && strings.Contains(string([]byte(foundDomains)), ".") && !strings.Contains(string([]byte(foundDomains)), "#") && !strings.Contains(string([]byte(foundDomains)), "*") && !strings.Contains(string([]byte(foundDomains)), "!") {
+						// icann.org confirms it's a public suffix domain
+						eTLD, icann := publicsuffix.PublicSuffix(string([]byte(foundDomains)))
+						// Start the other tests if the domain has a valid suffix.
+						if icann || strings.IndexByte(eTLD, '.') >= 0 {
+							wg.Add(1)
+							// Go ahead and verify it in the background.
+							go makeDomainsUnique(string([]byte(foundDomains)))
+						} else {
+							log.Println("Invalid domain suffix:", string([]byte(foundDomains)))
+						}
 					} else {
-						log.Println("Invalid domain suffix:", returnContent[a])
+						log.Println("Invalid domain syntax:", string([]byte(foundDomains)))
 					}
-				} else {
-					log.Println("Invalid domain syntax:", returnContent[a])
 				}
 			}
 		}
@@ -289,7 +294,7 @@ func removeStringFromSlice(originalSlice []string, removeString string) []string
 	return originalSlice
 }
 
-// Save to a file
+// Save the information to a file.
 func writeToFile(pathInSystem string, content string) {
 	filePath, err := os.OpenFile(pathInSystem, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	handleErrors(err)
@@ -317,7 +322,7 @@ func makeEverythingUnique() {
 	finalDomainList = readAndAppend(localHost, finalDomainList)
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(finalDomainList)
-	// the array should be removed from memory
+	// It is recommended that the array be deleted from memory.
 	finalDomainList = nil
 	// Remove all the exclusions domains from the list.
 	for a := 0; a < len(exclusionDomains); a++ {
@@ -326,7 +331,7 @@ func makeEverythingUnique() {
 	// Delete the original file and rewrite it.
 	err = os.Remove(localHost)
 	handleErrors(err)
-	// start writing the file
+	// Begin composing the document
 	for i := 0; i < len(uniqueDomains); i++ {
 		writeToFile(localHost, uniqueDomains[i])
 	}
