@@ -124,6 +124,8 @@ func startScraping() {
 	}
 	// Let's start by making everything one-of-a-kind so we don't scrape the same thing twice.
 	removeDuplicateUrl := makeUnique(urls)
+	// Let's get this mess out of the way.
+	urls = nil
 	for i := 0; i < len(removeDuplicateUrl); i++ {
 		// Validate the URI before beginning the scraping process.
 		if validURL(removeDuplicateUrl[i]) {
@@ -326,6 +328,8 @@ func makeEverythingUnique() {
 	finalDomainList = readAndAppend(localHost, finalDomainList)
 	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(finalDomainList)
+	// It is recommended that the array be deleted from memory.
+	finalDomainList = nil
 	// Remove all the exclusions domains from the list.
 	for a := 0; a < len(exclusionDomains); a++ {
 		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
