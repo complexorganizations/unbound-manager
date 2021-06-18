@@ -156,7 +156,7 @@ func saveTheDomains(url string) {
 		if !strings.Contains(returnContent[a], "#") {
 			if len(returnContent[a]) > 1 {
 				// To find all the domains on a page, use regex.
-				regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
+				regex := regexp.MustCompile(`^((?!-)[A-Za-z0-9-]{1, 63}(?<!-)\\.)+[A-Za-z]{2, 6}$`)
 				foundDomains = regex.FindAllString(returnContent[a], -1)
 				defer response.Body.Close()
 				// Make each domain one-of-a-kind.
@@ -169,7 +169,7 @@ func saveTheDomains(url string) {
 				foundDomains = nil
 				// Validate the entire list of domains.
 				for i := 0; i < len(uniqueDomains); i++ {
-					if len(uniqueDomains[i]) > 3 && len(uniqueDomains[i]) < 255 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "_") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") && checkIPAddress(uniqueDomains[i]) && !strings.Contains(uniqueDomains[i], " ") {
+					if len(uniqueDomains[i]) > 3 && len(uniqueDomains[i]) < 255 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") && checkIPAddress(uniqueDomains[i]) && !strings.Contains(uniqueDomains[i], " ") {
 						// icann.org confirms it's a public suffix domain
 						eTLD, icann := publicsuffix.PublicSuffix(uniqueDomains[i])
 						if icann || strings.IndexByte(eTLD, '.') >= 0 {
