@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"flag"
 	"io"
 	"log"
@@ -21,7 +22,6 @@ var (
 	localHost        = "configs/host"
 	localExclusion   = "configs/exclusion"
 	localLog         = "unbound-manager.log"
-	foundDomains     []string
 	exclusionDomains []string
 	err              error
 	wg               sync.WaitGroup
@@ -144,38 +144,45 @@ func saveTheDomains(url string) {
 	if response.StatusCode == 404 {
 		log.Println("Sorry, but we were unable to scrape the page you requested due to a 404 error.", url)
 	}
-	// To find all the domains on a page, use regex.
-	regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
-	foundDomains = regex.FindAllString(string(body), -1)
-	defer response.Body.Close()
-	// Make each domain one-of-a-kind.
-	uniqueDomains := makeUnique(foundDomains)
-	// Remove all the exclusions domains from the list.
-	for a := 0; a < len(exclusionDomains); a++ {
-		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
+	// Scraped data is read and appended to an array.
+	var returnContent []string
+	scanner := bufio.NewScanner(bytes.NewReader(body))
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		returnContent = append(returnContent, scanner.Text())
 	}
-	// Remove the memory from the unused array.
-	foundDomains = nil
-	// Validate the entire list of domains.
-	for i := 0; i < len(uniqueDomains); i++ {
-		if len(uniqueDomains[i]) > 3 && len(uniqueDomains[i]) < 255 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "_") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") && checkIPAddress(uniqueDomains[i]) && !strings.Contains(uniqueDomains[i], " ") {
-			// icann.org confirms it's a public suffix domain
-			eTLD, icann := publicsuffix.PublicSuffix(uniqueDomains[i])
-			if icann || strings.IndexByte(eTLD, '.') >= 0 {
-				wg.Add(1)
-				// Go ahead and verify it in the background.
-				go makeDomainsUnique(uniqueDomains[i])
-				// Remove the string from the array to save memory.
-				uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
-			} else {
-				log.Println("Invalid domain suffix:", uniqueDomains[i])
+	for a := 0; a < len(returnContent); a++ {
+		// Check to see if the string includes a # prefix, and if it does, skip it.
+		if !strings.HasPrefix(string([]byte(returnContent[a])), "#") {
+			// Make sure the domain is at least 3 characters long
+			if len(returnContent[a]) > 3 {
+				// To find the domains on a page use regex.
+				regex := regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)
+				foundDomains := regex.Find([]byte(returnContent[a]))
+				if len(foundDomains) > 3 {
+					// Validate the entire list of domains.
+					if len(foundDomains) < 255 && checkIPAddress(string([]byte(foundDomains))) && !strings.Contains(string([]byte(foundDomains)), " ") && strings.Contains(string([]byte(foundDomains)), ".") && !strings.Contains(string([]byte(foundDomains)), "#") && !strings.Contains(string([]byte(foundDomains)), "*") && !strings.Contains(string([]byte(foundDomains)), "!") {
+						// icann.org confirms it's a public suffix domain
+						eTLD, icann := publicsuffix.PublicSuffix(string([]byte(foundDomains)))
+						// Start the other tests if the domain has a valid suffix.
+						if icann || strings.IndexByte(eTLD, '.') >= 0 {
+							wg.Add(1)
+							// Go ahead and verify it in the background.
+							go makeDomainsUnique(string([]byte(foundDomains)))
+						} else {
+							log.Println("Invalid domain suffix:", string([]byte(foundDomains)))
+						}
+					} else {
+						log.Println("Invalid domain syntax:", string([]byte(foundDomains)))
+					}
+				}
 			}
-		} else {
-			log.Println("Invalid domain syntax:", uniqueDomains[i])
 		}
+		// When you're finished, close the body.
+		defer response.Body.Close()
+		// While the validation is being performed, we wait.
+		wg.Wait()
 	}
-	// While the validation is being performed, we wait.
-	wg.Wait()
 }
 
 func makeDomainsUnique(uniqueDomains string) {
@@ -185,6 +192,7 @@ func makeDomainsUnique(uniqueDomains string) {
 			// Maintain a list of all authorized domains.
 			writeToFile(localHost, uniqueDomains)
 		} else {
+			// Let the users know if there are any issues while verifying the domain.
 			log.Println("Error validating domain:", uniqueDomains)
 		}
 	} else {
@@ -288,7 +296,7 @@ func removeStringFromSlice(originalSlice []string, removeString string) []string
 	return originalSlice
 }
 
-// Save to a file
+// Save the information to a file.
 func writeToFile(pathInSystem string, content string) {
 	filePath, err := os.OpenFile(pathInSystem, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	handleErrors(err)
@@ -314,12 +322,18 @@ func readAndAppend(fileLocation string, arrayName []string) []string {
 func makeEverythingUnique() {
 	var finalDomainList []string
 	finalDomainList = readAndAppend(localHost, finalDomainList)
+	// Make each domain one-of-a-kind.
 	uniqueDomains := makeUnique(finalDomainList)
+	// It is recommended that the array be deleted from memory.
+	finalDomainList = nil
+	// Remove all the exclusions domains from the list.
+	for a := 0; a < len(exclusionDomains); a++ {
+		uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
+	}
 	// Delete the original file and rewrite it.
 	err = os.Remove(localHost)
 	handleErrors(err)
-	// the array should be removed from memory
-	finalDomainList = nil
+	// Begin composing the document
 	for i := 0; i < len(uniqueDomains); i++ {
 		writeToFile(localHost, uniqueDomains[i])
 	}
