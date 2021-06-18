@@ -174,10 +174,10 @@ func saveTheDomains(url string) {
 							// Go ahead and verify it in the background.
 							go makeDomainsUnique(string([]byte(foundDomains)))
 						} else {
-							log.Println("Invalid domain suffix:", string([]byte(foundDomains)))
+							log.Println("Invalid domain suffix:", string([]byte(foundDomains)), url)
 						}
 					} else {
-						log.Println("Invalid domain syntax:", string([]byte(foundDomains)))
+						log.Println("Invalid domain syntax:", string([]byte(foundDomains)), url)
 					}
 				}
 			}
