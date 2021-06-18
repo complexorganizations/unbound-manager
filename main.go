@@ -158,13 +158,8 @@ func saveTheDomains(url string) {
 				// To find all the domains on a page, use regex.
 				regex := regexp.MustCompile(`^((?!-)[A-Za-z0-9-]{1, 63}(?<!-)\\.)+[A-Za-z]{2, 6}$`)
 				foundDomains = regex.FindAllString(returnContent[a], -1)
-				defer response.Body.Close()
-				// Make each domain one-of-a-kind.
-				uniqueDomains := makeUnique(foundDomains)
-				// Remove all the exclusions domains from the list.
-				for a := 0; a < len(exclusionDomains); a++ {
-					uniqueDomains = removeStringFromSlice(uniqueDomains, exclusionDomains[a])
-				}
+	
+
 				// Remove the memory from the unused array.
 				foundDomains = nil
 				// Validate the entire list of domains.
@@ -187,6 +182,7 @@ func saveTheDomains(url string) {
 				}
 			}
 		}
+defer response.Body.Close()
 		// While the validation is being performed, we wait.
 		wg.Wait()
 	}
