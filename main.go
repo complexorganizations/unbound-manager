@@ -1,3 +1,4 @@
+
 package main
 
 import (
@@ -158,31 +159,25 @@ func saveTheDomains(url string) {
 				// To find all the domains on a page, use regex.
 				regex := regexp.MustCompile(`^((?!-)[A-Za-z0-9-]{1, 63}(?<!-)\\.)+[A-Za-z]{2, 6}$`)
 				foundDomains = regex.FindAllString(returnContent[a], -1)
-	
-
-				// Remove the memory from the unused array.
-				foundDomains = nil
 				// Validate the entire list of domains.
-				for i := 0; i < len(uniqueDomains); i++ {
-					if len(uniqueDomains[i]) > 3 && len(uniqueDomains[i]) < 255 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") && checkIPAddress(uniqueDomains[i]) && !strings.Contains(uniqueDomains[i], " ") {
-						// icann.org confirms it's a public suffix domain
-						eTLD, icann := publicsuffix.PublicSuffix(uniqueDomains[i])
-						if icann || strings.IndexByte(eTLD, '.') >= 0 {
-							wg.Add(1)
-							// Go ahead and verify it in the background.
-							go makeDomainsUnique(uniqueDomains[i])
-							// Remove the string from the array to save memory.
-							uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
-						} else {
-							log.Println("Invalid domain suffix:", uniqueDomains[i])
-						}
+				if len(uniqueDomains[i]) > 3 && len(uniqueDomains[i]) < 255 && strings.Contains(uniqueDomains[i], ".") && !strings.Contains(uniqueDomains[i], "#") && !strings.Contains(uniqueDomains[i], "*") && !strings.Contains(uniqueDomains[i], "!") && checkIPAddress(uniqueDomains[i]) && !strings.Contains(uniqueDomains[i], " ") {
+					// icann.org confirms it's a public suffix domain
+					eTLD, icann := publicsuffix.PublicSuffix(uniqueDomains[i])
+					if icann || strings.IndexByte(eTLD, '.') >= 0 {
+						wg.Add(1)
+						// Go ahead and verify it in the background.
+						go makeDomainsUnique(uniqueDomains[i])
+						// Remove the string from the array to save memory.
+						uniqueDomains = removeStringFromSlice(uniqueDomains, uniqueDomains[i])
 					} else {
-						log.Println("Invalid domain syntax:", uniqueDomains[i])
+						log.Println("Invalid domain suffix:", uniqueDomains[i])
 					}
+				} else {
+					log.Println("Invalid domain syntax:", uniqueDomains[i])
 				}
 			}
 		}
-defer response.Body.Close()
+		defer response.Body.Close()
 		// While the validation is being performed, we wait.
 		wg.Wait()
 	}
