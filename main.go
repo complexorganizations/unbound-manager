@@ -178,6 +178,7 @@ func saveTheDomains(url string) {
 				}
 			}
 		}
+		// When you're finished, close the body.
 		defer response.Body.Close()
 		// While the validation is being performed, we wait.
 		wg.Wait()
@@ -191,6 +192,7 @@ func makeDomainsUnique(uniqueDomains string) {
 			// Maintain a list of all authorized domains.
 			writeToFile(localHost, uniqueDomains)
 		} else {
+			// Let the users know if there are any issues while verifying the domain.
 			log.Println("Error validating domain:", uniqueDomains)
 		}
 	} else {
