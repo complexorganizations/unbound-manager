@@ -118,6 +118,7 @@ func startScraping() {
 		"https://raw.githubusercontent.com/tg12/pihole-phishtank-list/master/list/phish_domains.txt",
 		"https://raw.githubusercontent.com/tiuxo/hosts/master/ads",
 		"https://raw.githubusercontent.com/yous/YousList/master/hosts.txt",
+		"https://hblock.molinero.dev/hosts",
 	}
 	// Let's start by making everything one-of-a-kind so we don't scrape the same thing twice.
 	removeDuplicateUrl := makeUnique(urls)
