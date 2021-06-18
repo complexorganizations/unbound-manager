@@ -129,7 +129,7 @@ func startScraping() {
 		if validURL(removeDuplicateUrl[i]) {
 			saveTheDomains(removeDuplicateUrl[i])
 			// To save memory, remove the string from the array.
-			removeDuplicateUrl = removeStringFromSlice(removeDuplicateUrl, urls[i])
+			removeDuplicateUrl = removeStringFromSlice(removeDuplicateUrl, removeDuplicateUrl[i])
 		}
 	}
 	// We'll make everything distinctive once everything is finished.
