@@ -118,6 +118,12 @@ func startScraping() {
 		"https://raw.githubusercontent.com/ftpmorph/ftprivacy/master/blocklists/avg-avast-data-mining-full-block.txt",
 		"https://raw.githubusercontent.com/ftpmorph/ftprivacy/master/blocklists/hola-luminati-full-block.txt",
 		"https://raw.githubusercontent.com/ftpmorph/ftprivacy/master/blocklists/huawei-trackers.txt",
+		"https://raw.githubusercontent.com/soteria-nou/domain-list/master/ads.txt",
+		"https://raw.githubusercontent.com/soteria-nou/domain-list/master/affiliate.txt",
+		"https://raw.githubusercontent.com/soteria-nou/domain-list/master/analytics.txt",
+		"https://raw.githubusercontent.com/soteria-nou/domain-list/master/enrichments.txt",
+		"https://raw.githubusercontent.com/soteria-nou/domain-list/master/fake.txt",
+		"https://raw.githubusercontent.com/soteria-nou/domain-list/master/widgets.txt",
 		// Malicious
 		"https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareHosts.txt",
 		"https://raw.githubusercontent.com/FadeMind/hosts.extras/master/CoinBlockerList/hosts",
