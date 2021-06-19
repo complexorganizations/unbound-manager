@@ -36,7 +36,7 @@ func init() {
 		flag.Parse()
 		validation = *tempValidation
 	} else {
-		validation = true
+		validation = false
 	}
 	// It is impossible for an flag to be both true and false at the same time.
 	if validation && !validation {
