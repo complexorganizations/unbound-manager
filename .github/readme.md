@@ -29,12 +29,12 @@ bash /usr/local/bin/unbound-manager.sh
 
 ---
 ### Credits
-| List                   |
-| ---------------------  |
-| [Steven-Black-Ads](https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts) |
-| [Light-Switch-Ads](https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt) |
-| [Notracking-Trackers](https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf) |
-|                        |
+| Author                 | URL                    | License                |
+| ---------------------  | ---------------------  | ---------------------  |
+| Steven-Black-Ads       | https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts | MIT |
+| Light-Switch-Ads       | https://raw.githubusercontent.com/lightswitch05/hosts/master/docs/lists/ads-and-tracking-extended.txt | Apache License 2.0 |
+| Notracking-Trackers    | https://raw.githubusercontent.com/notracking/hosts-blocklists/master/unbound/unbound.blacklist.conf | UNKNOWN |
+|                        |                        |                        |
 
 ---
 ### Creating and updating a list
