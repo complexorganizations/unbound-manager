@@ -110,6 +110,7 @@ func startScraping() {
 		"https://raw.githubusercontent.com/259095/someonewhocares/main/list",
 		"https://raw.githubusercontent.com/badmojr/1Hosts/master/Xtra/domains.txt",
 		"https://block.energized.pro/extensions/xtreme/formats/domains.txt",
+		"https://raw.githubusercontent.com/missdeer/blocklist/master/toblock-without-shorturl-optimized.lst",
 		// Malicious
 		"https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareHosts.txt",
 		"https://raw.githubusercontent.com/FadeMind/hosts.extras/master/CoinBlockerList/hosts",
@@ -136,6 +137,8 @@ func startScraping() {
 		"https://raw.githubusercontent.com/blocklistproject/Lists/master/abuse.txt",
 		"https://raw.githubusercontent.com/blocklistproject/Lists/master/fraud.txt",
 		"https://raw.githubusercontent.com/blocklistproject/Lists/master/scam.txt",
+		"https://blocklist.cyberthreatcoalition.org/vetted/domain.txt",
+		"https://raw.githubusercontent.com/sk-cat/fluffy-blocklist/main/domains",
 	}
 	// Let's start by making everything one-of-a-kind so we don't scrape the same thing twice.
 	removeDuplicateUrl := makeUnique(urls)
@@ -367,4 +370,4 @@ func makeEverythingUnique() {
 	for i := 0; i < len(uniqueDomains); i++ {
 		writeToFile(localHost, uniqueDomains[i])
 	}
-}
+}=
