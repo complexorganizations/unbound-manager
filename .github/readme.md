@@ -55,6 +55,9 @@ Why are you only banning it on the DNS level rather than the system level?
 Is it possible for me to utilize your list without utilizing Unbound Manager?
 - `https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/host`
 
+How can I get credit if I own one of the lists you're using?
+- Please make a pull request.
+
 ---
 ### Author
 * Name: Prajwal Koirala
