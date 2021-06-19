@@ -210,7 +210,7 @@ func saveTheDomains(url string) {
 func makeDomainsUnique(uniqueDomains string) {
 	if validation {
 		// Validate each and every found domain.
-		if validateDomainViaLookupNS(uniqueDomains) || validateDomainViaLookupAddr(uniqueDomains) || validateDomainViaLookupCNAME(uniqueDomains) || validateDomainViaLookupMX(uniqueDomains) || validateDomainViaLookupTXT(uniqueDomains) || domainRegistration(uniqueDomains) {
+		if validateDomainViaLookupNS(uniqueDomains) || validateDomainViaLookupAddr(uniqueDomains) || validateDomainViaLookupCNAME(uniqueDomains) || validateDomainViaLookupMX(uniqueDomains) || validateDomainViaLookupTXT(uniqueDomains) || validateDomainViaLookupHost(uniqueDomains) || domainRegistration(uniqueDomains) {
 			// Maintain a list of all authorized domains.
 			writeToFile(localHost, uniqueDomains)
 		} else {
@@ -265,6 +265,12 @@ func validateDomainViaLookupMX(domain string) bool {
 // Using txt records, validate the domain.
 func validateDomainViaLookupTXT(domain string) bool {
 	valid, _ := net.LookupTXT(domain)
+	return len(valid) >= 1
+}
+
+// Using host, see if the domain is legitimate.
+func validateDomainViaLookupHost(domain string) bool {
+	valid, _ := net.LookupHost(domain)
 	return len(valid) >= 1
 }
 
