@@ -144,6 +144,8 @@ func startScraping() {
 		"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews/hosts",
 		"https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/include",
 		"https://badmojr.github.io/1Hosts/Pro/domains.txt",
+		"https://raw.githubusercontent.com/stamparm/blackbook/master/blackbook.txt",
+		"https://raw.githubusercontent.com/nextdns/cname-cloaking-blocklist/master/domains",
 		// Social Engineering
 		"https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/hosts.txt",
 		"https://raw.githubusercontent.com/tg12/pihole-phishtank-list/master/list/phish_domains.txt",
