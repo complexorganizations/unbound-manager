@@ -146,14 +146,6 @@ func startScraping() {
 		"https://badmojr.github.io/1Hosts/Pro/domains.txt",
 		"https://raw.githubusercontent.com/stamparm/blackbook/master/blackbook.txt",
 		"https://raw.githubusercontent.com/nextdns/cname-cloaking-blocklist/master/domains",
-		// Social Engineering
-		"https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/hosts.txt",
-		"https://raw.githubusercontent.com/tg12/pihole-phishtank-list/master/list/phish_domains.txt",
-		"https://raw.githubusercontent.com/blocklistproject/Lists/master/abuse.txt",
-		"https://raw.githubusercontent.com/blocklistproject/Lists/master/fraud.txt",
-		"https://raw.githubusercontent.com/blocklistproject/Lists/master/scam.txt",
-		"https://blocklist.cyberthreatcoalition.org/vetted/domain.txt",
-		"https://raw.githubusercontent.com/sk-cat/fluffy-blocklist/main/domains",
 	}
 	// Let's start by making everything one-of-a-kind so we don't scrape the same thing twice.
 	removeDuplicateUrl := makeUnique(urls)
