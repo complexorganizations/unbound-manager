@@ -169,6 +169,10 @@ func saveTheDomains(url string) {
 		returnContent = append(returnContent, scanner.Text())
 	}
 	for a := 0; a < len(returnContent); a++ {
+		// If the string begins with a "!", inform the user that it is most likely a browser-level ad block list rather than a domain-level ad block list.
+		if strings.HasPrefix(string([]byte(returnContent[a])), "!") {
+			log.Println("Error: Most likely, this is a browser-level block list rather than a DNS-level block list.")
+		}
 		// Check to see if the string includes a # prefix, and if it does, skip it.
 		if !strings.HasPrefix(string([]byte(returnContent[a])), "#") {
 			// Make sure the domain is at least 3 characters long
