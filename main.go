@@ -109,6 +109,7 @@ func startScraping() {
 		"https://raw.githubusercontent.com/blocklistproject/Lists/master/piracy.txt",
 		"https://raw.githubusercontent.com/259095/someonewhocares/main/list",
 		"https://raw.githubusercontent.com/badmojr/1Hosts/master/Xtra/domains.txt",
+		"https://block.energized.pro/extensions/xtreme/formats/domains.txt",
 		// Malicious
 		"https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareHosts.txt",
 		"https://raw.githubusercontent.com/FadeMind/hosts.extras/master/CoinBlockerList/hosts",
