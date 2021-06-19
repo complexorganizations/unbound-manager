@@ -125,6 +125,7 @@ func startScraping() {
 		"https://raw.githubusercontent.com/blocklistproject/Lists/master/ransomware.txt",
 		"https://raw.githubusercontent.com/blocklistproject/Lists/master/smart-tv.txt",
 		"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews/hosts",
+		"https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/include",
 		// Social Engineering
 		"https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/hosts.txt",
 		"https://raw.githubusercontent.com/tg12/pihole-phishtank-list/master/list/phish_domains.txt",
