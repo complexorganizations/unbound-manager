@@ -52,6 +52,9 @@ Is the list updated on a regular basis?
 Why are you only banning it on the DNS level rather than the system level?
 - It's a good idea to prohibit something on a system level rather than a DNS level, however some devices can't prohibit it on a system level (for example, smart devices), therefore a dns level is preferred.
 
+What can I do with your list if I don't want to utilize unbound?
+- `https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/host`
+
 ---
 ### Author
 * Name: Prajwal Koirala
