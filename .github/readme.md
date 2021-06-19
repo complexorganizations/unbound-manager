@@ -49,6 +49,9 @@ What's the best way to add my own exclusions?
 Is the list updated on a regular basis?
 - We strive to update the list every 24 hours, but this cannot be guaranteed, and if it is not updated for any reason please let us know.
 
+Why are you only banning it on the DNS level rather than the system level?
+- It's a good idea to prohibit something on a system level rather than a DNS level, however some devices can't prohibit it on a system level (for example, smart devices), therefore a dns level is preferred.
+
 ---
 ### Author
 * Name: Prajwal Koirala
