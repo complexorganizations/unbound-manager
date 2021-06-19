@@ -370,4 +370,4 @@ func makeEverythingUnique() {
 	for i := 0; i < len(uniqueDomains); i++ {
 		writeToFile(localHost, uniqueDomains[i])
 	}
-}=
+}
