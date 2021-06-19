@@ -40,7 +40,7 @@ func init() {
 	}
 	// It is impossible for an flag to be both true and false at the same time.
 	if validation && !validation {
-		log.Fatal("Error: Validation and no validation cannot be done at the same time.")
+		log.Fatal("Warning: Validation and no validation cannot be done at the same time.")
 	}
 	// Remove the localhost file from your system.
 	if fileExists(localHost) {
