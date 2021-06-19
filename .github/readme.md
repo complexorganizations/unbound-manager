@@ -28,6 +28,17 @@ bash /usr/local/bin/unbound-manager.sh
 | [Host](https://raw.githubusercontent.com/complexorganizations/unbound-manager/main/configs/host) |
 
 ---
+### Creating and updating a list
+Let's begin by cloning the repository.
+```
+git clone --depth 1 https://github.com/complexorganizations/unbound-manager
+```
+Open `main.go` if you wish to alter the domain sources. After that update the urls array.
+```
+go run main.go
+```
+
+---
 ### Q&A
 What's the best way for me to make my own list?
 - Open the repo after forking and cloning it. Go ahead and change the `urls` struct, replacing the urls there with the lists you wish to use, and then just run the file using the command `go run main.go`.
